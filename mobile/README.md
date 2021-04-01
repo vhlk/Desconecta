@@ -2,6 +2,10 @@
 ```
 npx react-native run-android
 ```
+Obs: no linux precisa rodar o metro antes (no windows ele já roda quando roda o comando ai de cima)
+```
+npx react-native start
+```
 
 ## Dependências(Windows):
 1. Android sdk e ferramentas
@@ -23,11 +27,11 @@ d. Coloca as coisas no PATH (tu pode colocar no bashrc ou bash_profile, eu vou u
 > ```
 > 2. Cola isso aqui: <br>
     > ```
-    > ANDROID_HOME="$HOME/Android/Sdk"
-    > PATH="$PATH:$ANDROID_HOME/emulator"
-    > PATH="$PATH:$ANDROID_HOME/tools"
-    > PATH="$PATH:$ANDROID_HOME/tools/bin"
-    > PATH="$PATH:$ANDROID_HOME/platform-tools"
+    export ANDROID_HOME=$HOME/Android/Sdk
+    export PATH=$PATH:$ANDROID_HOME/emulator
+    export PATH=$PATH:$ANDROID_HOME/tools
+    export PATH=$PATH:$ANDROID_HOME/tools/bin
+    export PATH=$PATH:$ANDROID_HOME/platform-tools
     > ```
 > 3. Salva e fecha.
 > 4. Atualiza o bashrc
