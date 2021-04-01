@@ -1,15 +1,26 @@
 import React from "react"
 import { View, Image, StyleSheet, Text} from "react-native"
 import { RectButton } from "react-native-gesture-handler"
-import { Header } from "react-native-elements"
+import { Header, Icon } from "react-native-elements"
 
 const Home = () => {
     return (
         <>
             <Header
-                leftComponent={{ icon: 'menu', color: '#fff' }}
-                centerComponent={{ text: 'Olá Fulaninho', style: { color: '#fff' } }}
-                rightComponent={{ icon: 'home', color: '#fff' }}
+                placement="left"
+                centerComponent={
+                    <>
+                        <Text style={{color:'#000', fontSize:25}}>Olá, Fulaninho!</Text>
+                    </>
+                }
+                rightComponent={
+                    <View style={{flexDirection:'row'}}>
+                        <Icon name='star-rate' size={30} />
+                        <Icon name='perm-identity' size={30}/>
+                    </View>
+                }
+                containerStyle={{marginTop: 25}}
+                backgroundColor='#f0f0f0'
             />
             <View style={styles.main}>
                 <Image source={require("../../assets/m5.png")} style={{ width: "100%", height: 90 }}/>
