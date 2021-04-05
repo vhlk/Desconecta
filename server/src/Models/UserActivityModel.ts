@@ -7,6 +7,6 @@ export interface BaseUserActivityModel {
 }
 
 export interface UserActivityModel extends BaseUserActivityModel {
-  day: string;
+  day: Date;
   activity: ActivityModel;
 }

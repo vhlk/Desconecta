@@ -3,5 +3,5 @@ export interface BaseImageModel {
 }
 
 export interface ImageModel extends BaseImageModel {
-  name: string;
+  binary: Blob;
 }

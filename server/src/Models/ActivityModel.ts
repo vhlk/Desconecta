@@ -7,6 +7,6 @@ export interface BaseActivityModel {
 export interface ActivityModel extends BaseActivityModel {
   category: CategoryModel;
   title: string;
-  description?: string;
+  description: string;
   duration: string;
 }
