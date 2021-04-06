@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Header, Icon } from "react-native-elements"
 import {
   StyleSheet,
   Text,
@@ -15,7 +16,7 @@ import {
 } from 'react-native';
 import Slider from '@react-native-community/slider';
 
-export default class Craigslist extends Component {
+export default class configTime extends Component {
    
 
   static defaultProps = {
@@ -56,6 +57,28 @@ export default class Craigslist extends Component {
     const { modalVisible } = this.state
     return (
       <SafeAreaView style={styles.container}>
+        <Header
+                    placement="left"
+                    leftComponent={
+                        <>
+                            <TouchableOpacity
+                                style={styles.returnButton}
+                            >
+                                <Icon name='navigate-before' size={25} style={styles.buttonIcon} />
+                            </TouchableOpacity>
+                        </>
+                    }
+                    centerComponent={
+                      <>
+                      <Text style={styles.titleText}>Personalize seu tempo nas Redes</Text>
+                      </>
+                    }
+                    containerStyle={{
+                        marginTop: 5,
+                        borderBottomColor: 'rgba(0, 0, 0, 0)'
+                    }}
+                    backgroundColor='rgba(0, 0, 0, 0)'
+                />
       <View style={styles.container}>
        <Modal
           animationType="slide"
@@ -90,7 +113,6 @@ export default class Craigslist extends Component {
             </View>
           </View>
         </Modal>
-        <Text style={styles.titleText}>Personalize seu tempo nas Redes</Text>
         <Text style={styles.subtitleText}>Defina quantas horas por dia você quer passar em cada app!</Text>
         <FlatList 
           style={styles.contentList}
@@ -119,7 +141,7 @@ export default class Craigslist extends Component {
 const styles = StyleSheet.create({
   container:{
     flex:1,
-    marginTop:20,
+    marginTop:5,
     backgroundColor:"white",
     height: '100%'
   },
@@ -143,7 +165,7 @@ const styles = StyleSheet.create({
     margin: 10,
   },
   subtitleText: {
-    fontSize: 12,
+    fontSize: 13,
     textAlign: 'center',
     fontWeight: '500',
   },
@@ -179,8 +201,8 @@ const styles = StyleSheet.create({
     marginTop: 22
   },
   modalView: {
-    width: '98%',
-    height: '50%',
+    width: '90%',
+    height: '45%',
     justifyContent: 'center',
     margin: 20,
     backgroundColor: "white",
@@ -192,9 +214,9 @@ const styles = StyleSheet.create({
       width: 0,
       height: 2
     },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5
+    shadowOpacity: 5.25,
+    shadowRadius: 9,
+    elevation: 10
   },
   button: {
     borderRadius: 20,
@@ -222,5 +244,16 @@ const styles = StyleSheet.create({
     fontSize: 25,
     fontWeight: "bold",
     textAlign: "center"
-  }
+  },
+  returnButton: {
+    backgroundColor: "#DDDDDD",
+    borderRadius: 50,
+    padding: 6
+  },
+
+  buttonIcon: {
+    justifyContent: 'center',
+    textAlign: 'center',
+    color: '#FFF'
+  },
 }); 
