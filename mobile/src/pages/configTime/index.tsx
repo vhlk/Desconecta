@@ -58,27 +58,27 @@ export default class configTime extends Component {
     return (
       <SafeAreaView style={styles.container}>
         <Header
-                    placement="left"
-                    leftComponent={
-                        <>
-                            <TouchableOpacity
-                                style={styles.returnButton}
-                            >
-                                <Icon name='navigate-before' size={25} style={styles.buttonIcon} />
-                            </TouchableOpacity>
-                        </>
-                    }
-                    centerComponent={
-                      <>
-                      <Text style={styles.titleText}>Personalize seu tempo nas Redes</Text>
-                      </>
-                    }
-                    containerStyle={{
-                        marginTop: 5,
-                        borderBottomColor: 'rgba(0, 0, 0, 0)'
-                    }}
-                    backgroundColor='rgba(0, 0, 0, 0)'
-                />
+          placement="left"
+          leftComponent={
+            <>
+              <TouchableOpacity
+                style={styles.returnButton}
+              >
+                <Icon name='navigate-before' size={25} style={styles.buttonIcon} />
+                </TouchableOpacity>
+              </>
+            }
+            centerComponent={
+              <>
+              <Text style={styles.titleText}>Personalize seu tempo nas Redes</Text>
+              </>
+            }
+            containerStyle={{
+              marginTop: 5,
+              borderBottomColor: 'rgba(0, 0, 0, 0)'
+            }}
+            backgroundColor='rgba(0, 0, 0, 0)'
+        />
       <View style={styles.container}>
        <Modal
           animationType="slide"
@@ -175,7 +175,7 @@ const styles = StyleSheet.create({
     marginLeft: 20,
     marginRight: 20,
     marginTop:20,
-    backgroundColor:"black",
+    backgroundColor:"#202225",
     padding: 10,
     flexDirection:'row',
     borderRadius:30,

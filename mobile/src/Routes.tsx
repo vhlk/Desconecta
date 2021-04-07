@@ -10,7 +10,7 @@ const Routes = () => {
     return (
         <NavigationContainer>
             <AppStack.Navigator headerMode="none">
-                <AppStack.Screen name="Home" component={configTime} />
+                <AppStack.Screen name="Home" component={Home} />
             </AppStack.Navigator>
         </NavigationContainer>
     )
