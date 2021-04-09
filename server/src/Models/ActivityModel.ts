@@ -9,4 +9,6 @@ export interface ActivityModel extends BaseActivityModel {
   title: string;
   description: string;
   duration: string;
+  linkNetflix: string;
+  imageLink: string;
 }
