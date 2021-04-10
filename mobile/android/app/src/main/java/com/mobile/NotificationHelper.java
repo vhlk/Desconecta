@@ -32,7 +32,7 @@ public class NotificationHelper {
                 .setContentTitle("Aviso de uso do " + appName)
                 .setContentText("Você está usando o app " + appName + " além do limite")
                 .setStyle(new NotificationCompat.BigTextStyle()
-                        .bigText("Você está usando o app " + appName + "a mais de "+time+" minutos, porque não fazer uma pausa?"));
+                        .bigText("Você está usando o app " + appName + " a mais de "+time+" minutos, porque não fazer uma pausa?"));
 
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(mContext);
         notificationManager.notify(notificationId, builder.build());
