@@ -41,7 +41,7 @@ const Suggestion = () => {
                             <Text style={styles.titleText}>
                                 {suggestionTitle}
                             </Text>
-                            <Icon name='star-border' size={30} color='#FFF' style={styles.buttonIcon} />
+                            {/* <Icon name='star-border' size={30} color='#FFF' style={styles.buttonIcon} /> */}
                         </View>
                         <Text style={styles.description}>
                             {suggestionDesc}
