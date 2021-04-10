@@ -4,7 +4,7 @@ import TrackerModule from "./TrackerModule";
 
 const NewModuleButton = () => {
   const onPress = () => {
-    TrackerModule.StartDaylyTimeWorkerForApps(["com.example.myapplication", "com.mobile", "com.android.chrome"],
+    TrackerModule.StartDailyTimeWorkerForApps(["Chrome", "WhatsApp", "Facebook", "Instagram", "Twitter"], ["1", "2", "3", "4", "5"],
     (error: String) => {
       if (error) {
         console.log(error)

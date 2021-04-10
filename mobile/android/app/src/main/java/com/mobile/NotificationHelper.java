@@ -23,16 +23,16 @@ public class NotificationHelper {
         mContext = context;
     }
 
-    public void sendNotification(String appName) {
-        sendNotification(appName, defaultNotificationId);
+    public void sendNotification(String appName, int time) {
+        sendNotification(appName, time, defaultNotificationId);
     }
 
-    public void sendNotification(String appName, int notificationId) {
+    public void sendNotification(String appName, int time, int notificationId) {
         NotificationCompat.Builder builder = commomPart()
                 .setContentTitle("Aviso de uso do " + appName)
                 .setContentText("Você está usando o app " + appName + " além do limite")
                 .setStyle(new NotificationCompat.BigTextStyle()
-                        .bigText("Você está usando o app " + appName + " além do limite, porque não fazer uma pausa?"));
+                        .bigText("Você está usando o app " + appName + "a mais de "+time+" minutos, porque não fazer uma pausa?"));
 
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(mContext);
         notificationManager.notify(notificationId, builder.build());

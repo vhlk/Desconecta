@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Header, Icon } from "react-native-elements"
+import React, { useEffect, useState } from 'react';
+import { Header, Icon, Button } from "react-native-elements";
 import {
   StyleSheet,
   Text,
@@ -15,22 +15,61 @@ import {
   SafeAreaView 
 } from 'react-native';
 import Slider from '@react-native-community/slider';
+import AsyncStorage from "@react-native-async-storage/async-storage"
 
 
 
 const configTime = () => {
 
   const [modalVisible, setModalVisible] = useState(false);
-  const [modalData, setModalData] = useState('');
-  const [modalTitle, setModalTitle] =  useState('');
+  const [modalData, setModalData] = useState(0);
+  const [modalTitle, setModalTitle] =  useState("");
+  const [active, setActive] = useState(false);
+  const [activeString, setActiveString] = useState("");
+  const ACTIVE = "ATIVO";
+  const [activeIcon, setActiveIcon] = useState("");
+  const [activeIconColor, setActiveIconColor] = useState("");
 
-  const openSettingsModal = (title,settings) => {
+  useEffect(() => {
+    async function fun() {
+      const isActive = await AsyncStorage.getItem(ACTIVE);
+      setActive((isActive && isActive === "ativo") ? true : false);
+    }
+    fun();
+  }, []);
+
+  useEffect(() => {
+    if (active) {
+      setActiveString("ATIVADO");
+      setActiveIcon("check-circle");
+      setActiveIconColor("green");
+    }
+    else{      
+      setActiveString("DESATIVADO");
+      setActiveIcon("highlight-off");
+      setActiveIconColor("red");
+    }
+  }, [active]);
+
+  const saveActive = async (active:boolean) => {
+    if (active) {
+      await AsyncStorage.setItem(ACTIVE, "ativo");
+    }
+    else {
+      await AsyncStorage.setItem(ACTIVE, "Nao ativo");
+    }
+
+    setActive(active);
+  }
+
+
+  const openSettingsModal = (title:string, settings:number) => {
     setModalTitle(title);
     setModalData(settings);
     setModalVisible(!modalVisible);
   }
   const data=  [
-    {id:1,  name: "WhatsApp",   image:"https://logospng.org/download/whatsapp/logo-whatsapp-verde-icone-ios-android-256.png",         count:null},
+    {id:1,  name: "WhatsApp",   image:"https://logospng.org/download/whatsapp/logo-whatsapp-verde-icone-ios-android-256.png",         count:0},
     {id:2,  name: "Facebook",    image:"https://imagepng.org/wp-content/uploads/2017/09/facebook-icone-icon.png",       count:12},
     {id:3,  name: "Instagram",       image:"https://logodownload.org/wp-content/uploads/2017/04/instagram-logo.png", count:2} ,
     {id:4,  name: "Twitter",   image:"https://imagepng.org/wp-content/uploads/2018/08/twitter-icone-5.png",    count:23} ,
@@ -62,6 +101,9 @@ const configTime = () => {
             }}
             backgroundColor='rgba(0, 0, 0, 0)'
         />
+        <View style={{padding:10}}>
+          <Button title={activeString} type="clear" icon={<Icon name={activeIcon} color={activeIconColor}/>} onPress={async () => {await saveActive(!active)}} />
+        </View>
       <View style={styles.container}>
       <Modal
         animationType="slide"
