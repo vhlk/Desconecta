@@ -3,6 +3,11 @@ import controller from '../Repository/InterestsRepository'
 
 const InterestsRoutes = Express.Router()
 
-//Falta o Insert, Select e delete
+
+InterestsRoutes.get("/interests/:userId", controller.getInterests)
+
+InterestsRoutes.put("/favorites/:userId/:interestsId", controller.insertInterests)
+
+InterestsRoutes.delete("/favorites/:userId/:interestsId", controller.deleteInterests)
 
 export = InterestsRoutes;
