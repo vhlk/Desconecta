@@ -73,30 +73,28 @@ const configTime = () => {
   const KEY_INSTAGRAM = "INSTAGRAM";
   const KEY_TWITTER = "TWITTER";
   const KEY_TIKTOK = "TIKTOK";
-
-  const data=  [
-    {id:1,  name: "WhatsApp",   image:"https://logospng.org/download/whatsapp/logo-whatsapp-verde-icone-ios-android-256.png",         count:0},
-    {id:2,  name: "Facebook",    image:"https://imagepng.org/wp-content/uploads/2017/09/facebook-icone-icon.png",       count:12},
-    {id:3,  name: "Instagram",       image:"https://logodownload.org/wp-content/uploads/2017/04/instagram-logo.png", count:2} ,
-    {id:4,  name: "Twitter",   image:"https://imagepng.org/wp-content/uploads/2018/08/twitter-icone-5.png",    count:23} ,
-    {id:5,  name: "TikTok",   image:"https://logodownload.org/wp-content/uploads/2019/08/tiktok-logo-0-1.png",        count:4} ,
-  ];
-
+  
+  
   const saveTimeForAppAndChangeModal = async (titulo:string, visible:boolean) => {
     setModalVisible(!visible);
     if (titulo === "WhatsApp") {
+      data[0].count = modalData;
       await AsyncStorage.setItem(KEY_WHATSAPP, modalData.toString());
     }
     else if (titulo === "Facebook") {
+      data[1].count = modalData;
       await AsyncStorage.setItem(KEY_FACEBOOK, modalData.toString());
     }
     else if (titulo === "Instagram") {
+      data[2].count = modalData;
       await AsyncStorage.setItem(KEY_INSTAGRAM, modalData.toString());
     }
     else if (titulo === "Twitter") {
+      data[3].count = modalData;
       await AsyncStorage.setItem(KEY_TWITTER, modalData.toString());
     }
     else if (titulo === "TikTok") {
+      data[4].count = modalData;
       await AsyncStorage.setItem(KEY_TIKTOK, modalData.toString());
     }
   }
@@ -108,15 +106,30 @@ const configTime = () => {
       const countInsta = await AsyncStorage.getItem(KEY_INSTAGRAM);
       const countTwt = await AsyncStorage.getItem(KEY_TWITTER);
       const countTt = await AsyncStorage.getItem(KEY_TIKTOK);
+      
+      var newData = [...data];
+    
 
-      data[0].count = countWpp ? Number.parseInt(countWpp) : 30;
-      data[1].count = countFace ? Number.parseInt(countFace) : 30;
-      data[2].count = countInsta ? Number.parseInt(countInsta) : 30;
-      data[3].count = countTwt ? Number.parseInt(countTwt) : 30;
-      data[4].count = countTt ? Number.parseInt(countTt) : 30;
+      newData[0].count = countWpp ? Number.parseInt(countWpp) : 30;
+      newData[1].count = countFace ? Number.parseInt(countFace) : 30;
+      newData[2].count = countInsta ? Number.parseInt(countInsta) : 30;
+      newData[3].count = countTwt ? Number.parseInt(countTwt) : 30;
+      newData[4].count = countTt ? Number.parseInt(countTt) : 30;
+      console.log(newData);
+      
+
+      setData(newData);
     }
     fun();    
   }, []);
+
+  const [data, setData] = useState([
+    {id:1,  name: "WhatsApp",   image:"https://logospng.org/download/whatsapp/logo-whatsapp-verde-icone-ios-android-256.png",         count:0},
+    {id:2,  name: "Facebook",    image:"https://imagepng.org/wp-content/uploads/2017/09/facebook-icone-icon.png",       count:12},
+    {id:3,  name: "Instagram",       image:"https://logodownload.org/wp-content/uploads/2017/04/instagram-logo.png", count:2} ,
+    {id:4,  name: "Twitter",   image:"https://imagepng.org/wp-content/uploads/2018/08/twitter-icone-5.png",    count:23} ,
+    {id:5,  name: "TikTok",   image:"https://logodownload.org/wp-content/uploads/2019/08/tiktok-logo-0-1.png",        count:4} ,
+  ]);
 
     return (
         <>
@@ -159,17 +172,17 @@ const configTime = () => {
             <View style={styles.modalView}>
               <Text style={styles.modalText}>Defina quantas horas você gostaria de passar no {modalTitle}</Text>
               <Text style={styles.text}>
-                <Text>{modalData} Horas por dia</Text>
+                {modalData <= 60  ? <Text>{modalData} Minutos por dia</Text> : <Text>1 Horas e {modalData-60} Minutos por dia</Text>}
               </Text>
               <Slider
-                style={{width: 200, height: 40}}
+                style={{width: 300, height: 40}}
                 minimumValue={0}
-                maximumValue={24}
-                step={1}
+                maximumValue={120}
+                step={5}
                 value={modalData}
                 minimumTrackTintColor="red"
                 maximumTrackTintColor="#000000"
-                onValueChange={value => setModalData(value)}
+                onValueChange={value => {if(true){setModalData(value)}}}
               />
               <Pressable
                 style={[styles.button, styles.buttonClose]}
@@ -192,7 +205,7 @@ const configTime = () => {
               <View style={styles.cardContent}>
                 <Text style={styles.name}>{item.name}</Text>
                 <View>
-                    {item.count == null  ? <Text style={styles.count}>Defina uma meta para o app!</Text> : <Text style={styles.count}>Meta: {item.count}H por dia</Text>}
+                    {item.count <= 60  ? <Text style={styles.count}>Meta: {item.count} Min por dia</Text> : <Text style={styles.count}>Meta: 1H {item.count-60} Min por dia</Text>}
                 </View>
               </View>
             </TouchableOpacity>
