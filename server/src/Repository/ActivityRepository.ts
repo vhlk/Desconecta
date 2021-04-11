@@ -29,7 +29,7 @@ const getAllActivities = (req: Request, res: Response, next: NextFunction) => {
 };
 const getActivityByID = (req: Request, res: Response, next: NextFunction) => {
     console.log("params: "+req.params)
-    const query = `SELECT * FROM Activities LEFT JOIN Image On Image.Activity_ID = Activities.ID WHERE Activities.Category_ID = ${req.params.activityId}`;
+    const query = `SELECT * FROM Activities LEFT JOIN Image On Image.Activity_ID = Activities.ID WHERE Activities.ID = ${req.params.activityId}`;
 
     Connect()
     .then(connection => {
