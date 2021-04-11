@@ -7,7 +7,7 @@ activitiesRoutes.get("/activity", controller.getAllActivities);
 
 activitiesRoutes.get("/activity/:activityId", controller.getActivityByID)
 
-activitiesRoutes.get("/activity/:categoryId", controller.getActivityByCategoryID)
+activitiesRoutes.get("/activity/category/:categoryId", controller.getActivityByCategoryID)
 
 
 export = activitiesRoutes;

@@ -5,7 +5,7 @@ const categoryRoutes = Express.Router()
 
 categoryRoutes.get("/categories", controller.getAllCategories);
 
-categoryRoutes.get("/categories", controller.getCategoryById);
+categoryRoutes.get("/categories/:categoryId", controller.getCategoryById);
 
 
 export = categoryRoutes;
