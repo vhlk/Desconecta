@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import { Connect, Query } from '../config/mysql';
 
 const getAllActivities = (req: Request, res: Response, next: NextFunction) => {
-    const query = 'SELECT * FROM Activities LEFT JOIN Image On Image.Activity_ID = Activites.ID';
+    const query = 'SELECT * FROM Activities LEFT JOIN Image On Image.Activity_ID = Activities.ID';
 
     Connect()
     .then(connection => {
