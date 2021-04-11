@@ -28,7 +28,8 @@ const getAllActivities = (req: Request, res: Response, next: NextFunction) => {
     });
 };
 const getActivityByID = (req: Request, res: Response, next: NextFunction) => {
-    const query = `SELECT * FROM Activities LEFT JOIN Image On Image.Activity_ID = Activites.ID WHERE Activities.Category_ID = ${req.params.activityId}`;
+    console.log("params: "+req.params)
+    const query = `SELECT * FROM Activities LEFT JOIN Image On Image.Activity_ID = Activities.ID WHERE Activities.Category_ID = ${req.params.activityId}`;
 
     Connect()
     .then(connection => {
@@ -55,7 +56,7 @@ const getActivityByID = (req: Request, res: Response, next: NextFunction) => {
 };
 
 const getActivityByCategoryID = (req: Request, res: Response, next: NextFunction) => {
-    const query = `SELECT * FROM Activities LEFT JOIN Image On Image.Activity_ID = Activites.ID WHERE Activities.Category_ID = ${req.params.categoryId}`;
+    const query = `SELECT * FROM Activities LEFT JOIN Image On Image.Activity_ID = Activities.ID WHERE Activities.Category_ID = ${req.params.categoryId}`;
 
     Connect()
     .then(connection => {
