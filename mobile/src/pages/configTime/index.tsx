@@ -27,8 +27,8 @@ const configTime = () => {
   const [active, setActive] = useState(false);
   const [activeString, setActiveString] = useState("");
   const ACTIVE = "ATIVO";
-  const [activeIcon, setActiveIcon] = useState("");
-  const [activeIconColor, setActiveIconColor] = useState("");
+  const [activeIcon, setActiveIcon] = useState("check-circle");
+  const [activeIconColor, setActiveIconColor] = useState("green");
 
   useEffect(() => {
     async function fun() {
@@ -68,6 +68,12 @@ const configTime = () => {
     setModalData(settings);
     setModalVisible(!modalVisible);
   }
+  const KEY_WHATSAPP = "WHATSAPP";
+  const KEY_FACEBOOK = "FACEBOOK";
+  const KEY_INSTAGRAM = "INSTAGRAM";
+  const KEY_TWITTER = "TWITTER";
+  const KEY_TIKTOK = "TIKTOK";
+
   const data=  [
     {id:1,  name: "WhatsApp",   image:"https://logospng.org/download/whatsapp/logo-whatsapp-verde-icone-ios-android-256.png",         count:0},
     {id:2,  name: "Facebook",    image:"https://imagepng.org/wp-content/uploads/2017/09/facebook-icone-icon.png",       count:12},
@@ -75,6 +81,42 @@ const configTime = () => {
     {id:4,  name: "Twitter",   image:"https://imagepng.org/wp-content/uploads/2018/08/twitter-icone-5.png",    count:23} ,
     {id:5,  name: "TikTok",   image:"https://logodownload.org/wp-content/uploads/2019/08/tiktok-logo-0-1.png",        count:4} ,
   ];
+
+  const saveTimeForAppAndChangeModal = async (titulo:string, visible:boolean) => {
+    setModalVisible(!visible);
+    if (titulo === "WhatsApp") {
+      await AsyncStorage.setItem(KEY_WHATSAPP, modalData.toString());
+    }
+    else if (titulo === "Facebook") {
+      await AsyncStorage.setItem(KEY_FACEBOOK, modalData.toString());
+    }
+    else if (titulo === "Instagram") {
+      await AsyncStorage.setItem(KEY_INSTAGRAM, modalData.toString());
+    }
+    else if (titulo === "Twitter") {
+      await AsyncStorage.setItem(KEY_TWITTER, modalData.toString());
+    }
+    else if (titulo === "TikTok") {
+      await AsyncStorage.setItem(KEY_TIKTOK, modalData.toString());
+    }
+  }
+
+  useEffect(() => {
+    async function fun() {
+      const countWpp = await AsyncStorage.getItem(KEY_WHATSAPP);
+      const countFace = await AsyncStorage.getItem(KEY_FACEBOOK);
+      const countInsta = await AsyncStorage.getItem(KEY_INSTAGRAM);
+      const countTwt = await AsyncStorage.getItem(KEY_TWITTER);
+      const countTt = await AsyncStorage.getItem(KEY_TIKTOK);
+
+      data[0].count = countWpp ? Number.parseInt(countWpp) : 30;
+      data[1].count = countFace ? Number.parseInt(countFace) : 30;
+      data[2].count = countInsta ? Number.parseInt(countInsta) : 30;
+      data[3].count = countTwt ? Number.parseInt(countTwt) : 30;
+      data[4].count = countTt ? Number.parseInt(countTt) : 30;
+    }
+    fun();    
+  }, []);
 
     return (
         <>
@@ -131,7 +173,7 @@ const configTime = () => {
               />
               <Pressable
                 style={[styles.button, styles.buttonClose]}
-                onPress={() => setModalVisible(!modalVisible)}
+                onPress={async () => await saveTimeForAppAndChangeModal(modalTitle, modalVisible)}
               >
                 <Text style={styles.textStyle}>Salvar</Text>
               </Pressable>
