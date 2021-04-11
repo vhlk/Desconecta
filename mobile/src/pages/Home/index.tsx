@@ -2,6 +2,7 @@ import React from "react"
 import { View, Image, StyleSheet, Text } from "react-native"
 import { RectButton } from "react-native-gesture-handler"
 import { Header, Icon } from "react-native-elements"
+import { useNavigation } from "@react-navigation/native"
 
 import data from "./data2";
 import Swiper from "react-native-deck-swiper";
@@ -45,6 +46,7 @@ const Home = () => {
     const onSwiped = () => {
         setIndex((index + 1) % data.length);
     }
+    const navigation = useNavigation()
     return (
         <>
             <Header
@@ -71,6 +73,7 @@ const Home = () => {
                         cardIndex={index}
                         renderCard={card => <Card card={card} />}
                         onSwiped={onSwiped}
+                        onTapCard={() => navigation.navigate("Suggestion")}
                         stackSize={2}
                         stackScale={7}
                         stackSeparation={10}

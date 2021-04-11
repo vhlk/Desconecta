@@ -4,14 +4,19 @@ import { RectButton } from "react-native-gesture-handler"
 import { Header, Icon } from "react-native-elements"
 import { Button } from "react-native-elements/dist/buttons/Button"
 import { BackgroundImage } from "react-native-elements/dist/config"
+import { useNavigation , useRoute} from "@react-navigation/native"
 
 const imgBg = require("../../assets/1984.jpg")
 const categ = "Leitura"
 const suggestionTitle = "George Orwell: 1984"
 const suggestionDesc = "Romance distópico, publicado em 1949, ambientado em um mundo de guerra perpétua, vigilância governamental onipresente e manipulação pública e histórica"
-const suggestionDura = "45 minutos diários"
+const suggestionDura = "45 minutos"
 
 const Suggestion = () => {
+    const navigation = useNavigation()
+    function handleNav() {
+        navigation.navigate("Home")
+    }
     return (
         <>
             <ImageBackground source={imgBg} style={styles.imgbg}>
@@ -21,6 +26,7 @@ const Suggestion = () => {
                         <>
                             <TouchableOpacity
                                 style={styles.returnButton}
+                                onPress={handleNav}
                             >
                                 <Icon name='navigate-before' size={25} style={styles.buttonIcon} />
                             </TouchableOpacity>
@@ -49,7 +55,7 @@ const Suggestion = () => {
                         <View style={styles.duration}>
                             <Icon name='access-time' size={20} color='#FFF' style={styles.buttonIcon} />
                             <Text style={{ color: '#FFF', padding: 5}}>
-                               {suggestionDura}
+                                {suggestionDura}
                             </Text>
                         </View>
                     </View>
@@ -59,10 +65,10 @@ const Suggestion = () => {
                                 COMEÇAR A ATIVIDADE
                             </Text>
                         </RectButton>
-                        <TouchableOpacity>
-                                <Text style={{ color: '#FFF', textDecorationLine: 'underline', paddingTop:10 }}>
-                                    NÃO TENHO INTERESSE
-                                </Text>
+                        <TouchableOpacity onPress={handleNav}>
+                            <Text style={{ color: '#FFF', textDecorationLine: 'underline', paddingTop:10 }}>
+                                NÃO TENHO INTERESSE
+                            </Text>
                         </TouchableOpacity>
                     </View>
                 </View>
@@ -128,9 +134,9 @@ const styles = StyleSheet.create({
 
     description: {
         color: '#FFF',
-        paddingVertical:10
+        paddingVertical: 10
     },
-    
+
     duration: {
         flexDirection: "row",
         justifyContent: "flex-start",
