@@ -5,9 +5,9 @@ const activitiesRoutes = Express.Router()
 
 activitiesRoutes.get("/activity", controller.getAllActivities);
 
-activitiesRoutes.get("/activitiy/:categoryId", controller.getActivityByID)
+activitiesRoutes.get("/activity/:categoryId", controller.getActivityByID)
 
-activitiesRoutes.get("/activitiy/:activityId", controller.getActivityByCategoryID)
+activitiesRoutes.get("/activity/:activityId", controller.getActivityByCategoryID)
 
 
 export = activitiesRoutes;
