@@ -1,6 +1,13 @@
 import Express from "express"
 import controller from '../Repository/UserGoalRepository'
 
-const userRoutes = Express.Router()
-//Falta Select, insert e delete, mas depende do como vai ser o dito pelo front
-export = userRoutes;
+const userGoalRoutes = Express.Router()
+
+
+userGoalRoutes.get("/usergoal/:userId", controller.getUserGoal)
+
+userGoalRoutes.put("/usergoal/:userId/:goalId", controller.insertUserGoal)
+
+userGoalRoutes.delete("/usergoal/:userId/:goalId", controller.deleteUserGoal)
+
+export = userGoalRoutes;
