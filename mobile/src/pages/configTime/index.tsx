@@ -16,7 +16,7 @@ import {
 } from 'react-native';
 import Slider from '@react-native-community/slider';
 import AsyncStorage from "@react-native-async-storage/async-storage"
-
+import TrackAppsUsage from "../../services/AppsTracker/TrackerModule"
 
 
 const configTime = () => {
@@ -43,11 +43,17 @@ const configTime = () => {
       setActiveString("ATIVADO");
       setActiveIcon("check-circle");
       setActiveIconColor("green");
+      TrackAppsUsage.StartDailyTimeWorkerForApps(["WhatsApp", "Facebook", "Instagram", "Twitter", "TikTok"], 
+      [data[0].count.toString(), data[1].count.toString(), data[2].count.toString(), data[3].count.toString(), data[4].count.toString()],
+      (error: String) => {
+        console.log(error);
+      });
     }
     else{      
       setActiveString("DESATIVADO");
       setActiveIcon("highlight-off");
       setActiveIconColor("red");
+      TrackAppsUsage.StopDailyWorker();
     }
   }, [active]);
 
@@ -77,26 +83,35 @@ const configTime = () => {
   
   const saveTimeForAppAndChangeModal = async (titulo:string, visible:boolean) => {
     setModalVisible(!visible);
+
+    var newData = [...data];
     if (titulo === "WhatsApp") {
-      data[0].count = modalData;
+      newData[0].count = modalData;
       await AsyncStorage.setItem(KEY_WHATSAPP, modalData.toString());
     }
     else if (titulo === "Facebook") {
-      data[1].count = modalData;
+      newData[1].count = modalData;
       await AsyncStorage.setItem(KEY_FACEBOOK, modalData.toString());
     }
     else if (titulo === "Instagram") {
-      data[2].count = modalData;
+      newData[2].count = modalData;
       await AsyncStorage.setItem(KEY_INSTAGRAM, modalData.toString());
     }
     else if (titulo === "Twitter") {
-      data[3].count = modalData;
+      newData[3].count = modalData;
       await AsyncStorage.setItem(KEY_TWITTER, modalData.toString());
     }
     else if (titulo === "TikTok") {
-      data[4].count = modalData;
+      newData[4].count = modalData;
       await AsyncStorage.setItem(KEY_TIKTOK, modalData.toString());
     }
+    setData(newData);
+
+    TrackAppsUsage.StartDailyTimeWorkerForApps(["WhatsApp", "Facebook", "Instagram", "Twitter", "TikTok"], 
+      [data[0].count.toString(), data[1].count.toString(), data[2].count.toString(), data[3].count.toString(), data[4].count.toString()],
+      (error: String) => {
+        console.log(error);
+      });
   }
 
   useEffect(() => {
@@ -115,7 +130,6 @@ const configTime = () => {
       newData[2].count = countInsta ? Number.parseInt(countInsta) : 30;
       newData[3].count = countTwt ? Number.parseInt(countTwt) : 30;
       newData[4].count = countTt ? Number.parseInt(countTt) : 30;
-      console.log(newData);
       
 
       setData(newData);

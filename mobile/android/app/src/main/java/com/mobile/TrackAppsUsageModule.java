@@ -59,6 +59,7 @@ public class TrackAppsUsageModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void StopDailyWorker() {
         WorkManager.getInstance(mContext).cancelUniqueWork(WORKER_NAME);
+        Log.d(TAG, "Stopping worker...");
     }
 
     @ReactMethod
