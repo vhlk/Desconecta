@@ -4,6 +4,7 @@ import { NavigationContainer } from "@react-navigation/native"
 import { createStackNavigator } from "@react-navigation/stack"
 import configTime from "./pages/configTime"
 import TrackAppsUsage from "./services/AppsTracker/TrackAppsUsage"
+import Statistics from "./pages/Statistics"
 
 const AppStack = createStackNavigator()
 
@@ -13,6 +14,7 @@ const Routes = () => {
             <AppStack.Navigator headerMode="none">
                 {/* <AppStack.Screen name="Home" component={Home} /> */}
                 <AppStack.Screen name="ConfigTime" component={TrackAppsUsage} />
+                {/* <AppStack.Screen name="Statistics" component={Statistics} /> */}
             </AppStack.Navigator>
         </NavigationContainer>
     )
