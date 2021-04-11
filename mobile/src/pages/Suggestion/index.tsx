@@ -1,5 +1,5 @@
 import React from "react"
-import { View, Image, StyleSheet, Text, TouchableOpacity, ImageBackground } from "react-native"
+import { View, Image, StyleSheet, Text, TouchableOpacity, ImageBackground, Linking, Alert } from "react-native"
 import { RectButton } from "react-native-gesture-handler"
 import { Header, Icon } from "react-native-elements"
 import { Button } from "react-native-elements/dist/buttons/Button"
@@ -11,12 +11,24 @@ const categ = "Leitura"
 const suggestionTitle = "George Orwell: 1984"
 const suggestionDesc = "Romance distópico, publicado em 1949, ambientado em um mundo de guerra perpétua, vigilância governamental onipresente e manipulação pública e histórica"
 const suggestionDura = "45 minutos"
+const suggestionLink = "https://www.amazon.com.br/1984-George-Orwell/dp/8535914846/ref=asc_df_8535914846/?tag=googleshopp00-20&linkCode=df0&hvadid=379715911398&hvpos=&hvnetw=g&hvrand=15561603612826780358&hvpone=&hvptwo=&hvqmt=&hvdev=c&hvdvcmdl=&hvlocint=&hvlocphy=1001625&hvtargid=pla-325935372846&psc=1"
+
+async function goToActivity() {
+    const supported = await Linking.canOpenURL(suggestionLink);
+    
+    if (supported) {
+      await Linking.openURL(suggestionLink);
+    } else {
+      Alert.alert(`Don't know how to open this URL: ${suggestionLink}`);
+    }
+}
 
 const Suggestion = () => {
     const navigation = useNavigation()
     function handleNav() {
         navigation.navigate("Home")
     }
+
     return (
         <>
             <ImageBackground source={imgBg} style={styles.imgbg}>
@@ -60,7 +72,7 @@ const Suggestion = () => {
                         </View>
                     </View>
                     <View style={styles.buttons}>
-                        <RectButton style={styles.startButton}>
+                        <RectButton style={styles.startButton} onPress={goToActivity}>
                             <Text style={{ color: '#FFF', fontWeight: "700", fontSize: 17}}>
                                 COMEÇAR A ATIVIDADE
                             </Text>
