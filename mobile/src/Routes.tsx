@@ -15,6 +15,8 @@ const Routes = () => {
             <AppStack.Navigator headerMode="none" initialRouteName="Home">
                 <AppStack.Screen name="Home" component={Home} />
                 <AppStack.Screen name="Suggestion" component={Suggestion} />
+                <AppStack.Screen name="configTime" component={configTime} />
+                <AppStack.Screen name="Statistics" component={Statistics} />
             </AppStack.Navigator>
         </NavigationContainer>
     )

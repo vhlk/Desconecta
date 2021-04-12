@@ -58,8 +58,8 @@ const Home = () => {
                 }
                 rightComponent={
                     <View style={{ flexDirection: 'row' }}>
-                        <Icon name='star-rate' size={30} />
-                        <Icon name='perm-identity' size={30} />
+                        <Icon name='insights' size={30} onPress={() => navigation.navigate("Statistics")}/>
+                        <Icon name='perm-identity' size={30} onPress={() => navigation.navigate("configTime")}/>
                     </View>
                 }
                 containerStyle={{ marginTop: 25 }}
