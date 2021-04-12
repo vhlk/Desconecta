@@ -1,5 +1,5 @@
 import React from "react"
-import { View, Image, StyleSheet, Text, TouchableOpacity, ImageBackground, Linking, Alert } from "react-native"
+import { View, Image, StyleSheet, Text, TouchableOpacity, ImageBackground, Linking, Alert, ScrollView } from "react-native"
 import { RectButton } from "react-native-gesture-handler"
 import { Header, Icon } from "react-native-elements"
 import { Button } from "react-native-elements/dist/buttons/Button"
@@ -69,9 +69,11 @@ const Suggestion = () => {
                             </Text>
                             {/* <Icon name='star-border' size={30} color='#FFF' style={styles.buttonIcon} /> */}
                         </View>
-                        <Text style={styles.description}>
-                            {suggestionDesc}
-                        </Text>
+                        <ScrollView style={styles.descContainer}>
+                            <Text style={styles.description}>
+                                {suggestionDesc}
+                            </Text>
+                        </ScrollView>
                         <View style={styles.duration}>
                             <Icon name='access-time' size={20} color='#FFF' style={styles.buttonIcon} />
                             <Text style={{ color: '#FFF', padding: 5}}>
@@ -157,6 +159,9 @@ const styles = StyleSheet.create({
         paddingVertical: 10
     },
 
+    descContainer: {
+        maxHeight: '50%'
+    },
     duration: {
         flexDirection: "row",
         justifyContent: "flex-start",
