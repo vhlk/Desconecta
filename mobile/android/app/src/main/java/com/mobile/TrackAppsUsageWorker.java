@@ -16,9 +16,12 @@ import androidx.work.WorkManager;
 import androidx.work.Worker;
 import androidx.work.WorkerParameters;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
@@ -27,10 +30,10 @@ import java.util.concurrent.TimeUnit;
 public class TrackAppsUsageWorker extends Worker {
     private static final String TAG = "TrackAppsUsageWorker";
     private static final String SHARED_PREFERENCES = "SharedPreferences";
-    private static final String PREFS_PKGS_NAMES = "PrefsPkgNames";
     private static final String PREFS_LAST_APP_FOREGROUND = "LastAppOnForeground";
     private static final String PREFS_TIME_FOREGROUND = "TimeOfLastTimeOnForeground";
     private static final String PREFS_TIME_LAST_NOTIFICATION = "TimeOfLastNotification";
+    private static final String PREFS_TIMES_PKGS = "PrefsPkgTimes";
     private static final String WORKER_NAME = "UniqueWorker";
     private static final int delayForNextWorker = 10; // segundos
     private Context mContext;
@@ -78,11 +81,22 @@ public class TrackAppsUsageWorker extends Worker {
 
         SharedPreferences sharedPreferences = mContext.getSharedPreferences(SHARED_PREFERENCES, Context.MODE_PRIVATE);
 
-        // pegar pacotes que iremos analizar
-        Set<String> nameOfPkgs = sharedPreferences.getStringSet(PREFS_PKGS_NAMES, new HashSet<>());
+        // pegar tempo dos apps que iremos analizar
+        Set<String> pkgsTimes = sharedPreferences.getStringSet(PREFS_TIMES_PKGS, new LinkedHashSet<>());
+
+        List<String> nameOfPkgs = new ArrayList<>();
+        List<String> appsTimes = new ArrayList<>();
+
+        for (String pkgTime : pkgsTimes) {
+            String[] split = pkgTime.split("&");
+            nameOfPkgs.add(split[1]);
+            appsTimes.add(split[0]);
+        }
+
+        Log.d(TAG, "setting pkgs: "+nameOfPkgs);
+        Log.d(TAG, "setting times: "+appsTimes);
 
         //pegar tempo dos apps
-//        WritableMap result = Arguments.createMap();
         Map<String, Double> result = new HashMap<>();
         for (Map.Entry<String, UsageStats> mapUS : stats.entrySet()) {
             if (nameOfPkgs.contains(mapUS.getKey())) {
@@ -133,22 +147,35 @@ public class TrackAppsUsageWorker extends Worker {
             Log.d(TAG, "time for: " + res.getKey() + " = " + time);
         }
 
+        String nameOfForegroundApp = appForeground != null ? Utils.getAppName(appForeground) : "";
+        String chosenTimeForegroundApp = "";
+
+        if (appForeground != null) {
+            int index = 0;
+            for (String pkg : nameOfPkgs) {
+                if (appForeground.equals(pkg))
+                    break;
+                index++;
+            }
+
+            for (String time : appsTimes) {
+                if (index == 0) {
+                    chosenTimeForegroundApp = time;
+                    break;
+                }
+                index--;
+            }
+        }
+
         // send notification every 5 min ; TODO: get time from user
         long timeLastNotification = sharedPreferences.getLong(PREFS_TIME_LAST_NOTIFICATION, -1);
-//        if (timeLastNotification == -1 ||
-//                (!Objects.equals(lastAppForeground, appForeground) && nameOfPkgs.contains(appForeground)) || // enter the app
-//                ((System.currentTimeMillis() - timeLastNotification)/(1000*60.0) >= 5)) {
-//            NotificationHelper notificationHelper = new NotificationHelper(mContext);
-//            notificationHelper.sendNotification(result);
-//            prefsEditor.putLong(PREFS_TIME_LAST_NOTIFICATION, System.currentTimeMillis());
-//        }
-        if (appForeground != null &&
+        if (appForeground != null && (result.get(appForeground) > Integer.parseInt(chosenTimeForegroundApp)) &&
                 (nameOfPkgs.contains(appForeground) && (timeLastNotification == -1 || (System.currentTimeMillis() - timeLastNotification)/(1000*60.0) >= 5))
                 || (!Objects.equals(lastAppForeground, appForeground) && nameOfPkgs.contains(appForeground))) // enter app
         {
             Log.d(TAG, "sending notification...");
             NotificationHelper notificationHelper = new NotificationHelper(mContext);
-            notificationHelper.sendNotification(Utils.getAppName(appForeground));
+            notificationHelper.sendNotification(nameOfForegroundApp, (int) Math.round(result.get(appForeground)));
             prefsEditor.putLong(PREFS_TIME_LAST_NOTIFICATION, System.currentTimeMillis());
         }
         prefsEditor.apply();

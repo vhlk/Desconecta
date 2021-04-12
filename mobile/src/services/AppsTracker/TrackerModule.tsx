@@ -3,10 +3,11 @@ import { NativeModules } from 'react-native';
 const { TrackAppsUsageModule } = NativeModules;
 
 interface TrackerInterface {
-    GetDaylyTimeForApps(pkgsNames: String[], callback: Function): Object;
-    StartDaylyTimeWorkerForApps(pkgsNames: String[], callback: Function): void;
-    checkForPermission(): void;
-    askForPermission(): void;
+    GetDailyTimeForApps(pkgsNames: String[], callback: Function): Object;
+    StartDailyTimeWorkerForApps(pkgsNames: String[], pkgsTimes: String[], callback: Function): void;
+    CheckForPermission(): void;
+    AskForPermission(): void;
+    StopDailyWorker(): void;
 }
 
 export default TrackAppsUsageModule as TrackerInterface;
