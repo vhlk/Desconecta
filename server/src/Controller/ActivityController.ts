@@ -2,8 +2,12 @@ import Express from "express"
 import controller from '../Repository/ActivityRepository'
 
 const activitiesRoutes = Express.Router()
-//Falta o Activity por Category_ID
 
-activitiesRoutes.get("/activities", controller.getAllActivities);
+activitiesRoutes.get("/activity", controller.getAllActivities);
+
+activitiesRoutes.get("/activity/:activityId", controller.getActivityByID)
+
+activitiesRoutes.get("/activity/category/:categoryId", controller.getActivityByCategoryID)
+
 
 export = activitiesRoutes;
