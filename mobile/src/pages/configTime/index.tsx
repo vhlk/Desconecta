@@ -17,6 +17,7 @@ import {
 import Slider from '@react-native-community/slider';
 import AsyncStorage from "@react-native-async-storage/async-storage"
 import TrackAppsUsage from "../../services/AppsTracker/TrackerModule"
+import { useNavigation } from "@react-navigation/native"
 
 
 const configTime = () => {
@@ -144,7 +145,7 @@ const configTime = () => {
     {id:4,  name: "Twitter",   image:"https://imagepng.org/wp-content/uploads/2018/08/twitter-icone-5.png",    count:23} ,
     {id:5,  name: "TikTok",   image:"https://logodownload.org/wp-content/uploads/2019/08/tiktok-logo-0-1.png",        count:4} ,
   ]);
-
+  const navigation = useNavigation()
     return (
         <>
             <SafeAreaView style={styles.container}>
@@ -155,7 +156,7 @@ const configTime = () => {
               <TouchableOpacity
                 style={styles.returnButton}
               >
-                <Icon name='navigate-before' size={25} style={styles.buttonIcon} />
+                <Icon name='navigate-before' size={25} style={styles.buttonIcon} onPress={() => navigation.navigate("Home")} />
                 </TouchableOpacity>
               </>
             }

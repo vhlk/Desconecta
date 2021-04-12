@@ -9,7 +9,8 @@ import {
     StackedBarChart
   } from "react-native-chart-kit";
 import {View,Text,Dimensions, TouchableOpacity, StyleSheet} from "react-native";
-import TrackerModule from "../../services/AppsTracker/TrackerModule"
+import TrackerModule from "../../services/AppsTracker/TrackerModule";
+import { useNavigation } from "@react-navigation/native";
 
 const Statistics = () => {
       useEffect(() => {
@@ -42,6 +43,7 @@ const Statistics = () => {
         40,
         60,
     ]);
+    const navigation = useNavigation()
     return (
         <View style={styles.container}>
             <Header
@@ -51,7 +53,7 @@ const Statistics = () => {
               <TouchableOpacity
                 style={styles.returnButton}
               >
-                <Icon name='navigate-before' size={25} style={styles.buttonIcon} />
+                <Icon name='navigate-before' size={25} style={styles.buttonIcon} onPress={() => navigation.navigate("Home")}/>
                 </TouchableOpacity>
               </>
             }
