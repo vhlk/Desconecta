@@ -24,4 +24,4 @@ jspm_packages/
 *.sqlite
 
 # Enviroment
-*.env
+# *.env
