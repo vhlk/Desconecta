@@ -4,7 +4,7 @@ import TrackerModule from "./TrackerModule";
 
 const NewModuleButton = () => {
   const onPress = () => {
-    TrackerModule.StartDaylyTimeWorkerForApps(["com.example.myapplication", "com.mobile", "com.android.chrome"],
+    TrackerModule.StartDailyTimeWorkerForApps(["Chrome", "WhatsApp", "Facebook", "Instagram", "Twitter"], ["1", "2", "3", "4", "5"],
     (error: String) => {
       if (error) {
         console.log(error)
@@ -12,13 +12,25 @@ const NewModuleButton = () => {
     });
   };
 
+  const a = () => {
+    TrackerModule.GetDailyTimeForApps(["Chrome", "WhatsApp", "Facebook", "Instagram", "Twitter"], 
+    (error: String, value: Object) => {
+      if (error) {
+        console.log(error)
+      }
+      else {
+        console.log(value)
+      }
+    })
+  }
+
   return (
     <>
         <View style={{marginTop:50}} />
         <Button
         title="Click to invoke your native module!"
         color="#841584"
-        onPress={onPress}
+        onPress={a}
         />
     </>
   );
