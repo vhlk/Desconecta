@@ -23,7 +23,7 @@ const Card = ({ card }: { card: any }) => (
         <View style={styles.cardDetails}>
             <Text style={[styles.category]}>{card.category}</Text>
             <Text style={[styles.title]}>{card.name}</Text>
-            <Text style={[styles.description]}>{card.description}</Text>
+            {/*<Text style={[styles.description]}>{card.description}</Text>*/}
 
             <View style={styles.timeText}>
                 <Icon name='access-time' size={20} color={colors.white}/>
@@ -73,7 +73,7 @@ const Home = () => {
                         cardIndex={index}
                         renderCard={card => <Card card={card} />}
                         onSwiped={onSwiped}
-                        onTapCard={() => navigation.navigate("Suggestion")}
+                        onTapCard={() => navigation.navigate("Suggestion", {itemId: index})}
                         stackSize={2}
                         stackScale={7}
                         stackSeparation={10}
