@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useEffect, useState } from "react"
 import { View, Image, StyleSheet, Text, TouchableOpacity, ImageBackground, Linking, Alert, ScrollView } from "react-native"
 import { RectButton } from "react-native-gesture-handler"
 import { Header, Icon } from "react-native-elements"
@@ -14,12 +14,12 @@ import data from "../Home/data2";
 // const suggestionDura = "45 minutos"
 // const suggestionLink = "https://www.amazon.com.br/1984-George-Orwell/dp/8535914846/ref=asc_df_8535914846/?tag=googleshopp00-20&linkCode=df0&hvadid=379715911398&hvpos=&hvnetw=g&hvrand=15561603612826780358&hvpone=&hvptwo=&hvqmt=&hvdev=c&hvdvcmdl=&hvlocint=&hvlocphy=1001625&hvtargid=pla-325935372846&psc=1"
 
-const imgBg = require("../../assets/SilvaCantaMarisa.jpg")
-const categ = data[1].category
-const suggestionTitle = data[1].name
-const suggestionDesc = data[1].description
-const suggestionDura = data[1].time
-const suggestionLink = "https://www.youtube.com/watch?v=w1AM9ciUyws&list=PLhBSDWTgistpHkC3tAuet7eShNI24Y7JQ"
+var imgBg = require("../../assets/SilvaCantaMarisa.jpg")
+var categ = data[1].category
+var suggestionTitle = data[1].name
+var suggestionDesc = data[1].description
+var suggestionDura = data[1].time
+var suggestionLink = "https://www.youtube.com/watch?v=w1AM9ciUyws&list=PLhBSDWTgistpHkC3tAuet7eShNI24Y7JQ"
 
 async function goToActivity() {
     const supported = await Linking.canOpenURL(suggestionLink);
@@ -31,8 +31,25 @@ async function goToActivity() {
     }
 }
 
+function setActivity(id:number){
+    console.log(data[id].name)
+    imgBg = {uri: data[id].image}
+    categ = data[id].category
+    suggestionTitle = data[id].name
+    suggestionDesc = data[id].description
+    suggestionDura = data[id].time
+    suggestionLink = data[id].link
+}
+
+
+
+
 const Suggestion = () => {
     const navigation = useNavigation()
+    const route = useRoute()
+    var routeParam = route.params 
+    setActivity(routeParam.itemId);
+
     function handleNav() {
         navigation.navigate("Home")
     }
