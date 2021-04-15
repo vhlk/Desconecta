@@ -31,6 +31,6 @@ app.use(GoalsRoutes);
 app.use(InterestsRoutes);
 app.use(UserActivityRoutes);
 app.use(UserGoalRoutes); 
-app.listen(port, () => {
-  console.log(`Olha a página http://localhost:${port}`)
+app.listen(process.env.PORT || port, () => {
+  console.log(`Olha a página http://localhost:${port} ou ${process.env.PORT}`)
 })
