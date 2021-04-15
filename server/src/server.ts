@@ -12,7 +12,7 @@ import UserGoalRoutes from "./Controller/UserGoalController";
 import Config from "./config/config"
 
 const app = Express()
-const port = 3000
+const port = Config.port
 
 app.use(function(req, res, next) {
     res.header('Access-Control-Allow-Origin', '*');
