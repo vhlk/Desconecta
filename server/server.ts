@@ -14,4 +14,4 @@ app.use(function(req, res, next) {
 app.use(Express.json())
 app.use(cors())
 app.use(Routes)
-app.listen(port)
+app.listen(process.env.PORT || port)
