@@ -23,7 +23,7 @@ const Item = ({ item }) => (
 const Favorites = () => {
     const navigation = useNavigation()
     const renderItem = ({ item }) => (
-        <Item item={item} />
+        <Item item={item}  />
     );
     return (
         <>
@@ -36,8 +36,9 @@ const Favorites = () => {
                 }
                 rightComponent={
                     <View style={{ flexDirection: 'row' }}>
-                        <Icon name='insights' size={30} onPress={() => navigation.navigate("Statistics")} />
-                        <Icon name='perm-identity' size={30} onPress={() => navigation.navigate("configTime")} />
+                        <Icon name='home' size={30} style={styles.headerIcon} onPress={() => navigation.navigate("Home")} />
+                        <Icon name='star' size={30} color="rgba(1,1,1,0.5)" style={styles.headerIcon} />
+                        <Icon name='person' size={30} style={styles.headerIcon}  onPress={() => navigation.navigate("configTime")} />
                     </View>
                 }
                 containerStyle={{ marginTop: 25 }}
@@ -46,17 +47,18 @@ const Favorites = () => {
             <View style={styles.favoriteList}>
                 <FlatList
                     data={data}
-                    keyExtractor={(item) => item.id.toString()}
+                    keyExtractor={(item) => item.id}
                     renderItem={renderItem}
                 />
             </View>
-
+    
         </>
     );
-}
+    }
 
 const styles = StyleSheet.create({
-    favoriteList: {},
+    favoriteList: {marginBottom:110
+    },
     card: {
         elevation: 20,
         marginLeft: 10,
@@ -66,7 +68,6 @@ const styles = StyleSheet.create({
         flexDirection: 'row'
     },
     imgbg: {
-        resizeMode: "stretch",
         width: "100%",
         height: "100%",
 
@@ -85,7 +86,10 @@ const styles = StyleSheet.create({
         fontSize: 20,
         fontWeight: 'bold',
         fontFamily: ''
+    },
+    headerIcon: {
+        paddingHorizontal: 5
     }
-});
-
-export default Favorites
+    });
+    
+    export default Favorites
