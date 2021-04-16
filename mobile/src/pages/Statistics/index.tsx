@@ -23,12 +23,11 @@ const Statistics = () => {
               else {
                 console.log(value);
                 var newData = [...data];
-    
 
-                newData[0] = Math.round(value["Google Chrome"]);
-                newData[1] = Math.round(value["Instagram"]);
-                newData[2] = Math.round(value["Twitter"]);
-                newData[3] = Math.round(value["WhatsApp"]);                
+                newData[0] = Math.round(value["Google Chrome"] ? value["Google Chrome"] : 0);
+                newData[1] = Math.round(value["Instagram"] ? value["Instagram"] : 0);
+                newData[2] = Math.round(value["Twitter"] ? value["Twitter"] : 0);
+                newData[3] = Math.round(value["WhatsApp"] ? value["WhatsApp"] :0);                 
                 console.log(newData);
                 setData(newData);
               }
@@ -69,7 +68,7 @@ const Statistics = () => {
             backgroundColor='rgba(0, 0, 0, 0)'
         />
         <View style={styles.containerChart}>
-        <LineChart
+        <BarChart
             data={{
             labels: ["Chrome", "Instagram", "Twitter" , "WhatsApp"],
             datasets: [
@@ -78,17 +77,19 @@ const Statistics = () => {
                 }
             ]
             }}
-            width={Dimensions.get("window").width} // from react-native
-            height={550}
+            width={(Dimensions.get("window").width)*0.9} // from react-native
+            height={250}
             yAxisInterval= {1}
+            //withHorizontalLabels={false}
+            showValuesOnTopOfBars={true}
             yAxisSuffix=" Min"
-            horizontalLabelRotation= {-43}
+            withInnerLines={false}
             chartConfig={{
             backgroundColor: "#202225",
             backgroundGradientFrom: "#202225",
             backgroundGradientTo: "black",
-            decimalPlaces: 2, // optional, defaults to 2dp
-            color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+            decimalPlaces: 0, // optional, defaults to 2dp
+            color: (opacity = 1) => `rgba(255, 255, 255, 1)`,
             labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
             style: {
                 borderRadius: 16
@@ -121,6 +122,7 @@ const styles = StyleSheet.create({
     containerChart:{
         flex:1,
         marginTop:50,
+        alignItems: 'center',
         backgroundColor:"white",
         height: '100%'
       },

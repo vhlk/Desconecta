@@ -24,4 +24,3 @@
     "/users/:email/:password"
     "/usergoal/:userId"
     "/usergoal/:userId/:goalId"
-    "/usergoal/:userId/:goalId"
