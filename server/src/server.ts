@@ -30,6 +30,6 @@ app.use(GoalsRoutes);
 app.use(InterestsRoutes);
 app.use(UserActivityRoutes);
 app.use(UserGoalRoutes); 
-app.listen(process.env.PORT || port, () => {
-  console.log(`Olha a página http://localhost:${port} ou ${process.env.PORT}`)
+app.listen(process.env.PORT || Config.port, () => {
+  console.log(`Olha a página http://localhost:${Config.port} ou https://desconecta.herokuapp.com/`)
 })
