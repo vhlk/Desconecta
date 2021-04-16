@@ -64,7 +64,47 @@ class MainApi extends HttpClient {
     /***** Interest Requests *****/
     public GetInterestForUser = (userId: string) =>
         this.instance.get(`${this._interestRoute}/${userId}`);
+
+    public InsertInterestForUser = (userId: string, categoryId: string) =>
+        this.instance.put(`${this._interestRoute}/${userId}/${categoryId}`);
+    
+    public DeleteInterestForUser = (userId: string, categoryId: string) =>
+        this.instance.delete(`${this._interestRoute}/${userId}/${categoryId}`);   
     /****************************/
+
+    /***** Favorite Requests *****/
+    public GetAllFavoritesForUser = (userId: string) =>
+        this.instance.get(`${this._favoriteRoute}/${userId}`);
+    
+    public InsertFavoriteForUser = (userId: string, activityId: string) =>
+        this.instance.put(`${this._favoriteRoute}/${userId}/${activityId}`);
+    
+    public DeleteFavoriteForUser = (userId: string, activityId: string) =>
+        this.instance.delete(`${this._favoriteRoute}/${userId}/${activityId}`);
+    /*****************************/
+
+
+    /***** User Activity Requests *****/
+    public GetUserActivity = (userId: string) =>
+        this.instance.get(`${this._userActivityRoute}/${userId}/`);
+    
+    public InsertUserActivity = (userId: string, activityId: string) =>
+        this.instance.put(`${this._userActivityRoute}/${userId}/${activityId}`);
+
+    public DeleteUserActivity = (userId: string, activityId: string) =>
+        this.instance.delete(`${this._userActivityRoute}/${userId}/${activityId}`);
+    /*********************************/
+
+    /***** User Goal Requests *****/
+    public GetUserGoal = (userId: string) =>
+        this.instance.get(`${this._userGoalRoute}/${userId}/`);
+    
+    public InsertUserGoal = (userId: string, goalId: string) =>
+        this.instance.put(`${this._userGoalRoute}/${userId}/${goalId}`);
+    
+    public DeleteUserGoal = (userId: string, goalId: string) =>
+        this.instance.delete(`${this._userGoalRoute}/${userId}/${goalId}`);
+    /*****************************/
 }
 
 const API = new MainApi();
