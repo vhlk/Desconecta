@@ -6,8 +6,8 @@ const InterestsRoutes = Express.Router()
 
 InterestsRoutes.get("/interests/:userId", controller.getInterests)
 
-InterestsRoutes.put("/interests/:userId/:interestsId", controller.insertInterests)
+InterestsRoutes.put("/interests/:userId/:categoryId", controller.insertInterests)
 
-InterestsRoutes.delete("/interests/:userId/:interestsId", controller.deleteInterests)
+InterestsRoutes.delete("/interests/:userId/:categoryId", controller.deleteInterests)
 
 export = InterestsRoutes;
