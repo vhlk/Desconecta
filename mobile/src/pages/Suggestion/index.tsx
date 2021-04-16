@@ -7,12 +7,9 @@ import { BackgroundImage } from "react-native-elements/dist/config"
 import { useNavigation , useRoute} from "@react-navigation/native"
 import data from "../Home/data2";
 
-// const imgBg = require("../../assets/1984.jpg")
-// const categ = "Leitura"
-// const suggestionTitle = "George Orwell: 1984"
-// const suggestionDesc = "Romance distópico, publicado em 1949, ambientado em um mundo de guerra perpétua, vigilância governamental onipresente e manipulação pública e histórica"
-// const suggestionDura = "45 minutos"
-// const suggestionLink = "https://www.amazon.com.br/1984-George-Orwell/dp/8535914846/ref=asc_df_8535914846/?tag=googleshopp00-20&linkCode=df0&hvadid=379715911398&hvpos=&hvnetw=g&hvrand=15561603612826780358&hvpone=&hvptwo=&hvqmt=&hvdev=c&hvdvcmdl=&hvlocint=&hvlocphy=1001625&hvtargid=pla-325935372846&psc=1"
+interface atvdId {
+    itemId: number
+}
 
 var imgBg = require("../../assets/SilvaCantaMarisa.jpg")
 var categ = data[1].category
@@ -41,13 +38,10 @@ function setActivity(id:number){
     suggestionLink = data[id].link
 }
 
-
-
-
 const Suggestion = () => {
     const navigation = useNavigation()
     const route = useRoute()
-    var routeParam = route.params 
+    var routeParam = route.params as atvdId
     setActivity(routeParam.itemId);
 
     function handleNav() {
