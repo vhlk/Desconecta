@@ -23,12 +23,11 @@ const Statistics = () => {
               else {
                 console.log(value);
                 var newData = [...data];
-    
 
-                newData[0] = Math.round(value["Google Chrome"]);
-                newData[1] = Math.round(value["Instagram"]);
-                newData[2] = Math.round(value["Twitter"]);
-                newData[3] = Math.round(value["WhatsApp"]);                
+                newData[0] = Math.round(value["Google Chrome"] ? value["Google Chrome"] : 0);
+                newData[1] = Math.round(value["Instagram"] ? value["Instagram"] : 0);
+                newData[2] = Math.round(value["Twitter"] ? value["Twitter"] : 0);
+                newData[3] = Math.round(value["WhatsApp"] ? value["WhatsApp"] :0);                 
                 console.log(newData);
                 setData(newData);
               }
