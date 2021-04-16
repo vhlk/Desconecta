@@ -3,12 +3,10 @@ import controller from '../Repository/FavoritesRepository'
 
 const favoritesRoutes = Express.Router()
 
-favoritesRoutes.get("/favorites", controller.getAllFavorites);
+favoritesRoutes.get("/favorites/:userId", controller.getUserFavorite)
 
-favoritesRoutes.get("/favorites/:userId/:favoriteId", controller.getFavorite)
+favoritesRoutes.put("/favorites/:userId/:activityId", controller.insertFavorite)
 
-favoritesRoutes.put("/favorites/:userId/:favoriteId", controller.insertFavorite)
-
-favoritesRoutes.delete("/favorites/:userId/:favoriteId", controller.deleteFavorite)
+favoritesRoutes.delete("/favorites/:userId/:activityId", controller.deleteFavorite)
 
 export = favoritesRoutes;
