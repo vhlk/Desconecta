@@ -8,11 +8,38 @@ import {
     ContributionGraph,
     StackedBarChart
   } from "react-native-chart-kit";
-import {View,Text,Dimensions, TouchableOpacity, StyleSheet} from "react-native";
+import {View,Text,Dimensions, TouchableOpacity, StyleSheet, FlatList} from "react-native";
 import TrackerModule from "../../services/AppsTracker/TrackerModule";
 import { useNavigation } from "@react-navigation/native";
+import { GetAllCategories } from "../../services/ApiModule";
+import data from "./data";
 
+const DATA = [
+  {id:1,Name:"categoria teste"},
+  {id:2,Name:"Filme"},
+  {id:3,Name:"Dança"},
+  {id:4,Name:"Teatro"},
+  {id:5,Name:"Arte"},
+  {id:6,Name:"Série"}
+];
+const Item = ({ Name }) => (
+  <View style={styles.item}>
+    <Text style={styles.title}>{Name}</Text>
+  </View>
+);
 const Statistics = () => {
+  interface Categories {
+      ID: number,
+      Name: string,
+  }
+  const [variavel, setVariavel] = useState<Categories[]>([])
+  useEffect(() => {
+    GetAllCategories().then(res => setVariavel(res)).catch(function(error) {
+      console.log('Erro na requisição: ' + error.message);
+       // ADD THIS THROW error
+        throw error;
+      });
+  })
       useEffect(() => {
         async function fun() {
             TrackerModule.GetDailyTimeForApps(["Chrome", "WhatsApp", "Facebook", "Instagram", "Twitter"], 
@@ -42,7 +69,12 @@ const Statistics = () => {
         40,
         60,
     ]);
-    const navigation = useNavigation()
+    const navigation = useNavigation();
+    
+    
+    const renderItem = ({ item }) => (
+      <Item Name={item.Name} />
+    );
     return (
         <View style={styles.container}>
             <Header
@@ -58,16 +90,20 @@ const Statistics = () => {
             }
             centerComponent={
               <>
-              <Text style={styles.titleText}>Monitore seu tempo nas Redes Sociais</Text>
+                  <Text style={{ color: '#000', fontSize: 25 }}>Olá, Fulaninho!</Text>
               </>
-            }
-            containerStyle={{
-              marginTop: 5,
-              borderBottomColor: 'rgba(0, 0, 0, 0)'
-            }}
-            backgroundColor='rgba(0, 0, 0, 0)'
+          }
+          rightComponent={
+              <View style={{ flexDirection: 'row' }}>
+                  <Icon name='insights' size={30} onPress={() => navigation.navigate("Statistics")}/>
+                  <Icon name='perm-identity' size={30} onPress={() => navigation.navigate("configTime")}/>
+              </View>
+          }
+          containerStyle={{ marginTop: 10 }}
+          backgroundColor='#f0f0f0'
         />
         <View style={styles.containerChart}>
+        <Text style={{ color: '#000', fontSize: 25 }}>Estatística</Text>
         <BarChart
             data={{
             labels: ["Chrome", "Instagram", "Twitter" , "WhatsApp"],
@@ -107,6 +143,11 @@ const Statistics = () => {
             }}
         />
         </View>
+        <FlatList
+          data={DATA}
+          renderItem={renderItem}
+          keyExtractor={item => item.id}
+        />
         </View>
     );
 }
@@ -114,17 +155,31 @@ const Statistics = () => {
 const styles = StyleSheet.create({
     container:{
         flex:1,
-        marginTop:5,
+        marginTop:2,
         backgroundColor:"white",
         height: '100%'
       },
 
     containerChart:{
         flex:1,
-        marginTop:50,
+        marginTop:15,
         alignItems: 'center',
         backgroundColor:"white",
         height: '100%'
+      },
+      contentList:{
+        flex:1,
+        height: '100%'
+      },
+      card:{
+        elevation: 20,
+        marginLeft: 20,
+        marginRight: 20,
+        marginTop:20,
+        backgroundColor:"#202225",
+        padding: 10,
+        flexDirection:'row',
+        borderRadius:30,
       },
       
       titleText: {
@@ -136,6 +191,15 @@ const styles = StyleSheet.create({
         backgroundColor: "#DDDDDD",
         borderRadius: 50,
         padding: 6
+      },
+      item: {
+        backgroundColor: '#f9c2ff',
+        padding: 20,
+        marginVertical: 8,
+        marginHorizontal: 16,
+      },
+      title: {
+        fontSize: 32,
       },
     
       buttonIcon: {
