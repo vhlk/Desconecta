@@ -11,27 +11,29 @@ import {
 import { View, Text, Dimensions, TouchableOpacity, StyleSheet, FlatList } from "react-native";
 import TrackerModule from "../../services/AppsTracker/TrackerModule";
 import { useNavigation } from "@react-navigation/native";
-// import { GetAllCategories } from "../../services/ApiModule";
-import data from "./data";
+import  MainApi  from "../../services/ApiModule"
 
-const DATA = [
-    { id: 2, Name: "Filme" },
-    { id: 3, Name: "Dança" },
-    { id: 4, Name: "Teatro" },
-    { id: 5, Name: "Arte" },
-    { id: 6, Name: "Série" }
-];
+interface Categories {
+    ID: number,
+    Name: string,
+}
+
 const Item = ({ Name }) => (
     <View style={styles.item}>
         <Text style={styles.title}>{Name}</Text>
     </View>
 );
 const Statistics = () => {
-    interface Categories {
-        ID: number,
-        Name: string,
-    }
-    const [variavel, setVariavel] = useState<Categories[]>([])
+    const [variavel, setVariavel] = useState<Categories[]>([]);
+    useEffect(() => {
+        getCategory();
+      }, []);
+    const getCategory = async () => {
+        const response = await MainApi.GetAllCategories();
+        console.log(response.data);
+        setVariavel(response.data);
+      }
+
     useEffect(() => {
         // GetAllCategories().then(res => setVariavel(res)).catch(function(error) {
         //   console.log('Erro na requisição: ' + error.message);
@@ -147,10 +149,10 @@ const Statistics = () => {
                     </View>
                 
                     <FlatList
-                        data={DATA}
+                        data={variavel}
                         renderItem={renderItem}
                         horizontal={true}
-                        keyExtractor={item => item.id}
+                        keyExtractor={item => item.ID}
                     />
                 </View>
             </View>
