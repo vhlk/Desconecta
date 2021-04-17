@@ -29,7 +29,7 @@ const getInterests = (req: Request, res: Response, next: NextFunction) => {
 };
 
 const insertInterests = (req: Request, res: Response, next: NextFunction) => {
-    const query = `Insert into Interests Values (User_ID, Category_ID) Values (${req.params.userId}, ${req.params.categoryId})`;
+    const query = `Insert into Interests (User_ID, Category_ID) Values (${req.params.userId}, ${req.params.categoryId})`;
 
     Connect()
     .then(connection => {
