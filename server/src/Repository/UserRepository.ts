@@ -56,7 +56,7 @@ const insertUser = (req: Request, res: Response, next: NextFunction) => {
 };
 
 const userAuth = (req: Request, res: Response, next: NextFunction) => {
-    const query = `SELECT IF(User.ID IS NULL, false, true) FROM User WHERE User.Password = ${req.params.password} AND User.Email = ${req.params.email} LIMIT 1`;
+    const query = `SELECT User.ID FROM User WHERE User.Password = ${req.params.password} AND User.Email = ${req.params.email} LIMIT 1`;
 
     Connect()
     .then(connection => {
