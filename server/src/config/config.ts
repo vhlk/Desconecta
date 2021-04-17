@@ -7,6 +7,7 @@ const MYSQL_HOST = process.env.MYSQL_HOST
 const MYSQL_DATABASE = process.env.MYSQL_DATABASE
 const MYSQL_USER = process.env.MYSQL_USER
 const MYSQL_PWD = process.env.MYSQL_PWD
+const PORT = 3000
 
 const MYSQL = {
     port: MYSQL_PORT,
@@ -18,6 +19,7 @@ const MYSQL = {
 
 const config = {
     mysql: MYSQL,
+    port: PORT
 }
 
 export default config

@@ -1,3 +1,13 @@
+# Como rodar o server (temporariamente):
+Vai na pasta do server
+```
+cd server/
+```
+dá um npm install, óbvio e depois:
+```
+npm run test
+```
+
 # Como rodar (para android):
 ```
 npx react-native run-android

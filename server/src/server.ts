@@ -12,7 +12,6 @@ import UserGoalRoutes from "./Controller/UserGoalController";
 import Config from "./config/config"
 
 const app = Express()
-const port = 3000
 
 app.use(function(req, res, next) {
     res.header('Access-Control-Allow-Origin', '*');
@@ -31,6 +30,6 @@ app.use(GoalsRoutes);
 app.use(InterestsRoutes);
 app.use(UserActivityRoutes);
 app.use(UserGoalRoutes); 
-app.listen(port, () => {
-  console.log(`Olha a página http://localhost:${port}`)
+app.listen(Config.port, () => {
+  console.log(`Olha a página http://localhost:${Config.port}`)
 })
