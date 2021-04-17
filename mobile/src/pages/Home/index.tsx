@@ -58,8 +58,8 @@ const Home = () => {
                 }
                 rightComponent={
                     <View style={{ flexDirection: 'row' }}>
-                        <Icon name='insights' size={30} onPress={() => navigation.navigate("Statistics")}/>
-                        <Icon name='perm-identity' size={30} onPress={() => navigation.navigate("configTime")}/>
+                        <Icon name='star' size={30} style={styles.headerIcon} onPress={() => navigation.navigate("")}/>
+                        <Icon name='perm-identity' size={30} style={styles.headerIcon} onPress={() => navigation.navigate("Statistics")}/>
                     </View>
                 }
                 containerStyle={{ marginTop: 25 }}
@@ -272,6 +272,9 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignSelf: "center",
         margin: 20
+    },
+    headerIcon: {
+        paddingHorizontal: 5
     }
 
 });

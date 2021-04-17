@@ -6,7 +6,7 @@ import {
     PieChart,
     ProgressChart,
     ContributionGraph,
-    StackedBarChart
+    StackedBarChart,
 } from "react-native-chart-kit";
 import { View, Text, Dimensions, TouchableOpacity, StyleSheet, FlatList } from "react-native";
 import TrackerModule from "../../services/AppsTracker/TrackerModule";
@@ -70,7 +70,6 @@ const Statistics = () => {
     ]);
     const navigation = useNavigation();
 
-
     const renderItem = ({ item }) => (
         <Item Name={item.Name} />
     );
@@ -113,7 +112,7 @@ const Statistics = () => {
                         ]
                     }}
                     width={(Dimensions.get("window").width) * 0.9} // from react-native
-                    height={200}
+                    height={250}
                     yAxisInterval={1}
                     //withHorizontalLabels={false}
                     showValuesOnTopOfBars={true}
@@ -143,7 +142,7 @@ const Statistics = () => {
                 />
                 <View style={styles.interests}>
                     <View style={styles.yourInterests}>
-                        <Text style={{ color: '#000', fontSize: 25, fontWeight: '700',  marginTop:2 }}>Seus Interesses</Text>
+                        <Text style={{ color: '#000', fontSize: 22, fontWeight: '700',  marginTop:2 }}>Seus Interesses</Text>
                         <Icon name='edit' size={25} color='#000'/>
                     </View>
                 
@@ -155,7 +154,28 @@ const Statistics = () => {
                     />
                 </View>
             </View>
-
+            <View style={{padding:10}}>
+                <TouchableOpacity
+                    style={styles.button}
+                    onPress={() => navigation.navigate("configTime")}
+                >
+                    <Text>Configure seu tempo</Text>
+                    <Icon name='edit' size={20} color='#000'/>
+                </TouchableOpacity>
+                <TouchableOpacity
+                    style={styles.button}
+                >
+                    <Text>Edite seu perfil</Text>
+                    <Icon name='edit' size={20} color='#000'/>
+                </TouchableOpacity>
+            </View>
+            <View style={{padding:10}}>
+            <TouchableOpacity
+                    style={styles.buttonLogout}
+                >
+                    <Text style={{ color: 'red', fontSize: 22, fontWeight: '600'}}>Encerrar Sessão</Text>
+                </TouchableOpacity>
+            </View>
         </View>
     );
 }
@@ -211,6 +231,22 @@ const styles = StyleSheet.create({
     title: {
         fontSize: 18,
         color:'white'
+    },
+    button: {
+        alignSelf: "flex-start",
+        flexDirection: "row",
+        justifyContent: "space-between",
+        alignItems: "center",
+        backgroundColor: "#DDDDDD",
+        padding: 10,
+        width: '100%'
+    },
+    buttonLogout: {
+        alignSelf: "center",
+        alignItems: "center",
+        backgroundColor: "white",
+        padding: 15,
+        width: '100%'
     },
 
     buttonIcon: {

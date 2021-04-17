@@ -7,6 +7,7 @@ import configTime from "./pages/configTime"
 import TrackAppsUsage from "./services/AppsTracker/TrackAppsUsage"
 import Statistics from "./pages/Statistics"
 
+
 const AppStack = createStackNavigator()
 
 const Routes = () => {
