@@ -29,7 +29,7 @@ const getAllUsers = (req: Request, res: Response, next: NextFunction) => {
 };
 
 const insertUser = (req: Request, res: Response, next: NextFunction) => {
-    const query = `Insert Into User(Name, Email, Password) VALUES (${req.params.name}, ${req.params.email}, ${req.params.password})`;
+    const query = `Insert Into User(Name, Email, Password) VALUES ("${req.params.name}", "${req.params.email}", "${req.params.password}")`;
 
     Connect()
     .then(connection => {
@@ -56,7 +56,7 @@ const insertUser = (req: Request, res: Response, next: NextFunction) => {
 };
 
 const userAuth = (req: Request, res: Response, next: NextFunction) => {
-    const query = `SELECT User.ID FROM User WHERE User.Password = ${req.params.password} AND User.Email = ${req.params.email} LIMIT 1`;
+    const query = `SELECT User.ID FROM User WHERE User.Password = "${req.params.password}" AND User.Email = "${req.params.email}" LIMIT 1`;
 
     Connect()
     .then(connection => {
