@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, View, TextInput, KeyboardAvoidingView, TouchableOpacity, Animated, Alert } from 'react-native';
 import { Header, Icon } from "react-native-elements"
 import { useNavigation , useRoute} from "@react-navigation/native"
+import MainApi from "../../services/ApiModule"
 
 
 const Register = () => {
@@ -16,8 +17,16 @@ const Register = () => {
     const [pswsMatches, setPswMatches] = useState(false);
 
     function checkNRegister() {
-        //check server if login exists and add user to server
-        return true
+        MainApi.CheckIfEmailExists(email).then(res => {
+            const emailExists = res.data[0]["EmailCadastrado"];
+            if (!emailExists) {
+                MainApi.InsertUser(name, email, psw);
+                navigation.navigate("Home");
+            }
+            else {
+                Alert.alert("Email inválido", "O email já existe!");
+            }
+        });
       }
     
     function enterRegister() {
@@ -38,8 +47,7 @@ const Register = () => {
             return;
         }
 
-        if(checkNRegister())
-            navigation.navigate("Home")
+        checkNRegister();
     }
 
     useEffect(() => {
