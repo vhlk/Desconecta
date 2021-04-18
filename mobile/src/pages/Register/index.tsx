@@ -1,6 +1,6 @@
 import { NavigationHelpersContext } from '@react-navigation/native';
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, TextInput, KeyboardAvoidingView, TouchableOpacity, Animated } from 'react-native';
+import { StyleSheet, Text, View, TextInput, KeyboardAvoidingView, TouchableOpacity, Animated, Alert } from 'react-native';
 import { Header, Icon } from "react-native-elements"
 import { useNavigation , useRoute} from "@react-navigation/native"
 
@@ -8,16 +8,71 @@ import { useNavigation , useRoute} from "@react-navigation/native"
 const Register = () => {
     const [offset] = useState(new Animated.ValueXY({ x: 0, y: 80 }));
     const navigation = useNavigation()
+    const [pswDoesntMatchText, setPswDoesntMatchText] = useState("");
+    const [name, setName] = useState("");
+    const [email, setEmail] = useState("");
+    const [psw, setPsw] = useState("");
+    const [pswConf, setPswConf] = useState("");
+    const [pswsMatches, setPswMatches] = useState(false);
 
     function checkNRegister() {
         //check server if login exists and add user to server
         return true
       }
     
-      function enterRegister() {
+    function enterRegister() {
+        if (name === "") {
+            Alert.alert("Nome inválido", "O nome não pode ser vazio!");
+            return;
+        }
+        else if (email === "") {
+            Alert.alert("Email inválido", "O email não pode ser vazio!");
+            return;
+        }
+        else if (psw === "") {
+            Alert.alert("Senha inválida", "A senha não pode ser vazia!");
+            return;
+        }
+        else if (!pswsMatches) {
+            Alert.alert("Senha inválida", "As senhas não batem!");
+            return;
+        }
+
         if(checkNRegister())
-          navigation.navigate("Home")
-      }
+            navigation.navigate("Home")
+    }
+
+    useEffect(() => {
+        // only update after load all inputs
+        if (name === "" && email === "" && psw === "" && pswConf === "") return;
+
+        if (pswConf === "")  return;
+
+        setPswDoesntMatchText(getPswTextAndSetMatch);
+    }, [psw]);
+
+    useEffect(() => {
+        // only update after load all inputs
+        if (name === "" && email === "" && psw === "" && pswConf === "") return;
+
+        setPswDoesntMatchText(getPswTextAndSetMatch);
+    }, [pswConf]);
+
+    const getPswTextAndSetMatch = ():string => {
+        if (psw === "" && pswConf === "") {
+            setPswMatches(false);
+            return "Por favor digite uma senha";
+        }
+        else if (psw !== pswConf) {
+            setPswMatches(false);
+            return "As senhas não batem!";
+        }
+        else {
+            setPswMatches(true);
+            return "";
+        }
+    }
+
     useEffect(() => {
         Animated.spring(offset.y,{toValue:0, speed:8, useNativeDriver: true}).start();
     }, []);
@@ -52,9 +107,11 @@ const Register = () => {
                             { translateY: offset.y }]
                     }]}>
                     <Text style={styles.titleText}>Vamos criar um conta! </Text>
-                    <TextInput style={styles.input} placeholder="Nome" />
-                    <TextInput style={styles.input} placeholder="Email" />
-                    <TextInput style={styles.input} secureTextEntry={true} placeholder="Senha" />
+                    <TextInput style={styles.input} placeholder="Nome" onChangeText={setName}/>
+                    <TextInput style={styles.input} placeholder="Email" onChangeText={setEmail}/>
+                    <TextInput style={styles.input} secureTextEntry={true} placeholder="Senha" onChangeText={setPsw}/>
+                    <TextInput style={styles.lastInput} secureTextEntry={true} placeholder="Confirme a senha" onChangeText={setPswConf} />
+                    <Text style={styles.pswDoesntMatch}>{pswDoesntMatchText}</Text>
 
                     <TouchableOpacity style={styles.btnRegister} onPress={enterRegister}>
                         <Text style={styles.registerText}>Cadastar</Text>
@@ -104,8 +161,16 @@ const styles = StyleSheet.create({
         backgroundColor: '#E8E8E8',
         width: '90%',
         padding: 10,
-        color: '#EED5B7',
+        color: '#000',
         marginBottom: 15,
+        fontSize: 17,
+        borderRadius: 7
+    },
+    lastInput: {
+        backgroundColor: '#E8E8E8',
+        width: '90%',
+        padding: 10,
+        color: '#000',
         fontSize: 17,
         borderRadius: 7
     },
@@ -122,6 +187,10 @@ const styles = StyleSheet.create({
     registerText: {
         color: '#fff',
         fontSize: 17,
+    },
+    pswDoesntMatch: {
+        color: '#ff0033',
+
     }
 
 });
