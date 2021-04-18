@@ -82,5 +82,32 @@ const userAuth = (req: Request, res: Response, next: NextFunction) => {
     });
 };
 
+const checkIfEmailExists = (req: Request, res: Response, next: NextFunction) => {
+    const query = `SELECT EXISTS (SELECT * FROM User WHERE User.Email = "${req.params.email}" LIMIT 1) AS EmailCadastrado`;
+    
+    Connect()
+    .then(connection => {
+        Query(connection, query)
+        .then(results => {
+            return res.status(200).json(results);
+        })
+        .catch(err => {
+            return res.status(500).json({
+                message: err.message,
+                err
+            });
+        })
+        .finally(() => {
+            connection.end();
+        })
+    })
+    .catch(err => {
+        return res.status(500).json({
+            message: err.message,
+                err
+        });
+    });
+}
 
-export default { getAllUsers, insertUser, userAuth  };
+
+export default { getAllUsers, insertUser, userAuth, checkIfEmailExists  };
