@@ -2,31 +2,52 @@ import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, View, TextInput, KeyboardAvoidingView, TouchableOpacity, Animated, Alert } from 'react-native';
 import { useNavigation , useRoute} from "@react-navigation/native"
 import MainApi from "../../services/ApiModule"
+import AsyncStorage from "@react-native-async-storage/async-storage"
 
 const Login = () => {
   const navigation = useNavigation()
   const [offset] = useState(new Animated.ValueXY({ x: 0, y: 80 }));
   const [email, setEmail] = useState("");
   const [psw, setPsw] = useState("");
+  const LOGIN_EMAIL = "LOGIN_EMAIL";
+  const LOGIN_PSW = "LOGIN_PSW";
+
+  useEffect(() => {
+    async function fun() {
+      const login = await AsyncStorage.getItem(LOGIN_EMAIL);
+      const pass = await AsyncStorage.getItem(LOGIN_PSW);
+      if (login !== null && pass != null) {
+        checkLogin(login, pass);
+      }
+    }
+    fun();
+    
+  }, []);
 
   useEffect(() => {
     Animated.spring(offset.y, {toValue: 0, speed: 8, useNativeDriver: true}).start();
   }, []);
   
-  function checkLogin() {
-    MainApi.GetUser(email, psw).then(res => {
+  function checkLogin(userEmail: string, userPsw: string) {
+    MainApi.GetUser(userEmail, userPsw).then(res => {
       if (res.data === null || res.data.length === 0) {
         Alert.alert("Não foi possível fazer login", "Por favor verifique os dados digitados!");
       }
       else {
-        navigation.navigate("Home")
+        navigation.navigate("Home");
+        saveLogin();
       }
-    })
+    }).catch(err => console.log(err));
     return false;
   }
 
+  async function saveLogin() {
+    await AsyncStorage.setItem(LOGIN_EMAIL, email);
+    await AsyncStorage.setItem(LOGIN_PSW, psw);
+  }
+
   function enterLogin() {
-    checkLogin();
+    checkLogin(email, psw);
   }
 
   return (

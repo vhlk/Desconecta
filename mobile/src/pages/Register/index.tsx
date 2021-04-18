@@ -4,7 +4,7 @@ import { StyleSheet, Text, View, TextInput, KeyboardAvoidingView, TouchableOpaci
 import { Header, Icon } from "react-native-elements"
 import { useNavigation , useRoute} from "@react-navigation/native"
 import MainApi from "../../services/ApiModule"
-
+import AsyncStorage from "@react-native-async-storage/async-storage"
 
 const Register = () => {
     const [offset] = useState(new Animated.ValueXY({ x: 0, y: 80 }));
@@ -15,12 +15,20 @@ const Register = () => {
     const [psw, setPsw] = useState("");
     const [pswConf, setPswConf] = useState("");
     const [pswsMatches, setPswMatches] = useState(false);
+    const LOGIN_EMAIL = "LOGIN_EMAIL";
+    const LOGIN_PSW = "LOGIN_PSW";
+
+    async function saveLogin() {
+        await AsyncStorage.setItem(LOGIN_EMAIL, email);
+        await AsyncStorage.setItem(LOGIN_PSW, psw);
+      }
 
     function checkNRegister() {
-        MainApi.CheckIfEmailExists(email).then(res => {
+        MainApi.CheckIfEmailExists(email).then(async res => {
             const emailExists = res.data[0]["EmailCadastrado"];
             if (!emailExists) {
                 MainApi.InsertUser(name, email, psw);
+                await saveLogin();
                 navigation.navigate("Home");
             }
             else {
