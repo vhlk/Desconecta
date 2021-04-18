@@ -9,4 +9,6 @@ userRoutes.put("/users/:name/:email/:password", controller.insertUser);
 
 userRoutes.get("/users/:email/:password", controller.userAuth);
 
+userRoutes.get("/users/:email", controller.checkIfEmailExists);
+
 export = userRoutes;
