@@ -1,23 +1,32 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, TextInput, KeyboardAvoidingView, TouchableOpacity, Animated } from 'react-native';
+import { StyleSheet, Text, View, TextInput, KeyboardAvoidingView, TouchableOpacity, Animated, Alert } from 'react-native';
 import { useNavigation , useRoute} from "@react-navigation/native"
+import MainApi from "../../services/ApiModule"
 
 const Login = () => {
   const navigation = useNavigation()
   const [offset] = useState(new Animated.ValueXY({ x: 0, y: 80 }));
+  const [email, setEmail] = useState("");
+  const [psw, setPsw] = useState("");
 
   useEffect(() => {
     Animated.spring(offset.y, {toValue: 0, speed: 8, useNativeDriver: true}).start();
   }, []);
   
   function checkLogin() {
-    //check server if login exists and is correct
-    return true
+    MainApi.GetUser(email, psw).then(res => {
+      if (res.data === null || res.data.length === 0) {
+        Alert.alert("Não foi possível fazer login", "Por favor verifique os dados digitados!");
+      }
+      else {
+        navigation.navigate("Home")
+      }
+    })
+    return false;
   }
 
   function enterLogin() {
-    if(checkLogin())
-      navigation.navigate("Home")
+    checkLogin();
   }
 
   return (
@@ -35,8 +44,8 @@ const Login = () => {
               { translateY: offset.y }]
           }]}>
 
-          <TextInput style={styles.input} placeholder="Email" />
-          <TextInput style={styles.input} secureTextEntry={true} placeholder="Senha" />
+          <TextInput style={styles.input} placeholder="Email" onChangeText={setEmail}/>
+          <TextInput style={styles.input} secureTextEntry={true} placeholder="Senha" onChangeText={setPsw}/>
 
           <TouchableOpacity style={styles.btnSubmit} onPress={enterLogin}>
             <Text style={styles.submitText}> Entrar</Text>
@@ -85,7 +94,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#E8E8E8',
     width: '90%',
     padding: 10,
-    color: '#EED5B7',
+    color: '#000',
     marginBottom: 15,
     fontSize: 17,
     borderRadius: 7
