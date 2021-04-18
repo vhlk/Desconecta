@@ -2,21 +2,25 @@ import React, { useEffect, useState } from "react"
 import { View, Image, StyleSheet, Text, TouchableOpacity, ImageBackground, Linking, Alert, ScrollView } from "react-native"
 import { RectButton } from "react-native-gesture-handler"
 import { Header, Icon } from "react-native-elements"
-import { Button } from "react-native-elements/dist/buttons/Button"
-import { BackgroundImage } from "react-native-elements/dist/config"
 import { useNavigation , useRoute} from "@react-navigation/native"
-import data from "../Home/data2";
 
-interface atvdId {
-    itemId: number
+interface Activity {
+    Activity_ID: number,
+    Category_ID: string,
+    Description: string,
+    Duration: string,
+    ID: number,
+    ImageLink: string,
+    ActivityLink: string,
+    Title: string
 }
 
 var imgBg = require("../../assets/SilvaCantaMarisa.jpg")
-var categ = data[1].category
-var suggestionTitle = data[1].name
-var suggestionDesc = data[1].description
-var suggestionDura = data[1].time
-var suggestionLink = "https://www.youtube.com/watch?v=w1AM9ciUyws&list=PLhBSDWTgistpHkC3tAuet7eShNI24Y7JQ"
+var categ = "Oi"
+var suggestionTitle = "Não era para isso"
+var suggestionDesc = "APARECER"
+var suggestionDura = ":("
+var suggestionLink = "https://youtu.be/dQw4w9WgXcQ"
 
 async function goToActivity() {
     const supported = await Linking.canOpenURL(suggestionLink);
@@ -28,21 +32,20 @@ async function goToActivity() {
     }
 }
 
-function setActivity(id:number){
-    console.log(data[id].name)
-    imgBg = {uri: data[id].image}
-    categ = data[id].category
-    suggestionTitle = data[id].name
-    suggestionDesc = data[id].description
-    suggestionDura = data[id].time
-    suggestionLink = data[id].link
+function setActivity(activity:Activity){
+    imgBg = {uri: activity.ImageLink}
+    categ = activity.Category_ID
+    suggestionTitle = activity.Title
+    suggestionDesc = activity.Description
+    suggestionDura = activity.Duration
+    suggestionLink = activity.ActivityLink
 }
 
 const Suggestion = () => {
     const navigation = useNavigation()
     const route = useRoute()
-    var routeParam = route.params as atvdId
-    setActivity(routeParam.itemId);
+    var routeParam = route.params as Activity
+    setActivity(routeParam);
 
     function handleNav() {
         navigation.navigate("Home")

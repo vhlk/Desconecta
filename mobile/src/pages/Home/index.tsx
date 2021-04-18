@@ -121,7 +121,14 @@ const Home = () => {
                             cardIndex={index}
                             renderCard={card => <Card card={card} />}
                             onSwiped={onSwiped}
-                            onTapCard={() => navigation.navigate("Suggestion", { itemId: activities[index] })}
+                            onTapCard={() => navigation.navigate("Suggestion", { Activity_ID:  activities[index].Activity_ID,
+                                                                                 Category_ID:  activities[index].Category_ID,
+                                                                                 Description:  activities[index].Description,
+                                                                                 Duration:     activities[index].Duration,
+                                                                                 ID:           activities[index].ID,
+                                                                                 ImageLink:    activities[index].ImageLink,
+                                                                                 ActivityLink: activities[index].LinkNetflix,
+                                                                                 Title:        activities[index].Title })}
                             stackSize={2}
                             stackScale={7}
                             stackSeparation={10}
