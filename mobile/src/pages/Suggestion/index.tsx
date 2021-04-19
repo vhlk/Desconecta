@@ -21,6 +21,7 @@ var suggestionTitle = "Não era para isso"
 var suggestionDesc = "APARECER"
 var suggestionDura = ":("
 var suggestionLink = "https://youtu.be/dQw4w9WgXcQ"
+var favoriteIcon = 'star-border'
 
 async function goToActivity() {
     const supported = await Linking.canOpenURL(suggestionLink);
@@ -46,6 +47,16 @@ const Suggestion = () => {
     const route = useRoute()
     var routeParam = route.params as Activity
     setActivity(routeParam);
+
+    const [isFavorite, setIsFavorite] = useState(false);// pegar se a atividade foi favoritada
+    const toggleSwitch = () => {
+        if (isFavorite){
+            favoriteIcon = 'star'
+        } else {
+            favoriteIcon = 'star-border'
+        }
+        setIsFavorite(previousState => !previousState)
+    };
 
     function handleNav() {
         navigation.navigate("Home")
@@ -78,10 +89,12 @@ const Suggestion = () => {
                             {categ}
                         </Text>
                         <View style={styles.title}>
-                            <Text style={styles.titleText}>
-                                {suggestionTitle}
-                            </Text>
-                            {/* <Icon name='star-border' size={30} color='#FFF' style={styles.buttonIcon} /> */}
+                            <ScrollView horizontal={true}>
+                                <Text style={styles.titleText}>
+                                    {suggestionTitle}
+                                </Text>
+                            </ScrollView>
+                            <Icon name={favoriteIcon} size={30} color='#FFF' style={styles.buttonIcon} onPress={toggleSwitch}/>
                         </View>
                         <ScrollView style={styles.descContainer}>
                             <Text style={styles.description}>
@@ -89,12 +102,13 @@ const Suggestion = () => {
                             </Text>
                         </ScrollView>
                         <View style={styles.duration}>
-                            <Icon name='access-time' size={20} color='#FFF' style={styles.buttonIcon} />
-                            <Text style={{ color: '#FFF', padding: 5}}>
+                            <Icon name='access-time' size={13} color='#FFF' style={styles.buttonIcon} />
+                            <Text style={{ color: '#FFF', padding: 5, fontSize:13 }}>
                                 {suggestionDura}
                             </Text>
                         </View>
                     </View>
+                    {/* Alterar esses botões dependendo do status da atividade */}
                     <View style={styles.buttons}>
                         <RectButton style={styles.startButton} onPress={goToActivity}>
                             <Text style={{ color: '#FFF', fontWeight: "700", fontSize: 17}}>
@@ -116,8 +130,7 @@ const Suggestion = () => {
 const styles = StyleSheet.create({
     main: {
         flex: 1,
-        justifyContent: "space-between",
-        backgroundColor: '#000',
+        backgroundColor: '#202225',
         padding: 25,
         height: '50%',
         width: '100%',
@@ -131,6 +144,7 @@ const styles = StyleSheet.create({
     },
 
     info: {
+        flex:2
     },
 
     returnButton: {
@@ -147,7 +161,9 @@ const styles = StyleSheet.create({
     },
 
     buttons: {
+        flex:2,
         alignItems: 'center',
+        justifyContent: "flex-end"
     },
 
     category: {
@@ -158,7 +174,8 @@ const styles = StyleSheet.create({
     title: {
         flexDirection: "row",
         justifyContent: "space-between",
-        alignItems: "center"
+        alignItems: "center",
+        maxHeight:'27%'
     },
 
     titleText: {
@@ -170,7 +187,7 @@ const styles = StyleSheet.create({
 
     description: {
         color: '#FFF',
-        paddingVertical: 10
+        paddingVertical: 5
     },
 
     descContainer: {
