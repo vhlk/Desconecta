@@ -24,3 +24,12 @@
     "/users/:email/:password"
     "/usergoal/:userId"
     "/usergoal/:userId/:goalId"
+
+# dicas heroku
+Seguir o setup de acordo com esse link: https://devcenter.heroku.com/articles/collab
+
+Faça alguma mudança na rota, ou qualquer coisa que se reflita em algum comportamento novo no backend. Para dar push, utilize o comando: git subtree push --prefix server heroku main, a partir da pasta raiz do repo do Desconecta.
+
+Teste através do link: https://desconecta.herokuapp.com/, e caso dê algum erro, utilize o comando heroku logs --tail para ver o que deu errado.
+
+Boa sorte :')

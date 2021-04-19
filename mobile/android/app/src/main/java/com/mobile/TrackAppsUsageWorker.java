@@ -6,7 +6,6 @@ import android.app.usage.UsageStats;
 import android.app.usage.UsageStatsManager;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.os.SystemClock;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -19,7 +18,6 @@ import androidx.work.WorkerParameters;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -76,8 +74,20 @@ public class TrackAppsUsageWorker extends Worker {
         calendar.set(year, month, day, 0, 0, 0);
         long start = calendar.getTimeInMillis();
         long end = System.currentTimeMillis();
-        Log.d(TAG, "Time from start of day(minutes): " + ((end - start) / (1000 * 60.0)));
-        Map<String, UsageStats> stats = usageStatsManager.queryAndAggregateUsageStats(start, end);
+        Log.d(TAG, "Time from start of day(minutes): " + ( (end - start) / (1000 * 60.0)));
+        Map<String, UsageStats> statsByPkg = new HashMap<>();
+        List<UsageStats> all = usageStatsManager.queryUsageStats(UsageStatsManager.INTERVAL_DAILY, start, end);
+        calendar.set(year, month, day, 0, 0, 0);
+        for (UsageStats us : all) {
+            if (calendar.getTimeInMillis() < us.getLastTimeStamp() && calendar.getTimeInMillis() < us.getLastTimeUsed()) {
+                if (statsByPkg.containsKey(us.getPackageName())) {
+                    statsByPkg.get(us.getPackageName()).add(us);
+                }
+                else {
+                    statsByPkg.put(us.getPackageName(), us);
+                }
+            }
+        }
 
         SharedPreferences sharedPreferences = mContext.getSharedPreferences(SHARED_PREFERENCES, Context.MODE_PRIVATE);
 
@@ -98,7 +108,7 @@ public class TrackAppsUsageWorker extends Worker {
 
         //pegar tempo dos apps
         Map<String, Double> result = new HashMap<>();
-        for (Map.Entry<String, UsageStats> mapUS : stats.entrySet()) {
+        for (Map.Entry<String, UsageStats> mapUS : statsByPkg.entrySet()) {
             if (nameOfPkgs.contains(mapUS.getKey())) {
                 result.put(mapUS.getKey(), mapUS.getValue().getTotalTimeInForeground() / (1000 * 60.0));
             }
