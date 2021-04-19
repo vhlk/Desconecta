@@ -1,4 +1,4 @@
-import React from "react"
+import React , { useEffect, useState } from "react"
 import { View, Image, StyleSheet, Text } from "react-native"
 import { RectButton } from "react-native-gesture-handler"
 import { Header, Icon } from "react-native-elements"
@@ -7,6 +7,7 @@ import { useNavigation } from "@react-navigation/native"
 import data from "./data2";
 import Swiper from "react-native-deck-swiper";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import AsyncStorage from "@react-native-async-storage/async-storage"
 
 const colors = {
     red: '#D14950',
@@ -42,6 +43,13 @@ const Card = ({ card }: { card: any }) => (
 // const swiperRef = React.createRef();
 
 const Home = () => {
+    const LOGIN_ID = "LOGIN_ID";
+    useEffect(() => {
+        async function fun() {
+            const login = await AsyncStorage.getItem(LOGIN_ID);
+          }
+          fun();
+    }, []);
     const [index, setIndex] = React.useState(0);
     const onSwiped = () => {
         setIndex((index + 1) % data.length);
