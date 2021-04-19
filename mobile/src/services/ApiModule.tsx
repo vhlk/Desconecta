@@ -31,6 +31,8 @@ class MainApi extends HttpClient {
     public GetUser = (email: string, password: string) => this.instance.get(`${this._userRoute}/${email}/${password}`);
     
     public InsertUser = (name: string, email: string, password: string) => this.instance.put(`${this._userRoute}/${name}/${email}/${password}`);
+    
+    public CheckIfEmailExists = (email: string) => this.instance.get(`${this._userRoute}/${email}`);
     /*************************/
 
     /***** Category Requests *****/
