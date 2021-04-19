@@ -2,7 +2,8 @@ import React, { useEffect, useState } from "react"
 import { View, Image, StyleSheet, Text, TouchableOpacity, ImageBackground, Linking, Alert, ScrollView } from "react-native"
 import { RectButton } from "react-native-gesture-handler"
 import { Header, Icon } from "react-native-elements"
-import { useNavigation , useRoute} from "@react-navigation/native"
+import { useNavigation, useRoute } from "@react-navigation/native"
+import LinearGradient from 'react-native-linear-gradient';
 
 interface Activity {
     Activity_ID: number,
@@ -25,16 +26,16 @@ var favoriteIcon = 'star-border'
 
 async function goToActivity() {
     const supported = await Linking.canOpenURL(suggestionLink);
-    
+
     if (supported) {
-      await Linking.openURL(suggestionLink);
+        await Linking.openURL(suggestionLink);
     } else {
-      Alert.alert(`Don't know how to open this URL: ${suggestionLink}`);
+        Alert.alert(`Don't know how to open this URL: ${suggestionLink}`);
     }
 }
 
-function setActivity(activity:Activity){
-    imgBg = {uri: activity.ImageLink}
+function setActivity(activity: Activity) {
+    imgBg = { uri: activity.ImageLink }
     categ = activity.Category_ID
     suggestionTitle = activity.Title
     suggestionDesc = activity.Description
@@ -50,7 +51,7 @@ const Suggestion = () => {
 
     const [isFavorite, setIsFavorite] = useState(false);// pegar se a atividade foi favoritada
     const toggleSwitch = () => {
-        if (isFavorite){
+        if (isFavorite) {
             favoriteIcon = 'star'
         } else {
             favoriteIcon = 'star-border'
@@ -83,7 +84,9 @@ const Suggestion = () => {
                     }}
                     backgroundColor='rgba(0, 0, 0, 0)'
                 />
-                <View style={styles.main}>
+                <LinearGradient colors={['rgba(32,34,37,0)', 'rgba(32,34,37,0.9)', '#202225', '#202225',
+                        '#202225', '#202225', '#202225', '#202225', '#202225', '#202225', '#202225']} 
+                        style={styles.main}>
                     <View style={styles.info}>
                         <Text style={styles.category}>
                             {categ}
@@ -94,7 +97,7 @@ const Suggestion = () => {
                                     {suggestionTitle}
                                 </Text>
                             </ScrollView>
-                            <Icon name={favoriteIcon} size={30} color='#FFF' style={styles.buttonIcon} onPress={toggleSwitch}/>
+                            <Icon name={favoriteIcon} size={30} color='#FFF' style={styles.buttonIcon} onPress={toggleSwitch} />
                         </View>
                         <ScrollView style={styles.descContainer}>
                             <Text style={styles.description}>
@@ -103,7 +106,7 @@ const Suggestion = () => {
                         </ScrollView>
                         <View style={styles.duration}>
                             <Icon name='access-time' size={13} color='#FFF' style={styles.buttonIcon} />
-                            <Text style={{ color: '#FFF', padding: 5, fontSize:13 }}>
+                            <Text style={{ color: '#FFF', padding: 5, fontSize: 13 }}>
                                 {suggestionDura}
                             </Text>
                         </View>
@@ -111,17 +114,17 @@ const Suggestion = () => {
                     {/* Alterar esses botões dependendo do status da atividade */}
                     <View style={styles.buttons}>
                         <RectButton style={styles.startButton} onPress={goToActivity}>
-                            <Text style={{ color: '#FFF', fontWeight: "700", fontSize: 17}}>
+                            <Text style={{ color: '#FFF', fontWeight: "700", fontSize: 17 }}>
                                 COMEÇAR A ATIVIDADE
                             </Text>
                         </RectButton>
                         <TouchableOpacity onPress={handleNav}>
-                            <Text style={{ color: '#FFF', textDecorationLine: 'underline', paddingTop:10 }}>
+                            <Text style={{ color: '#FFF', textDecorationLine: 'underline', paddingTop: 10 }}>
                                 NÃO TENHO INTERESSE
                             </Text>
                         </TouchableOpacity>
                     </View>
-                </View>
+                </LinearGradient>
             </ImageBackground>
         </>
     )
@@ -130,7 +133,6 @@ const Suggestion = () => {
 const styles = StyleSheet.create({
     main: {
         flex: 1,
-        backgroundColor: '#202225',
         padding: 25,
         height: '50%',
         width: '100%',
@@ -144,7 +146,7 @@ const styles = StyleSheet.create({
     },
 
     info: {
-        flex:2
+        flex: 2
     },
 
     returnButton: {
@@ -161,7 +163,7 @@ const styles = StyleSheet.create({
     },
 
     buttons: {
-        flex:2,
+        flex: 2,
         alignItems: 'center',
         justifyContent: "flex-end"
     },
@@ -175,7 +177,7 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         justifyContent: "space-between",
         alignItems: "center",
-        maxHeight:'27%'
+        maxHeight: '27%'
     },
 
     titleText: {
