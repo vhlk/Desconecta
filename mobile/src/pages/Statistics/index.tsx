@@ -12,6 +12,7 @@ import { View, Text, Dimensions, TouchableOpacity, StyleSheet, FlatList } from "
 import TrackerModule from "../../services/AppsTracker/TrackerModule";
 import { useNavigation } from "@react-navigation/native";
 import  MainApi  from "../../services/ApiModule"
+import AsyncStorage from "@react-native-async-storage/async-storage"
 
 interface Categories {
     ID: number,
@@ -24,23 +25,22 @@ const Item = ({ Name }) => (
     </View>
 );
 const Statistics = () => {
+    const LOGIN_ID = "LOGIN_ID";
     const [variavel, setVariavel] = useState<Categories[]>([]);
-    useEffect(() => {
-        getCategory();
-      }, []);
-    const getCategory = async () => {
-        const response = await MainApi.GetAllCategories();
+
+    const getCategory = async (id: string) => {
+        const response = await MainApi.GetInterestForUser(id);
         console.log(response.data);
         setVariavel(response.data);
       }
 
     useEffect(() => {
-        // GetAllCategories().then(res => setVariavel(res)).catch(function(error) {
-        //   console.log('Erro na requisição: ' + error.message);
-        //    // ADD THIS THROW error
-        //     throw error;
-        //   });
-    })
+        async function fun() {
+            const login = await AsyncStorage.getItem(LOGIN_ID);
+            getCategory((login == null) ? '-1' : login);
+          }
+          fun();
+    }, []);
     useEffect(() => {
         async function fun() {
             TrackerModule.GetDailyTimeForApps(["Chrome", "WhatsApp", "Facebook", "Instagram", "Twitter"],
@@ -144,8 +144,8 @@ const Statistics = () => {
                 />
                 <View style={styles.interests}>
                     <View style={styles.yourInterests}>
-                        <Text style={{ color: '#000', fontSize: 22, fontWeight: '700',  marginTop:2 }}>Seus Interesses</Text>
-                        <Icon name='edit' size={25} color='#000'/>
+                        <Text style={{ color: '#000', fontSize: 22, fontWeight: '700',  marginTop:2 }} >Seus Interesses</Text>
+                        <Icon name='edit' size={25} color='#000' onPress={() => navigation.navigate("Interest")}/>
                     </View>
                 
                     <FlatList

@@ -4,20 +4,41 @@ import { View, Text, Dimensions, TouchableOpacity, Switch, StyleSheet, SafeAreaV
 import { useNavigation } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage"
 import MainApi from "../../services/ApiModule"
+import { transform } from "@babel/core";
 
+interface Categories {
+    Category_ID: string,
+    Name: string,
+}
 
 const Interest = () => {
+    const [variavel, setVariavel] = useState<Categories[]>([]);
     const navigation = useNavigation()
     const LOGIN_ID = "LOGIN_ID";
     const [id, setId] = useState("");
+    var loading = false;
     useEffect(() => {
         async function fun() {
             const newlogin = await AsyncStorage.getItem(LOGIN_ID);
             setId((newlogin == null) ? '-1' : newlogin);
-
           }
           fun();
     }, []);
+
+    useEffect(() => {
+        const getCategory = async (id: string) => {
+            const response = await MainApi.GetInterestForUser(id);
+            console.log(response.data);
+            setVariavel(response.data);
+          }
+
+        async function fun() {
+            const login = await AsyncStorage.getItem(LOGIN_ID);
+            getCategory((login == null) ? '-1' : login);
+          }
+          fun();
+    }, []);
+
     function enterRegister() {
         if(isEnabled){
             MainApi.InsertInterestForUser(id, "2");
@@ -46,18 +67,64 @@ const Interest = () => {
         }
         navigation.navigate("Home");
     }
-    const [isEnabled, setIsEnabled] = useState(false);
-    const toggleSwitch = () => setIsEnabled(previousState => !previousState);
+    console.log(variavel.length);
+
+    loading = variavel.length != 0;
+    
+    function interestsUser(idCategoria: string){
+        const found = variavel.find(element => element.Category_ID == idCategoria);
+        return ((found == undefined) ? false : true);
+    }
+    
+    var [isEnabled, setIsEnabled] = useState(false);
     const [isEnabled_1, setIsEnabled_1] = useState(false);
-    const toggleSwitch_1 = () => setIsEnabled_1(previousState => !previousState);
     const [isEnabled_2, setIsEnabled_2] = useState(false);
-    const toggleSwitch_2 = () => setIsEnabled_2(previousState => !previousState);
     const [isEnabled_3, setIsEnabled_3] = useState(false);
-    const toggleSwitch_3 = () => setIsEnabled_3(previousState => !previousState);
     const [isEnabled_4, setIsEnabled_4] = useState(false);
+
+    function setSwitch(){
+        if(loading){
+            if(interestsUser("2")){
+                setIsEnabled(true)
+            }
+            if(interestsUser("6")){
+                setIsEnabled_1(true)
+            }
+            if(interestsUser("3")){
+                setIsEnabled_2(true)
+            }
+            
+            if(interestsUser("4")){
+                setIsEnabled_3(true)
+            }
+            if(interestsUser("5")){
+                setIsEnabled_4(true)
+            }
+        }
+        
+    }
+
+    useEffect(() => {
+        console.log('1-', loading);
+        setSwitch()
+    }, []);
+    
+    const toggleSwitch = () => setIsEnabled(previousState => !previousState);
+    
+    
+    const toggleSwitch_1 = () => setIsEnabled_1(previousState => !previousState);
+    
+    
+    const toggleSwitch_2 = () => setIsEnabled_2(previousState => !previousState);
+    
+    
+    const toggleSwitch_3 = () => setIsEnabled_3(previousState => !previousState);
+    
+    
     const toggleSwitch_4 = () => setIsEnabled_4(previousState => !previousState);
     return (
         <>
+        {loading &&(
             <SafeAreaView style={styles.container}>
                 <View style={styles.containerChart}>
                     <Text>FILME</Text>
@@ -113,6 +180,7 @@ const Interest = () => {
                         <Text style={styles.registerText}>Salvar</Text>
                 </TouchableOpacity>
             </SafeAreaView>
+        )}
         </>
     );
 }
