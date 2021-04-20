@@ -7,8 +7,10 @@ userRoutes.get("/users", controller.getAllUsers);
 
 userRoutes.put("/users/:name/:email/:password", controller.insertUser);
 
-userRoutes.get("/users/:email/:password", controller.userAuth);
+userRoutes.get("/users/login/:email/:password", controller.userAuth);
 
-userRoutes.get("/users/:email", controller.checkIfEmailExists);
+userRoutes.get("/users/email/:email", controller.checkIfEmailExists);
+
+userRoutes.get("/users/id/:id", controller.getUserDataByID);
 
 export = userRoutes;

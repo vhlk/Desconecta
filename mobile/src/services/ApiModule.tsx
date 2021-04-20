@@ -28,11 +28,13 @@ class MainApi extends HttpClient {
     /***** User Requests *****/
     public GetAllUsers = () => this.instance.get(`${this._userRoute}`);
 
-    public GetUser = (email: string, password: string) => this.instance.get(`${this._userRoute}/${email}/${password}`);
+    public GetUser = (email: string, password: string) => this.instance.get(`${this._userRoute}/login/${email}/${password}`);
     
     public InsertUser = (name: string, email: string, password: string) => this.instance.put(`${this._userRoute}/${name}/${email}/${password}`);
     
-    public CheckIfEmailExists = (email: string) => this.instance.get(`${this._userRoute}/${email}`);
+    public CheckIfEmailExists = (email: string) => this.instance.get(`${this._userRoute}/email/${email}`);
+
+    public GetUserDataByID = (id: number) => this.instance.get(`${this._userRoute}/id/${id}`);
     /*************************/
 
     /***** Category Requests *****/
