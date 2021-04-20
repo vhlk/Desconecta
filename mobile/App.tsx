@@ -11,8 +11,10 @@
 import React from 'react';
 import { StatusBar } from 'react-native';
 import Routes from './src/Routes';
+import Orientation from 'react-native-orientation-locker';
 
  const App = () => {
+   Orientation.lockToPortrait();
 
    return (
     <>
