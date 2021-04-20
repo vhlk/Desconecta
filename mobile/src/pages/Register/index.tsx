@@ -5,6 +5,7 @@ import { Header, Icon } from "react-native-elements"
 import { useNavigation , useRoute} from "@react-navigation/native"
 import MainApi from "../../services/ApiModule"
 import AsyncStorage from "@react-native-async-storage/async-storage"
+import { directive } from 'vue/types/umd';
 
 const Register = () => {
     const [offset] = useState(new Animated.ValueXY({ x: 0, y: 80 }));
@@ -17,19 +18,34 @@ const Register = () => {
     const [pswsMatches, setPswMatches] = useState(false);
     const LOGIN_EMAIL = "LOGIN_EMAIL";
     const LOGIN_PSW = "LOGIN_PSW";
+    const LOGIN_ID = "LOGIN_ID";
 
-    async function saveLogin() {
+    async function saveLogin(id: string) {
         await AsyncStorage.setItem(LOGIN_EMAIL, email);
         await AsyncStorage.setItem(LOGIN_PSW, psw);
-      }
+        await AsyncStorage.setItem(LOGIN_ID, id.toString());
+        navigation.navigate("Interest");
+    }
+
+    function checkLogin(userEmail: string, userPsw: string) {
+        MainApi.GetUser(userEmail, userPsw).then(res => {
+          if (res.data === null || res.data.length === 0) {
+            Alert.alert("Não foi possível fazer login", "Por favor verifique os dados digitados!");
+          }
+          else {
+            navigation.navigate("Home");
+            saveLogin(res.data[0].ID);
+          }
+        }).catch(err => console.log(err));
+        return false;
+    }
 
     function checkNRegister() {
-        MainApi.CheckIfEmailExists(email).then(async res => {
+        MainApi.CheckIfEmailExists(email).then(res => {
             const emailExists = res.data[0]["EmailCadastrado"];
             if (!emailExists) {
-                MainApi.InsertUser(name, email, psw);
-                await saveLogin();
-                navigation.navigate("Home");
+                var id = MainApi.InsertUser(name, email, psw);
+                checkLogin(email, psw);
             }
             else {
                 Alert.alert("Email inválido", "O email já existe!");
