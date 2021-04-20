@@ -11,6 +11,7 @@ const Login = () => {
   const [psw, setPsw] = useState("");
   const LOGIN_EMAIL = "LOGIN_EMAIL";
   const LOGIN_PSW = "LOGIN_PSW";
+  const LOGIN_ID = "LOGIN_ID";
 
   useEffect(() => {
     async function fun() {
@@ -35,15 +36,15 @@ const Login = () => {
       }
       else {
         navigation.navigate("Home");
-        saveLogin();
+        saveLogin(res.data[0].ID);
       }
     }).catch(err => console.log(err));
-    return false;
   }
 
-  async function saveLogin() {
+  async function saveLogin(id: string) {
     await AsyncStorage.setItem(LOGIN_EMAIL, email);
     await AsyncStorage.setItem(LOGIN_PSW, psw);
+    await AsyncStorage.setItem(LOGIN_ID, id.toString());
   }
 
   function enterLogin() {
