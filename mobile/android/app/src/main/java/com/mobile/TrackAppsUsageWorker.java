@@ -179,9 +179,9 @@ public class TrackAppsUsageWorker extends Worker {
 
         // send notification every 5 min ; TODO: get time from user
         long timeLastNotification = sharedPreferences.getLong(PREFS_TIME_LAST_NOTIFICATION, -1);
-        if (appForeground != null && (result.get(appForeground) > Integer.parseInt(chosenTimeForegroundApp)) &&
-                (nameOfPkgs.contains(appForeground) && (timeLastNotification == -1 || (System.currentTimeMillis() - timeLastNotification)/(1000*60.0) >= 5))
-                || (!Objects.equals(lastAppForeground, appForeground) && nameOfPkgs.contains(appForeground))) // enter app
+        if (appForeground != null && nameOfPkgs.contains(appForeground) && (result.get(appForeground) > Integer.parseInt(chosenTimeForegroundApp)) &&
+                ((timeLastNotification == -1 || (System.currentTimeMillis() - timeLastNotification)/(1000*60.0) >= 5)
+                || (!Objects.equals(lastAppForeground, appForeground) && nameOfPkgs.contains(appForeground)))) // enter app
         {
             Log.d(TAG, "sending notification...");
             NotificationHelper notificationHelper = new NotificationHelper(mContext);
