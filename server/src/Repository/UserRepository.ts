@@ -109,5 +109,32 @@ const checkIfEmailExists = (req: Request, res: Response, next: NextFunction) => 
     });
 }
 
+const getUserDataByID = (req: Request, res: Response, next: NextFunction) => {
+    const query = `SELECT User.Name, User.Email FROM User WHERE User.ID = ${req.params.id} LIMIT 1`;
+    
+    Connect()
+    .then(connection => {
+        Query(connection, query)
+        .then(results => {
+            return res.status(200).json(results);
+        })
+        .catch(err => {
+            return res.status(500).json({
+                message: err.message,
+                err
+            });
+        })
+        .finally(() => {
+            connection.end();
+        })
+    })
+    .catch(err => {
+        return res.status(500).json({
+            message: err.message,
+                err
+        });
+    });
+}
 
-export default { getAllUsers, insertUser, userAuth, checkIfEmailExists  };
+
+export default { getAllUsers, insertUser, userAuth, checkIfEmailExists, getUserDataByID };
