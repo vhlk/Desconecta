@@ -85,9 +85,9 @@ const Statistics = () => {
             yAxisSuffix=" Min"
             withInnerLines={false}
             chartConfig={{
-            backgroundColor: "#202225",
-            backgroundGradientFrom: "#202225",
-            backgroundGradientTo: "black",
+            backgroundColor: "#BA6556",
+            backgroundGradientFrom: "#BA6556",
+            backgroundGradientTo: "#BA6556",
             decimalPlaces: 0, // optional, defaults to 2dp
             color: (opacity = 1) => `rgba(255, 255, 255, 1)`,
             labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
@@ -115,7 +115,7 @@ const styles = StyleSheet.create({
     container:{
         flex:1,
         marginTop:5,
-        backgroundColor:"white",
+        backgroundColor:'#f6f7f1',
         height: '100%'
       },
 
@@ -130,10 +130,11 @@ const styles = StyleSheet.create({
       titleText: {
         fontSize: 25,
         fontWeight: "bold",
-        textAlign: "center"
+        textAlign: "center",
+        color: '#db9487'
       },
       returnButton: {
-        backgroundColor: "#DDDDDD",
+        backgroundColor: "#a1c9c9",
         borderRadius: 50,
         padding: 6
       },

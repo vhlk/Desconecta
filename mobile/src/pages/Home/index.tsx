@@ -6,8 +6,6 @@ import { useNavigation } from "@react-navigation/native"
 
 import MainApi from "../../services/ApiModule"
 import Swiper from "react-native-deck-swiper";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { Colors } from "react-native/Libraries/NewAppScreen"
 
 interface Activity {
     Activity_ID: number,
@@ -31,8 +29,8 @@ const colors = {
     blue: '#59A9E3',
     gray: '#777777',
     black: '#202225',
-    white: '#f0f0f0',
-    green: '#78D37B'
+    white: '#f6f7f1',
+    green: '#34a0a4'
 };
 
 const Card = ({ card }: { card: Activity }) => (
@@ -100,13 +98,13 @@ const Home = () => {
                 placement="left"
                 centerComponent={
                     <>
-                        <Text style={{ color: '#000', fontSize: 25 }}>Olá, Fulaninho!</Text>
+                        <Text style={{ color: colors.green, fontSize: 25 }}>Olá, Fulaninho!</Text>
                     </>
                 }
                 rightComponent={
                     <View style={{ flexDirection: 'row' }}>
-                        <Icon name='insights' size={30} onPress={() => navigation.navigate("Statistics")} />
-                        <Icon name='perm-identity' size={30} onPress={() => navigation.navigate("configTime")} />
+                        <Icon name='insights' size={30} color={colors.green} onPress={() => navigation.navigate("Statistics")}/>
+                        <Icon name='perm-identity' size={30} color={colors.green} onPress={() => navigation.navigate("configTime")}/>
                     </View>
                 }
                 containerStyle={{ marginTop: 25 }}

@@ -235,7 +235,7 @@ const styles = StyleSheet.create({
     container:{
         flex:1,
         marginTop:5,
-        backgroundColor:"white",
+        backgroundColor:"#f6f7f1",
         height: '100%'
       },
       contentList:{
@@ -261,6 +261,7 @@ const styles = StyleSheet.create({
         fontSize: 13,
         textAlign: 'center',
         fontWeight: '500',
+        color: '#db9487'
       },
     
       card:{
@@ -268,7 +269,7 @@ const styles = StyleSheet.create({
         marginLeft: 20,
         marginRight: 20,
         marginTop:20,
-        backgroundColor:"#202225",
+        backgroundColor:"#34a0a4",
         padding: 10,
         flexDirection:'row',
         borderRadius:30,
@@ -336,7 +337,8 @@ const styles = StyleSheet.create({
       titleText: {
         fontSize: 25,
         fontWeight: "bold",
-        textAlign: "center"
+        textAlign: "center",
+        color: '#db9487'
       },
       returnButton: {
         backgroundColor: "#DDDDDD",
