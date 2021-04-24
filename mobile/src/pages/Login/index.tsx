@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, TextInput, KeyboardAvoidingView, TouchableOpacity, Animated, Alert } from 'react-native';
-import { useNavigation , useRoute} from "@react-navigation/native"
+import { StyleSheet, Text, View, TextInput, KeyboardAvoidingView, TouchableOpacity, Animated, Alert, Image } from 'react-native';
+import { useNavigation, useRoute } from "@react-navigation/native"
 import MainApi from "../../services/ApiModule"
 import AsyncStorage from "@react-native-async-storage/async-storage"
 
@@ -22,13 +22,13 @@ const Login = () => {
       }
     }
     fun();
-    
+
   }, []);
 
   useEffect(() => {
-    Animated.spring(offset.y, {toValue: 0, speed: 8, useNativeDriver: true}).start();
+    Animated.spring(offset.y, { toValue: 0, speed: 8, useNativeDriver: true }).start();
   }, []);
-  
+
   function checkLogin(userEmail: string, userPsw: string) {
     MainApi.GetUser(userEmail, userPsw).then(res => {
       if (res.data === null || res.data.length === 0) {
@@ -56,8 +56,11 @@ const Login = () => {
       <KeyboardAvoidingView style={styles.background}>
 
         <View style={styles.containerTitle}>
-          <Text style={styles.titleText}>Desconecta</Text>
+          <Image source={require("../../assets/icone_desconecta.png")}
+            resizeMode='center' style={styles.logo} />
+          <Text style={styles.titleText}>DESCONECTA</Text>
         </View>
+
 
         <Animated.View
           style={[styles.containerBody,
@@ -66,8 +69,8 @@ const Login = () => {
               { translateY: offset.y }]
           }]}>
 
-          <TextInput style={styles.input} placeholder="Email" onChangeText={setEmail}/>
-          <TextInput style={styles.input} secureTextEntry={true} placeholder="Senha" onChangeText={setPsw}/>
+          <TextInput style={styles.input} placeholder="Email" onChangeText={setEmail} />
+          <TextInput style={styles.input} secureTextEntry={true} placeholder="Senha" onChangeText={setPsw} />
 
           <TouchableOpacity style={styles.btnSubmit} onPress={enterLogin}>
             <Text style={styles.submitText}> Entrar</Text>
@@ -79,7 +82,7 @@ const Login = () => {
         </TouchableOpacity> */}
 
           <TouchableOpacity style={styles.btnRegister} onPress={() => navigation.navigate("Register")}>
-            <Text style={styles.registerText}> Criar uma conta</Text>
+            <Text style={styles.registerText}>Criar uma conta</Text>
           </TouchableOpacity>
 
 
@@ -94,7 +97,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#fff',
+    backgroundColor: '#f6f7f1',
 
   },
   containerTitle: {
@@ -105,6 +108,8 @@ const styles = StyleSheet.create({
   },
   titleText: {
     fontSize: 28,
+    fontWeight: 'bold',
+    color: '#db9487'
   },
   containerBody: {
     flex: 1,
@@ -113,7 +118,7 @@ const styles = StyleSheet.create({
     width: '90%',
   },
   input: {
-    backgroundColor: '#E8E8E8',
+    backgroundColor: '#a1c9c9',
     width: '90%',
     padding: 10,
     color: '#000',
@@ -125,11 +130,17 @@ const styles = StyleSheet.create({
   btnSubmit: {
     width: '90%',
     height: 45,
-    backgroundColor: '#1C1C1C',
+    backgroundColor: '#34a0a4',
     marginTop: 10,
     borderRadius: 7,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  logo: {
+    flex: 0.75,
+    alignItems: 'center',
+    margin: 20,
+    marginTop: 100
   },
   submitText: {
     color: '#fff',
@@ -138,7 +149,6 @@ const styles = StyleSheet.create({
   btnRegister: {
     width: '40%',
     height: 30,
-    backgroundColor: '#9C9C9C',
     marginTop: 30,
     borderRadius: 15,
     alignItems: 'center',
@@ -146,7 +156,8 @@ const styles = StyleSheet.create({
 
   },
   registerText: {
-    color: '#fff',
+    color: '#103334',
+    textDecorationLine: 'underline'
   },
   btnReset: {
     marginTop: 5,

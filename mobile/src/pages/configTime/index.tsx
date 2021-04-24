@@ -237,125 +237,125 @@ const configTime = () => {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    marginTop: 5,
-    backgroundColor: "white",
-    height: '100%'
-  },
-  contentList: {
-    flex: 1,
-    height: '100%'
-  },
-  cardContent: {
-    marginLeft: 20,
-    marginTop: 10,
-    alignSelf: 'center'
-  },
-  image: {
-    width: 90,
-    height: 90,
-  },
-  text: {
-    fontSize: 14,
-    textAlign: 'center',
-    fontWeight: '500',
-    margin: 10,
-  },
-  subtitleText: {
-    fontSize: 13,
-    textAlign: 'center',
-    fontWeight: '500',
-  },
-
-  card: {
-    elevation: 20,
-    marginLeft: 20,
-    marginRight: 20,
-    marginTop: 20,
-    backgroundColor: "#202225",
-    padding: 10,
-    flexDirection: 'row',
-    borderRadius: 30,
-  },
-
-  name: {
-    fontSize: 20,
-    flex: 1,
-    alignSelf: 'flex-start',
-    color: "#ffffff",
-    fontWeight: 'bold'
-  },
-  count: {
-    fontSize: 15,
-    flex: 1,
-    alignSelf: 'flex-start',
-    color: "#ffffff"
-  },
-  centeredView: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    marginTop: 22
-  },
-  modalView: {
-    width: '90%',
-    height: '45%',
-    justifyContent: 'center',
-    margin: 20,
-    backgroundColor: "white",
-    borderRadius: 20,
-    padding: 35,
-    alignItems: "center",
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2
-    },
-    shadowOpacity: 5.25,
-    shadowRadius: 9,
-    elevation: 10
-  },
-  button: {
-    borderRadius: 20,
-    padding: 15,
-    elevation: 2
-  },
-  buttonOpen: {
-    backgroundColor: "#F194FF",
-  },
-  buttonClose: {
-    backgroundColor: "#2196F3",
-  },
-  textStyle: {
-    color: "white",
-    fontWeight: "bold",
-    textAlign: "center"
-  },
-  modalText: {
-    fontSize: 25,
-    marginBottom: 15,
-    fontWeight: "bold",
-    textAlign: "center"
-  },
-  titleText: {
-    alignSelf: "center",
-    width:"90%",
-    fontSize: 30,
-    fontWeight: "700",
-    textAlign: "center"
-  },
-  returnButton: {
-    backgroundColor: "#DDDDDD",
-    borderRadius: 50,
-    padding: 6
-  },
-
-  buttonIcon: {
-    justifyContent: 'center',
-    textAlign: 'center',
-    color: '#FFF'
-  },
+    container:{
+        flex:1,
+        marginTop:5,
+        backgroundColor:"#f6f7f1",
+        height: '100%'
+      },
+      contentList:{
+        flex:1,
+        height: '100%'
+      },
+      cardContent: {
+        marginLeft:20,
+        marginTop:10,
+        alignSelf: 'center'
+      },
+      image:{
+        width:90,
+        height:90,
+      },
+      text: {
+        fontSize: 14,
+        textAlign: 'center',
+        fontWeight: '500',
+        margin: 10,
+      },
+      subtitleText: {
+        fontSize: 13,
+        textAlign: 'center',
+        fontWeight: '500',
+        color: '#db9487'
+      },
+    
+      card:{
+        elevation: 20,
+        marginLeft: 20,
+        marginRight: 20,
+        marginTop:20,
+        backgroundColor:"#34a0a4",
+        padding: 10,
+        flexDirection:'row',
+        borderRadius:30,
+      },
+    
+      name:{
+        fontSize:20,
+        flex:1,
+        alignSelf:'flex-start',
+        color:"#ffffff",
+        fontWeight:'bold'
+      },
+      count:{
+        fontSize:15,
+        flex:1,
+        alignSelf:'flex-start',
+        color:"#ffffff"
+      },
+      centeredView: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+        marginTop: 22
+      },
+      modalView: {
+        width: '90%',
+        height: '45%',
+        justifyContent: 'center',
+        margin: 20,
+        backgroundColor: "white",
+        borderRadius: 20,
+        padding: 35,
+        alignItems: "center",
+        shadowColor: "#000",
+        shadowOffset: {
+          width: 0,
+          height: 2
+        },
+        shadowOpacity: 5.25,
+        shadowRadius: 9,
+        elevation: 10
+      },
+      button: {
+        borderRadius: 20,
+        padding: 15,
+        elevation: 2
+      },
+      buttonOpen: {
+        backgroundColor: "#F194FF",
+      },
+      buttonClose: {
+        backgroundColor: "#2196F3",
+      },
+      textStyle: {
+        color: "white",
+        fontWeight: "bold",
+        textAlign: "center"
+      },
+      modalText: {
+        fontSize: 25,
+        marginBottom: 15,
+        fontWeight: "bold",
+        textAlign: "center"
+      },
+      titleText: {
+        fontSize: 25,
+        fontWeight: "bold",
+        textAlign: "center",
+        color: '#db9487'
+      },
+      returnButton: {
+        backgroundColor: "#DDDDDD",
+        borderRadius: 50,
+        padding: 6
+      },
+    
+      buttonIcon: {
+        justifyContent: 'center',
+        textAlign: 'center',
+        color: '#FFF'
+      },
 });
 
 export default configTime

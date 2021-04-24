@@ -121,9 +121,9 @@ const Statistics = () => {
                     yAxisSuffix=" Min"
                     withInnerLines={false}
                     chartConfig={{
-                        backgroundColor: "#202225",
-                        backgroundGradientFrom: "#202225",
-                        backgroundGradientTo: "black",
+                        backgroundColor: "#1C595B",
+                        backgroundGradientFrom: "#1C595B",
+                        backgroundGradientTo: "#1C595B",
                         decimalPlaces: 0, // optional, defaults to 2dp
                         color: (opacity = 1) => `rgba(255, 255, 255, 1)`,
                         labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
@@ -183,10 +183,10 @@ const Statistics = () => {
 }
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        marginTop: 2,
-        backgroundColor: "white",
+    container:{
+        flex:1,
+        marginTop:5,
+        backgroundColor:'#f6f7f1',
         height: '100%'
     },
 
@@ -194,7 +194,7 @@ const styles = StyleSheet.create({
         flex: 1,
         marginTop: 15,
         alignItems: 'center',
-        backgroundColor: "white",
+        backgroundColor: "#f6f7f1",
         height: '100%'
     },
     contentList: {
@@ -215,17 +215,18 @@ const styles = StyleSheet.create({
     titleText: {
         fontSize: 25,
         fontWeight: "bold",
-        textAlign: "center"
-    },
-    returnButton: {
-        backgroundColor: "#DDDDDD",
+        textAlign: "center",
+        color: '#db9487'
+      },
+      returnButton: {
+        backgroundColor: "#a1c9c9",
         borderRadius: 50,
         padding: 6
     },
     item: {
         flex:1,
         alignSelf:"flex-start",
-        backgroundColor: '#202225',
+        backgroundColor: '#34a0a4',
         padding: 16,
         marginHorizontal: 7,
         borderRadius: 10
@@ -239,14 +240,14 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         justifyContent: "space-between",
         alignItems: "center",
-        backgroundColor: "#DDDDDD",
+        backgroundColor: "#a1c9c9",
         padding: 10,
         width: '100%'
     },
     buttonLogout: {
         alignSelf: "center",
         alignItems: "center",
-        backgroundColor: "white",
+        backgroundColor: "#f6f7f1",
         padding: 15,
         width: '100%'
     },

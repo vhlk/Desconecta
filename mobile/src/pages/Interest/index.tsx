@@ -105,9 +105,8 @@ const Interest = () => {
     }
 
     useEffect(() => {
-        console.log('1-', loading);
         setSwitch()
-    }, []);
+    }, [variavel]);
     
     const toggleSwitch = () => setIsEnabled(previousState => !previousState);
     
@@ -126,7 +125,20 @@ const Interest = () => {
         <>
         {loading &&(
             <SafeAreaView style={styles.container}>
+                <Header
+          placement="left"
+     
+          centerComponent={
+            <>
+              <Text style={{ color: '#000', fontSize: 25, alignSelf: 'center', color: '#CE6F5D' }}>Selecione seus Interesses</Text>
+            </>
+          }
+          containerStyle={{ marginTop: 10 }}
+          backgroundColor='white'
+        />
+                
                 <View style={styles.containerChart}>
+                
                     <Text>FILME</Text>
                     <Switch
                         trackColor={{ false: "#767577", true: "#81b0ff" }}
@@ -187,7 +199,7 @@ const Interest = () => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        marginTop: 150,
+        marginTop: 10,
         backgroundColor: "white",
         height: '100%'
     },
@@ -201,6 +213,7 @@ const styles = StyleSheet.create({
     },
 
     titleText: {
+        marginTop:90,
         fontSize: 25,
         fontWeight: "bold",
         textAlign: "center"
@@ -217,18 +230,20 @@ const styles = StyleSheet.create({
         color: '#FFF'
     },
     btnRegister: {
-        width: '70%',
-        height: 50,
-        backgroundColor: '#1C1C1C',
-        marginTop: 30,
-        borderRadius: 15,
-        alignItems: 'center',
+        width: '80%',
+        height: 45,
+        backgroundColor: '#34a0a4',
+        marginTop: 10,
+        borderRadius: 7,
+        alignSelf: 'center',
         justifyContent: 'center',
-
+        marginBottom: 15
     },
     registerText: {
         color: '#fff',
         fontSize: 17,
+        alignSelf: 'center',
+        marginBottom: 5
     },
 });
 
