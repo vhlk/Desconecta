@@ -122,7 +122,7 @@ const Register = () => {
                         transform: [
                             { translateY: offset.y }]
                     }]}>
-                    <Text style={styles.titleText}>Vamos criar um conta! </Text>
+                    <Text style={styles.titleText}>Vamos criar um conta!</Text>
                     <TextInput style={styles.input} placeholder="Nome" onChangeText={setName}/>
                     <TextInput style={styles.input} placeholder="Email" onChangeText={setEmail}/>
                     <TextInput style={styles.input} secureTextEntry={true} placeholder="Senha" onChangeText={setPsw}/>
@@ -146,12 +146,12 @@ const styles = StyleSheet.create({
         flex: 1,
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: '#fff',
+        backgroundColor: '#f6f7f1',
 
     },
     returnButton: {
         alignItems: "center",
-        backgroundColor: "#DDDDDD",
+        backgroundColor: "#a1c9c9",
         borderRadius: 50,
         padding: 6
     },
@@ -166,6 +166,7 @@ const styles = StyleSheet.create({
         textAlign: 'left',
         marginLeft: -80,
         marginBottom: 40,
+        color: '#db9487'
     },
     containerBody: {
         flex: 1,
@@ -174,7 +175,7 @@ const styles = StyleSheet.create({
         width: '90%',
     },
     input: {
-        backgroundColor: '#E8E8E8',
+        backgroundColor: '#a1c9c9',
         width: '90%',
         padding: 10,
         color: '#000',
@@ -183,7 +184,7 @@ const styles = StyleSheet.create({
         borderRadius: 7
     },
     lastInput: {
-        backgroundColor: '#E8E8E8',
+        backgroundColor: '#a1c9c9',
         width: '90%',
         padding: 10,
         color: '#000',
@@ -193,7 +194,7 @@ const styles = StyleSheet.create({
     btnRegister: {
         width: '70%',
         height: 50,
-        backgroundColor: '#1C1C1C',
+        backgroundColor: '#34a0a4',
         marginTop: 30,
         borderRadius: 15,
         alignItems: 'center',
