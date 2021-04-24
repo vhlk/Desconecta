@@ -24,6 +24,10 @@ var suggestionDura = ":("
 var suggestionLink = "https://youtu.be/dQw4w9WgXcQ"
 var favoriteIcon = 'star-border'
 
+const colors = {
+    green: '#091E1F'
+};
+
 async function goToActivity() {
     const supported = await Linking.canOpenURL(suggestionLink);
 
@@ -84,8 +88,8 @@ const Suggestion = () => {
                     }}
                     backgroundColor='rgba(0, 0, 0, 0)'
                 />
-                <LinearGradient colors={['rgba(32,34,37,0)', 'rgba(32,34,37,0.9)', '#202225', '#202225',
-                        '#202225', '#202225', '#202225', '#202225', '#202225', '#202225', '#202225']} 
+                <LinearGradient colors={['rgba(52,160,164,0)', colors.green, colors.green, colors.green,
+                        colors.green, colors.green, colors.green, colors.green, colors.green, colors.green, colors.green]} 
                         style={styles.main}>
                     <View style={styles.info}>
                         <Text style={styles.category}>
@@ -97,7 +101,7 @@ const Suggestion = () => {
                                     {suggestionTitle}
                                 </Text>
                             </ScrollView>
-                            <Icon name={favoriteIcon} size={30} color='#FFF' style={styles.buttonIcon} onPress={toggleSwitch} />
+                            <Icon name={favoriteIcon} size={30} color='#a1c9c9' style={styles.buttonIcon} onPress={toggleSwitch} />
                         </View>
                         <ScrollView style={styles.descContainer}>
                             <Text style={styles.description}>
@@ -119,7 +123,7 @@ const Suggestion = () => {
                             </Text>
                         </RectButton>
                         <TouchableOpacity onPress={handleNav}>
-                            <Text style={{ color: '#FFF', textDecorationLine: 'underline', paddingTop: 10 }}>
+                            <Text style={{ color: '#EFD1CC', textDecorationLine: 'underline', paddingTop: 10 }}>
                                 NÃO TENHO INTERESSE
                             </Text>
                         </TouchableOpacity>
@@ -151,7 +155,7 @@ const styles = StyleSheet.create({
 
     returnButton: {
         alignItems: "center",
-        backgroundColor: "#DDDDDD",
+        backgroundColor: "#a1c9c9",
         borderRadius: 50,
         padding: 6
     },
@@ -170,7 +174,8 @@ const styles = StyleSheet.create({
 
     category: {
         color: '#FFF',
-        fontSize: 12
+        fontSize: 12,
+        paddingTop:10
     },
 
     title: {
@@ -202,7 +207,7 @@ const styles = StyleSheet.create({
     },
 
     startButton: {
-        backgroundColor: '#1ab2ff',
+        backgroundColor: '#34a0a4',
         height: 50,
         width: '100%',
         borderRadius: 10,
