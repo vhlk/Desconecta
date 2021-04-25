@@ -27,7 +27,7 @@ const Item = ({ item }) => (
 const Favorites = () => {
     const navigation = useNavigation();
     const [userId, setUserId]= useState("-1");
-    const [favoriteList, setFavoriteList]= useState([]);
+    const [favoriteList, setFavoriteList]= useState(null);
     const [username, setUsername]= useState("");
 
     const renderItem = ({ item }) => (
@@ -43,7 +43,8 @@ const Favorites = () => {
 
     useEffect(()=>{
         async function updateFavorites() {
-            MainApi.GetAllFavoritesForUser(userId).then(res => setFavoriteList(res.data));
+            MainApi.GetAllFavoritesForUser(userId).then(res => {
+                setFavoriteList(res.data)});
         }
         async function updateUsername() {
             MainApi.GetUserDataByID(+userId).then(res => setUsername(res.data[0].Name));
@@ -77,10 +78,10 @@ const Favorites = () => {
                 backgroundColor='rgba(0,0,0,0)'
             />
             <View style={styles.favoriteList}>
-                {favoriteList.length>0 &&(
+                {favoriteList !== null && favoriteList.length > 0 &&(
                 <FlatList
                     data={favoriteList}
-                    keyExtractor={(item) => item.Activity_ID}
+                    keyExtractor={(item) => {return item.Activities_ID}}
                     renderItem={renderItem}
                 />)}
             </View>

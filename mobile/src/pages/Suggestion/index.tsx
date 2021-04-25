@@ -54,10 +54,9 @@ const Suggestion = () => {
     const route = useRoute()
     var routeParam = route.params as Activity
 
-    var isFavorite = false;
-    const [userId, setUserId]= useState("-1");
-    const [favoriteIcon, setFavoriteIcon]= useState("sync");
-    const [favoriteList, setFavoriteList]= useState([]);
+    const [isFavorite, setIsFavorite] = useState<boolean|null>(null);
+    const [userId, setUserId] = useState("-1");
+    const [favoriteList, setFavoriteList] = useState(null);
 
     useEffect(() => {
         setActivity(routeParam);
@@ -68,48 +67,34 @@ const Suggestion = () => {
         getUserId();
     }, []);
 
-    useEffect(()=>{
+    useEffect(() => {
         async function updateFavorites() {
             MainApi.GetAllFavoritesForUser(userId).then(res => setFavoriteList(res.data));
         }
-        if(userId != '-1'){
+        if (userId != '-1') {
             updateFavorites();
         }
-    },[userId]);
+    }, [userId]);
 
-    useEffect(()=>{
-        for(let i = 0; i < favoriteList.length;i++){
-            if (favoriteList[i].Activities_ID == routeParam.Activity_ID) {
-                isFavorite = (favoriteList[i].Activities_ID == routeParam.Activity_ID);
-                break;
+    useEffect(() => {
+        if (favoriteList !== null) {
+            const found = favoriteList.find(item => item.Activities_ID == routeParam.Activity_ID);
+            if (found) {
+                setIsFavorite(true);
+            } else {
+                setIsFavorite(false);
             }
         }
-        if(userId != '-1'){
-            updateFavIcon();
-        }
-    },[favoriteList]);
-
-    useEffect(()=>{
-        if(userId!='-1'){
-            updateFavIcon();
-        }
-    },[isFavorite]);
-
-    const updateFavIcon = () => {
-        if (isFavorite) {
-            setFavoriteIcon('star')
-        } else {
-            setFavoriteIcon('star-border')
-        }
-    }
+    }, [favoriteList]);
 
     const toggleSwitch = async () => {
-        isFavorite = !isFavorite;
-        updateFavIcon();
-        if(isFavorite){
+        const newFavorite = !isFavorite;
+        setIsFavorite(newFavorite);
+
+        if (newFavorite) {
             await MainApi.InsertFavoriteForUser(userId, routeParam.Activity_ID.toString());
             MainApi.GetAllFavoritesForUser(userId).then(res => setFavoriteList(res.data));
-        } else{
+        } else {
             await MainApi.DeleteFavoriteForUser(userId, routeParam.Activity_ID.toString());
             MainApi.GetAllFavoritesForUser(userId).then(res => setFavoriteList(res.data));
         }
@@ -153,7 +138,7 @@ const Suggestion = () => {
                                     {suggestionTitle}
                                 </Text>
                             </ScrollView>
-                            <Icon name={favoriteIcon} size={30} color='#a1c9c9' style={styles.buttonIcon} onPress={toggleSwitch} />
+                            <Icon name={isFavorite === null? 'sync':(isFavorite?'star':'star-border')} size={30} color='#a1c9c9' style={styles.buttonIcon} onPress={toggleSwitch} />
                         </View>
                         <ScrollView style={styles.descContainer}>
                             <Text style={styles.description}>
@@ -162,7 +147,7 @@ const Suggestion = () => {
                         </ScrollView>
                         <View style={styles.duration}>
                             <Icon name='access-time' size={13} color='#FFF' style={styles.buttonIcon} />
-                            <Text style={{fontFamily:'Montserrat-Medium', color: '#FFF', padding: 5, fontSize: 13 }}>
+                            <Text style={{ fontFamily: 'Montserrat-Medium', color: '#FFF', padding: 5, fontSize: 13 }}>
                                 {suggestionDura}
                             </Text>
                         </View>
@@ -170,12 +155,12 @@ const Suggestion = () => {
                     {/* Alterar esses botões dependendo do status da atividade */}
                     <View style={styles.buttons}>
                         <RectButton style={styles.startButton} onPress={goToActivity}>
-                            <Text style={{ fontFamily:'Montserrat-Bold', color: '#FFF', fontSize: 17 }}>
+                            <Text style={{ fontFamily: 'Montserrat-Bold', color: '#FFF', fontSize: 17 }}>
                                 COMEÇAR A ATIVIDADE
                             </Text>
                         </RectButton>
                         <TouchableOpacity onPress={handleNav}>
-                            <Text style={{fontFamily:'Montserrat-Medium',  color: '#EFD1CC', textDecorationLine: 'underline', paddingTop: 10 }}>
+                            <Text style={{ fontFamily: 'Montserrat-Medium', color: '#EFD1CC', textDecorationLine: 'underline', paddingTop: 10 }}>
                                 NÃO TENHO INTERESSE
                             </Text>
                         </TouchableOpacity>
@@ -226,7 +211,7 @@ const styles = StyleSheet.create({
 
     category: {
         color: '#FFF',
-        fontFamily:'Montserrat-Medium',
+        fontFamily: 'Montserrat-Medium',
         fontSize: 12,
         paddingTop: 10
     },
@@ -241,12 +226,12 @@ const styles = StyleSheet.create({
     titleText: {
         color: '#FFF',
         fontSize: 20,
-        fontFamily:'Montserrat-Bold'
+        fontFamily: 'Montserrat-Bold'
     },
 
     description: {
         color: '#FFF',
-        fontFamily:'Montserrat-Medium',
+        fontFamily: 'Montserrat-Medium',
         paddingVertical: 5
     },
 
