@@ -27,6 +27,8 @@ const Item = ({ Name }) => (
 const Statistics = () => {
     const LOGIN_ID = "LOGIN_ID";
     const [variavel, setVariavel] = useState<Categories[]>([]);
+    const [username, setUsername]= useState("");
+    const [userId, setUserId]= useState("-1");
 
     const getCategory = async (id: string) => {
         const response = await MainApi.GetInterestForUser(id);
@@ -38,9 +40,21 @@ const Statistics = () => {
         async function fun() {
             const login = await AsyncStorage.getItem(LOGIN_ID);
             getCategory((login == null) ? '-1' : login);
+            setUserId((login == null) ? '-1' : login);
           }
           fun();
     }, []);
+
+    useEffect(()=>{
+        async function updateUsername() {
+            MainApi.GetUserDataByID(+userId).then(res => setUsername(res.data[0].Name));
+        }
+        if(userId != '-1'){
+            updateUsername();
+        }
+    },[userId]);
+
+
     useEffect(() => {
         async function fun() {
             TrackerModule.GetDailyTimeForApps(["Chrome", "WhatsApp", "Facebook", "Instagram", "Twitter"],
@@ -90,7 +104,7 @@ const Statistics = () => {
                 }
                 centerComponent={
                     <>
-                        <Text style={{ color: '#000', fontSize: 25 }}>Olá, Fulaninho!</Text>
+                        {username!="" &&(<Text style={{ color: '#DB9487', fontSize: 25 }}>Olá, {username}!</Text>)}
                     </>
                 }
                 rightComponent={
@@ -259,10 +273,12 @@ const styles = StyleSheet.create({
     },
     interests: {
         flex: 2,
+        justifyContent: "space-between",
         alignSelf: "flex-start"
     },
     yourInterests: {
         padding:15,
+        width: '100%',
         flexDirection: "row",
         justifyContent: "space-between",
         alignItems: "center"

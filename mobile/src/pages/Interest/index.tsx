@@ -121,9 +121,9 @@ const Interest = () => {
     
     
     const toggleSwitch_4 = () => setIsEnabled_4(previousState => !previousState);
+    console.log('12');
     return (
         <>
-        {loading &&(
             <SafeAreaView style={styles.container}>
                 <Header
           placement="left"
@@ -192,7 +192,6 @@ const Interest = () => {
                         <Text style={styles.registerText}>Salvar</Text>
                 </TouchableOpacity>
             </SafeAreaView>
-        )}
         </>
     );
 }
