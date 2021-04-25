@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, TextInput, KeyboardAvoidingView, TouchableOpacity, Animated, Alert, Image } from 'react-native';
+import { StyleSheet, Text, View, TextInput, KeyboardAvoidingView, TouchableOpacity, Animated, Alert, Image, ActivityIndicator } from 'react-native';
 import { useNavigation, useRoute } from "@react-navigation/native"
 import MainApi from "../../services/ApiModule"
 import AsyncStorage from "@react-native-async-storage/async-storage"
@@ -12,6 +12,7 @@ const Login = () => {
   const LOGIN_EMAIL = "LOGIN_EMAIL";
   const LOGIN_PSW = "LOGIN_PSW";
   const LOGIN_ID = "LOGIN_ID";
+  const [checkingLogin, setCheckingLogin] = useState(false);
 
   useEffect(() => {
     async function fun() {
@@ -32,23 +33,26 @@ const Login = () => {
   function checkLogin(userEmail: string, userPsw: string) {
     MainApi.GetUser(userEmail, userPsw).then(res => {
       if (res.data === null || res.data.length === 0) {
+        setCheckingLogin(false);
         Alert.alert("Não foi possível fazer login", "Por favor verifique os dados digitados!");
       }
       else {
-        navigation.navigate("Home");
+        setCheckingLogin(false);
         saveLogin(res.data[0].ID);
+        navigation.navigate("Home");
       }
     }).catch(err => console.log(err));
     return false;
   }
 
-  async function saveLogin(ID:string) {
+  async function saveLogin(ID: string) {
     await AsyncStorage.setItem(LOGIN_EMAIL, email);
     await AsyncStorage.setItem(LOGIN_PSW, psw);
     await AsyncStorage.setItem(LOGIN_ID, ID.toString());
   }
 
   function enterLogin() {
+    setCheckingLogin(true);
     checkLogin(email, psw);
   }
 
@@ -73,10 +77,12 @@ const Login = () => {
           <TextInput style={styles.input} placeholder="Email" onChangeText={setEmail} />
           <TextInput style={styles.input} secureTextEntry={true} placeholder="Senha" onChangeText={setPsw} />
 
-          <TouchableOpacity style={styles.btnSubmit} onPress={enterLogin}>
-            <Text style={styles.submitText}> Entrar</Text>
-          </TouchableOpacity>
-
+          {!checkingLogin && (
+              <TouchableOpacity style={styles.btnSubmit} onPress={enterLogin}>
+                <Text style={styles.submitText}>Entrar</Text>
+              </TouchableOpacity>)
+           || 
+          ( <ActivityIndicator size="large" color={'#34a0a4'} />)}
 
           {/* <TouchableOpacity style={styles.btnReset}>
           <Text style={styles.resetText}> Esqueci a senha</Text>

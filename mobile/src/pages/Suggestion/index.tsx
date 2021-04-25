@@ -5,6 +5,7 @@ import { Header, Icon } from "react-native-elements";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import LinearGradient from 'react-native-linear-gradient';
 import AsyncStorage from "@react-native-async-storage/async-storage";
+
 import MainApi from '../../services/ApiModule';
 
 interface Activity {
@@ -24,7 +25,6 @@ var suggestionTitle = "Não era para isso"
 var suggestionDesc = "APARECER"
 var suggestionDura = ":("
 var suggestionLink = "https://youtu.be/dQw4w9WgXcQ"
-var favoriteIcon = 'star-border'
 
 const colors = {
     green: '#091E1F'

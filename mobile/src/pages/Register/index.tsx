@@ -1,6 +1,6 @@
 import { NavigationHelpersContext } from '@react-navigation/native';
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, TextInput, KeyboardAvoidingView, TouchableOpacity, Animated, Alert } from 'react-native';
+import { StyleSheet, Text, View, TextInput, KeyboardAvoidingView, TouchableOpacity, Animated, Alert, ActivityIndicator } from 'react-native';
 import { Header, Icon } from "react-native-elements"
 import { useNavigation , useRoute} from "@react-navigation/native"
 import MainApi from "../../services/ApiModule"
@@ -15,6 +15,7 @@ const Register = () => {
     const [psw, setPsw] = useState("");
     const [pswConf, setPswConf] = useState("");
     const [pswsMatches, setPswMatches] = useState(false);
+    const [checkingRegister, setCheckingRegister] = useState(false);
     const LOGIN_EMAIL = "LOGIN_EMAIL";
     const LOGIN_PSW = "LOGIN_PSW";
     const LOGIN_ID = "LOGIN_ID";
@@ -31,8 +32,8 @@ const Register = () => {
             Alert.alert("Não foi possível fazer login", "Por favor verifique os dados digitados!");
           }
           else {
-            navigation.navigate("Home");
             saveLogin(res.data[0].ID);
+            navigation.navigate("Home");
           }
         }).catch(err => console.log(err));
         return false;
@@ -44,28 +45,35 @@ const Register = () => {
             if (!emailExists) {
                 MainApi.InsertUser(name, email, psw);
                 checkLogin(email, psw);
+                setCheckingRegister(false);
             }
             else {
+                setCheckingRegister(false);
                 Alert.alert("Email inválido", "O email já existe!");
             }
         });
       }
     
     function enterRegister() {
+        setCheckingRegister(true);
         if (name === "") {
             Alert.alert("Nome inválido", "O nome não pode ser vazio!");
+            setCheckingRegister(false);
             return;
         }
         else if (email === "") {
             Alert.alert("Email inválido", "O email não pode ser vazio!");
+            setCheckingRegister(false);
             return;
         }
         else if (psw === "") {
             Alert.alert("Senha inválida", "A senha não pode ser vazia!");
+            setCheckingRegister(false);
             return;
         }
         else if (!pswsMatches) {
             Alert.alert("Senha inválida", "As senhas não batem!");
+            setCheckingRegister(false);
             return;
         }
 
@@ -142,10 +150,11 @@ const Register = () => {
                     <TextInput style={styles.input} secureTextEntry={true} placeholder="Senha" onChangeText={setPsw}/>
                     <TextInput style={styles.lastInput} secureTextEntry={true} placeholder="Confirme a senha" onChangeText={setPswConf} />
                     <Text style={styles.pswDoesntMatch}>{pswDoesntMatchText}</Text>
-
+                    {!checkingRegister && (
                     <TouchableOpacity style={styles.btnRegister} onPress={enterRegister}>
                         <Text style={styles.registerText}>Cadastar</Text>
-                    </TouchableOpacity>
+                    </TouchableOpacity>) || 
+                    ( <ActivityIndicator size="large" color={'#34a0a4'} />)}
 
                 </Animated.View>
 

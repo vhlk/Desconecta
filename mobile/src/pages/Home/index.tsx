@@ -5,6 +5,7 @@ import { Header, Icon } from "react-native-elements"
 import { useNavigation } from "@react-navigation/native"
 import Swiper from "react-native-deck-swiper";
 import LinearGradient from 'react-native-linear-gradient';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import MainApi from "../../services/ApiModule"
 
@@ -32,6 +33,7 @@ const colors = {
     black: '#202225',
     white: '#f6f7f1',
     green: '#34a0a4',
+    pink:'#DB9487',
     darkgreen: 'rgba(9,30,31,1)',
     transparent: 'rgba(0,0,0,0)'
 };
@@ -61,10 +63,12 @@ const Card = ({ card }: { card: Activity }) => (
 // const swiperRef = React.createRef();
 
 const Home = () => {
-    const [index, setIndex] = useState(0)
-    var [activities, setActivities] = useState<Activity[]>([])
-    const [categories, setCategories] = useState<Category[]>([])
-    var categoriesFixxed = false
+    const [index, setIndex] = useState(0);
+    var [activities, setActivities] = useState<Activity[]>([]);
+    const [categories, setCategories] = useState<Category[]>([]);
+    const [username, setUsername]= useState("");
+    const [userId, setUserId]= useState("-1");
+    var categoriesFixxed = false;
 
     const getCategories = async () => {
         await MainApi.GetAllCategories().then(res => setCategories(res.data))
@@ -75,18 +79,31 @@ const Home = () => {
 
     function fixCategories() {
         for (let i = 0; i < activities.length; i++) {
-            const index = categories.findIndex(category => category.ID.toString() == activities[i].Category_ID)
+            const index = categories.findIndex(category => category.ID.toString() == activities[i].Category_ID);
             if (index != -1) {
-                activities[i].Category_ID = categories[index].Name
+                activities[i].Category_ID = categories[index].Name;
             }
         }
-        return true
+        return true;
     }
 
     useEffect(() => {
-        getCategories()
-        getActivities()
-    }, [])
+        getCategories();
+        getActivities();
+        async function getUserId() {
+            const id = await AsyncStorage.getItem("LOGIN_ID");
+            setUserId((id == null) ? '0' : id);
+        }
+        getUserId();
+    }, []);
+
+    useEffect(() => {
+        async function updateUsername() {
+            MainApi.GetUserDataByID(+userId).then(res => setUsername(res.data[0].Name));
+        }
+        if(userId != '-1')
+            updateUsername();
+    }, [userId])
 
     if (activities.length != 0 && categories.length != 0) {
         categoriesFixxed = fixCategories()
@@ -103,13 +120,13 @@ const Home = () => {
                 placement="left"
                 centerComponent={
                     <>
-                        <Text style={{ color: colors.green, fontSize: 25 }}>Olá, Fulaninho!</Text>
+                        {username!="" &&(<Text style={{ color: colors.pink, fontSize: 25 }}>Olá, {username}!</Text>)}
                     </>
                 }
                 rightComponent={
                     <View style={{ flexDirection: 'row' }}>
-                        <Icon name='insights' size={30} color={colors.green} onPress={() => navigation.navigate("Statistics")} />
-                        <Icon name='perm-identity' size={30} color={colors.green} onPress={() => navigation.navigate("configTime")} />
+                        <Icon name='star-border' size={30} color={colors.green} style={styles.headerIcon} onPress={() => navigation.navigate("Favorites")}/>
+                        <Icon name='person' size={30} color={colors.green}  style={styles.headerIcon}  onPress={() => navigation.navigate("configTime")} />
                     </View>
                 }
                 containerStyle={{ marginTop: 25 }}
@@ -342,7 +359,11 @@ const styles = StyleSheet.create({
         alignItems: "flex-start",
         width:'100%',
         height:'70%'
+    },
+    headerIcon: {
+        paddingHorizontal: 5
     }
+
 
 });
 
