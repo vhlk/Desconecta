@@ -18,7 +18,7 @@ import Slider from '@react-native-community/slider';
 import AsyncStorage from "@react-native-async-storage/async-storage"
 import TrackAppsUsage from "../../services/AppsTracker/TrackerModule"
 import { useNavigation } from "@react-navigation/native"
-import  MainApi  from "../../services/ApiModule"
+import MainApi from "../../services/ApiModule"
 
 
 const configTime = () => {
@@ -31,26 +31,26 @@ const configTime = () => {
   const ACTIVE = "ATIVO";
   const [activeIcon, setActiveIcon] = useState("check-circle");
   const [activeIconColor, setActiveIconColor] = useState("green");
-  const [username, setUsername]= useState("");
-  const [userId, setUserId]= useState("-1");
+  const [username, setUsername] = useState("");
+  const [userId, setUserId] = useState("-1");
   const LOGIN_ID = "LOGIN_ID";
-  
+
   useEffect(() => {
-      async function fun() {
-          const login = await AsyncStorage.getItem(LOGIN_ID);
-          setUserId((login == null) ? '-1' : login);
-        }
-        fun();
+    async function fun() {
+      const login = await AsyncStorage.getItem(LOGIN_ID);
+      setUserId((login == null) ? '-1' : login);
+    }
+    fun();
   }, []);
 
-  useEffect(()=>{
-      async function updateUsername() {
-          MainApi.GetUserDataByID(+userId).then(res => setUsername(res.data[0].Name));
-      }
-      if(userId != '-1'){
-          updateUsername();
-      }
-  },[userId]);
+  useEffect(() => {
+    async function updateUsername() {
+      MainApi.GetUserDataByID(+userId).then(res => setUsername(res.data[0].Name));
+    }
+    if (userId != '-1') {
+      updateUsername();
+    }
+  }, [userId]);
 
   useEffect(() => {
     async function fun() {
@@ -160,11 +160,11 @@ const configTime = () => {
   }, []);
 
   const [data, setData] = useState([
-    { id: 1, name: "WhatsApp", image: "https://logospng.org/download/whatsapp/logo-whatsapp-verde-icone-ios-android-256.png", count: 0 },
-    { id: 2, name: "Facebook", image: "https://imagepng.org/wp-content/uploads/2017/09/facebook-icone-icon.png", count: 12 },
-    { id: 3, name: "Instagram", image: "https://logodownload.org/wp-content/uploads/2017/04/instagram-logo.png", count: 2 },
-    { id: 4, name: "Twitter", image: "https://imagepng.org/wp-content/uploads/2018/08/twitter-icone-5.png", count: 23 },
-    { id: 5, name: "TikTok", image: "https://logodownload.org/wp-content/uploads/2019/08/tiktok-logo-0-1.png", count: 4 },
+    { id: 1, name: "WhatsApp", image: require('../../assets/wpp_icon.png'), count: 0 },
+    { id: 2, name: "Facebook", image: require('../../assets/fb_icon.png'), count: 12 },
+    { id: 3, name: "Instagram", image: require('../../assets/insta_icon.png'), count: 2 },
+    { id: 4, name: "Twitter", image: require('../../assets/twitter_icon.png'), count: 23 },
+    { id: 5, name: "TikTok", image: require('../../assets/tiktok_icon.png'), count: 4 },
   ]);
   const navigation = useNavigation()
   return (
@@ -183,13 +183,15 @@ const configTime = () => {
           }
           centerComponent={
             <>
-              {username!="" &&(<Text style={{ color: '#DB9487', fontSize: 25 }}>Olá, {username}!</Text>)}
+              {username != "" && (<Text style={{ color: '#DB9487', fontSize: 25, fontFamily: 'MontserratAlternates-SemiBold' }}>
+                Olá, {username}!
+              </Text>)}
             </>
           }
           rightComponent={
             <View style={{ flexDirection: 'row' }}>
-              <Icon name='insights' size={30} onPress={() => navigation.navigate("Statistics")} />
-              <Icon name='perm-identity' size={30} onPress={() => navigation.navigate("configTime")} />
+              <Icon name='star-border' size={30} color={'#34a0a4'} onPress={() => navigation.navigate("Favorites")} />
+              <Icon name='person' size={30} color={'#34a0a4'} onPress={() => navigation.navigate("Statistics")} />
             </View>
           }
           containerStyle={{ marginTop: 10 }}
@@ -197,7 +199,11 @@ const configTime = () => {
         />
         <Text style={styles.titleText}>Personalize seu tempo nas Redes</Text>
         <View style={{ padding: 10 }}>
-          <Button title={activeString} type="clear" icon={<Icon name={activeIcon} color={activeIconColor} />} onPress={async () => { await saveActive(!active) }} />
+          <Button title={activeString} type="clear" icon={<Icon name={activeIcon} color={activeIconColor} />} 
+            onPress={async () => { 
+              await saveActive(!active);
+              TrackAppsUsage.AskForPermission();
+              }} />
         </View>
         <View style={styles.container}>
           <Modal
@@ -241,11 +247,17 @@ const configTime = () => {
             renderItem={({ item }) => {
               return (
                 <TouchableOpacity style={styles.card} onPress={() => openSettingsModal(item.name, item.count)}>
-                  <Image style={styles.image} source={{ uri: item.image }} />
+                  <Image style={styles.image} source={item.image} />
                   <View style={styles.cardContent}>
                     <Text style={styles.name}>{item.name}</Text>
                     <View>
-                      {item.count <= 60 ? <Text style={styles.count}>Meta: {item.count} Min por dia</Text> : <Text style={styles.count}>Meta: 1H {item.count - 60} Min por dia</Text>}
+                      {item.count <= 60 ? 
+                      <Text style={styles.count}>
+                        Meta: {item.count} Min por dia
+                      </Text> : 
+                      <Text style={styles.count}>
+                        Meta: 1H {item.count - 60} Min por dia
+                      </Text>}
                     </View>
                   </View>
                 </TouchableOpacity>
@@ -258,125 +270,130 @@ const configTime = () => {
 }
 
 const styles = StyleSheet.create({
-    container:{
-        flex:1,
-        marginTop:5,
-        backgroundColor:"#f6f7f1",
-        height: '100%'
-      },
-      contentList:{
-        flex:1,
-        height: '100%'
-      },
-      cardContent: {
-        marginLeft:20,
-        marginTop:10,
-        alignSelf: 'center'
-      },
-      image:{
-        width:90,
-        height:90,
-      },
-      text: {
-        fontSize: 14,
-        textAlign: 'center',
-        fontWeight: '500',
-        margin: 10,
-      },
-      subtitleText: {
-        fontSize: 13,
-        textAlign: 'center',
-        fontWeight: '500',
-        color: '#db9487'
-      },
-    
-      card:{
-        elevation: 20,
-        marginLeft: 20,
-        marginRight: 20,
-        marginTop:20,
-        backgroundColor:"#34a0a4",
-        padding: 10,
-        flexDirection:'row',
-        borderRadius:30,
-      },
-    
-      name:{
-        fontSize:20,
-        flex:1,
-        alignSelf:'flex-start',
-        color:"#ffffff",
-        fontWeight:'bold'
-      },
-      count:{
-        fontSize:15,
-        flex:1,
-        alignSelf:'flex-start',
-        color:"#ffffff"
-      },
-      centeredView: {
-        flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
-        marginTop: 22
-      },
-      modalView: {
-        width: '90%',
-        height: '45%',
-        justifyContent: 'center',
-        margin: 20,
-        backgroundColor: "white",
-        borderRadius: 20,
-        padding: 35,
-        alignItems: "center",
-        shadowColor: "#000",
-        shadowOffset: {
-          width: 0,
-          height: 2
-        },
-        shadowOpacity: 5.25,
-        shadowRadius: 9,
-        elevation: 10
-      },
-      button: {
-        borderRadius: 20,
-        padding: 15,
-        elevation: 2
-      },
-      buttonOpen: {
-        backgroundColor: "#F194FF",
-      },
-      buttonClose: {
-        backgroundColor: "#2196F3",
-      },
-      textStyle: {
-        color: "white",
-        fontWeight: "bold",
-        textAlign: "center"
-      },
-      modalText: {
-        fontSize: 25,
-        marginBottom: 15,
-        fontWeight: "bold",
-        textAlign: "center"
-      },
-      titleText: {
-        fontSize: 25,
-        fontWeight: "bold",
-        textAlign: "center",
-        color: '#db9487'
-      },
-      returnButton: {
-        backgroundColor: "#DDDDDD",
-        borderRadius: 50,
-        padding: 6
-      },
-    
-      buttonIcon: {
-        justifyContent: 'center',
-        textAlign: 'center',
-        color: '#FFF'
-      },
+  container: {
+    flex: 1,
+    marginTop: 5,
+    backgroundColor: "#f6f7f1",
+    height: '100%'
+  },
+  contentList: {
+    flex: 1,
+    height: '100%',
+    marginBottom:20
+  },
+  cardContent: {
+    marginLeft: 20,
+    marginTop: 10,
+    alignSelf: 'center'
+  },
+  image: {
+    width: 80,
+    height: 80,
+    margin:10,
+    marginRight:0,
+    tintColor:'#f6f7f1'
+  },
+  text: {
+    fontSize: 14,
+    textAlign: 'center',
+    fontFamily:'Montserrat-Regular',
+    margin: 10,
+  },
+  subtitleText: {
+    fontSize: 14,
+    textAlign: 'center',
+    fontFamily:'Montserrat-Medium',
+    color: '#db9487'
+  },
+
+  card: {
+    elevation: 20,
+    marginLeft: 20,
+    marginRight: 20,
+    marginTop: 20,
+    backgroundColor: "#34a0a4",
+    padding: 10,
+    flexDirection: 'row',
+    borderRadius: 30,
+  },
+
+  name: {
+    fontSize: 20,
+    flex: 1,
+    alignSelf: 'flex-start',
+    color: "#ffffff",
+    fontFamily:'Montserrat-Bold'
+  },
+  count: {
+    fontSize: 15,
+    fontFamily:'Montserrat-Regular',
+    flex: 1,
+    alignSelf: 'flex-start',
+    color: "#ffffff"
+  },
+  centeredView: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 22
+  },
+  modalView: {
+    width: '90%',
+    height: '45%',
+    justifyContent: 'center',
+    margin: 20,
+    backgroundColor: "white",
+    borderRadius: 20,
+    padding: 35,
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2
+    },
+    shadowOpacity: 5.25,
+    shadowRadius: 9,
+    elevation: 10
+  },
+  button: {
+    borderRadius: 20,
+    padding: 15,
+    elevation: 2
+  },
+  buttonOpen: {
+    backgroundColor: "#F194FF",
+  },
+  buttonClose: {
+    backgroundColor: "#2196F3",
+  },
+  textStyle: {
+    color: "white",
+    fontFamily:'Montserrat-Bold',
+    textAlign: "center"
+  },
+  modalText: {
+    fontSize: 25,
+    marginBottom: 15,
+    fontFamily:'Montserrat-Bold',
+    textAlign: "center"
+  },
+  titleText: {
+    fontSize: 25,
+    fontFamily:'Montserrat-Bold',
+    textAlign: "center",
+    color: '#db9487'
+  },
+  returnButton: {
+    backgroundColor: "#a1c9c9",
+    borderRadius: 50,
+    padding: 6
+  },
+
+  buttonIcon: {
+    justifyContent: 'center',
+    textAlign: 'center',
+    color: '#FFF'
+  },
 });
 
 export default configTime

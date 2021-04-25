@@ -15,7 +15,7 @@ import  MainApi  from "../../services/ApiModule"
 import AsyncStorage from "@react-native-async-storage/async-storage"
 
 interface Categories {
-    ID: number,
+    Category_ID: string,
     Name: string,
 }
 
@@ -30,23 +30,24 @@ const Statistics = () => {
     const [username, setUsername]= useState("");
     const [userId, setUserId]= useState("-1");
 
-    const getCategory = async (id: string) => {
-        const response = await MainApi.GetInterestForUser(id);
-        console.log(response.data);
-        setVariavel(response.data);
+    const getCategory = (id: string) => {
+        MainApi.GetInterestForUser(id).then(res => setVariavel(res.data));
       }
 
     useEffect(() => {
-        async function fun() {
-            const login = await AsyncStorage.getItem(LOGIN_ID);
-            getCategory((login == null) ? '-1' : login);
-            setUserId((login == null) ? '-1' : login);
+        setVariavel([]);
+        function fun() {
+            AsyncStorage.getItem(LOGIN_ID).then(
+                res => {
+                    setUserId((res == null) ? '-1' : res);
+                    getCategory((res == null) ? '-1' : res);
+            });
           }
           fun();
     }, []);
 
     useEffect(()=>{
-        async function updateUsername() {
+        function updateUsername() {
             MainApi.GetUserDataByID(+userId).then(res => setUsername(res.data[0].Name));
         }
         if(userId != '-1'){
@@ -56,21 +57,19 @@ const Statistics = () => {
 
 
     useEffect(() => {
-        async function fun() {
+        function fun() {
             TrackerModule.GetDailyTimeForApps(["Chrome", "WhatsApp", "Facebook", "Instagram", "Twitter"],
                 (error: String, value: Object) => {
                     if (error) {
                         console.log(error)
                     }
                     else {
-                        console.log(value);
                         var newData = [...data];
 
                         newData[0] = Math.round(value["Google Chrome"] ? value["Google Chrome"] : 0);
                         newData[1] = Math.round(value["Instagram"] ? value["Instagram"] : 0);
                         newData[2] = Math.round(value["Twitter"] ? value["Twitter"] : 0);
                         newData[3] = Math.round(value["WhatsApp"] ? value["WhatsApp"] : 0);
-                        console.log(newData);
                         setData(newData);
                     }
                 })
@@ -104,20 +103,24 @@ const Statistics = () => {
                 }
                 centerComponent={
                     <>
-                        {username!="" &&(<Text style={{ color: '#DB9487', fontSize: 25 }}>Olá, {username}!</Text>)}
+                        {username!="" &&(<Text style={{ color: '#DB9487', fontSize: 25, fontFamily:'MontserratAlternates-SemiBold'}}>
+                            Olá, {username}!
+                            </Text>)}
                     </>
                 }
                 rightComponent={
                     <View style={{ flexDirection: 'row' }}>
-                        <Icon name='insights' size={30} onPress={() => navigation.navigate("Statistics")} />
-                        <Icon name='perm-identity' size={30} onPress={() => navigation.navigate("configTime")} />
+                        <Icon name='star-border' size={30} color={'#34a0a4'} onPress={() => navigation.navigate("Favorites")} />
+                        <Icon name='person' size={30} color={'#34a0a4'} onPress={() => navigation.navigate("Statistics")} />
                     </View>
                 }
                 containerStyle={{ marginTop: 10 }}
                 backgroundColor='#f0f0f0'
             />
             <View style={styles.containerChart}>
-                <Text style={{ color: '#000', fontSize: 25, fontWeight:'700' }}>Estatística</Text>
+                <Text style={{ color: '#000', fontSize: 25, fontFamily:'Montserrat-Bold'}}>
+                    Estatística
+                </Text>
                 <BarChart
                     data={{
                         labels: ["Chrome", "Instagram", "Twitter", "WhatsApp"],
@@ -158,16 +161,16 @@ const Statistics = () => {
                 />
                 <View style={styles.interests}>
                     <View style={styles.yourInterests}>
-                        <Text style={{ color: '#000', fontSize: 22, fontWeight: '700',  marginTop:2 }} >Seus Interesses</Text>
+                        <Text style={{ color: '#000', fontSize: 22,  fontFamily:'Montserrat-Bold',  marginTop:2 }} >Seus Interesses</Text>
                         <Icon name='edit' size={25} color='#000' onPress={() => navigation.navigate("Interest")}/>
                     </View>
-                
+                    {variavel !== null && variavel.length > 0 &&(
                     <FlatList
                         data={variavel}
                         renderItem={renderItem}
                         horizontal={true}
-                        keyExtractor={item => item.ID}
-                    />
+                        keyExtractor={item => {return item.Category_ID}}
+                    />)}
                 </View>
             </View>
             <View style={{padding:10}}>
@@ -175,13 +178,13 @@ const Statistics = () => {
                     style={styles.button}
                     onPress={() => navigation.navigate("configTime")}
                 >
-                    <Text>Configure seu tempo</Text>
+                    <Text style={{fontFamily:'Montserrat-Regular'}}>Configure seu tempo</Text>
                     <Icon name='edit' size={20} color='#000'/>
                 </TouchableOpacity>
                 <TouchableOpacity
                     style={styles.button}
                 >
-                    <Text>Edite seu perfil</Text>
+                    <Text style={{fontFamily:'Montserrat-Regular'}}>Edite seu perfil</Text>
                     <Icon name='edit' size={20} color='#000'/>
                 </TouchableOpacity>
             </View>
@@ -189,7 +192,7 @@ const Statistics = () => {
             <TouchableOpacity
                     style={styles.buttonLogout}
                 >
-                    <Text style={{ color: 'red', fontSize: 22, fontWeight: '600'}}>Encerrar Sessão</Text>
+                    <Text style={{ color: 'red', fontSize: 22, fontFamily:'Montserrat-Medium'}}>Encerrar Sessão</Text>
                 </TouchableOpacity>
             </View>
         </View>
@@ -228,7 +231,7 @@ const styles = StyleSheet.create({
 
     titleText: {
         fontSize: 25,
-        fontWeight: "bold",
+        fontFamily:'Montserrat-Bold',
         textAlign: "center",
         color: '#db9487'
       },
@@ -247,6 +250,7 @@ const styles = StyleSheet.create({
     },
     title: {
         fontSize: 18,
+        fontFamily:'Montserrat-Medium',
         color:'white'
     },
     button: {

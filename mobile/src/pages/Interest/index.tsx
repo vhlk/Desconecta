@@ -28,7 +28,6 @@ const Interest = () => {
     useEffect(() => {
         const getCategory = async (id: string) => {
             const response = await MainApi.GetInterestForUser(id);
-            console.log(response.data);
             setVariavel(response.data);
           }
 
@@ -40,34 +39,38 @@ const Interest = () => {
     }, []);
 
     function enterRegister() {
-        if(isEnabled){
+        let found = variavel.find(item => item.Category_ID == "2");
+        if(isEnabled && !found){
             MainApi.InsertInterestForUser(id, "2");
-        }else{
+        }else if (!isEnabled && found){
             MainApi.DeleteInterestForUser(id, "2");
         }
-        if(isEnabled_1){
+        found = variavel.find(item => item.Category_ID == "6");
+        if(isEnabled_1 && !found){
             MainApi.InsertInterestForUser(id, "6");
-        }else{
+        }else if (!isEnabled_1 && found){
             MainApi.DeleteInterestForUser(id, "6");
         }
-        if(isEnabled_2){
+        found = variavel.find(item => item.Category_ID == "3");
+        if(isEnabled_2 && !found){
             MainApi.InsertInterestForUser(id, "3");
-        }else{
+        }else if(!isEnabled_2 && found){
             MainApi.DeleteInterestForUser(id, "3");
         }
-        if(isEnabled_3){
+        found = variavel.find(item => item.Category_ID == "4");
+        if(isEnabled_3 && !found){
             MainApi.InsertInterestForUser(id, "4");
-        }else{
+        }else if(!isEnabled_3 && found){
             MainApi.DeleteInterestForUser(id, "4");
         }
-        if(isEnabled_4){
+        found = variavel.find(item => item.Category_ID == "5");
+        if(isEnabled_4 && !found){
             MainApi.InsertInterestForUser(id, "5");
-        }else{
+        }else if(!isEnabled_4 && found){
             MainApi.DeleteInterestForUser(id, "5");
         }
         navigation.navigate("Home");
     }
-    console.log(variavel.length);
 
     loading = variavel.length != 0;
     
@@ -121,7 +124,6 @@ const Interest = () => {
     
     
     const toggleSwitch_4 = () => setIsEnabled_4(previousState => !previousState);
-    console.log('12');
     return (
         <>
             <SafeAreaView style={styles.container}>
@@ -130,7 +132,7 @@ const Interest = () => {
      
           centerComponent={
             <>
-              <Text style={{ color: '#000', fontSize: 25, alignSelf: 'center', color: '#CE6F5D' }}>Selecione seus Interesses</Text>
+              <Text style={{ fontSize: 25, alignSelf: 'center', color: '#CE6F5D' }}>Selecione seus Interesses</Text>
             </>
           }
           containerStyle={{ marginTop: 10 }}

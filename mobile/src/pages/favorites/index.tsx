@@ -80,7 +80,7 @@ const Favorites = () => {
                 rightComponent={
                     <View style={{ flexDirection: 'row' }}>
                         <Icon name='star' size={30} color={'#34a0a4'} onPress={() => navigation.navigate("Favorites")} />
-                        <Icon name='person' size={30} color={'#34a0a4'} onPress={() => navigation.navigate("configTime")} />
+                        <Icon name='person' size={30} color={'#34a0a4'} onPress={() => navigation.navigate("Statistics")} />
                     </View>
                 }
                 containerStyle={{ marginTop: 25 }}
