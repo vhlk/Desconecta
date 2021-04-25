@@ -1,10 +1,10 @@
-import { NavigationHelpersContext } from '@react-navigation/native';
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, View, TextInput, KeyboardAvoidingView, TouchableOpacity, Animated, Alert, ActivityIndicator } from 'react-native';
 import { Header, Icon } from "react-native-elements"
 import { useNavigation , useRoute} from "@react-navigation/native"
-import MainApi from "../../services/ApiModule"
 import AsyncStorage from "@react-native-async-storage/async-storage"
+
+import MainApi from "../../services/ApiModule"
 
 const Register = () => {
     const [offset] = useState(new Animated.ValueXY({ x: 0, y: 80 }));
@@ -20,13 +20,14 @@ const Register = () => {
     const LOGIN_PSW = "LOGIN_PSW";
     const LOGIN_ID = "LOGIN_ID";
 
-    async function saveLogin(ID:string) {
+    async function saveLogin(id: string) {
         await AsyncStorage.setItem(LOGIN_EMAIL, email);
         await AsyncStorage.setItem(LOGIN_PSW, psw);
-        await AsyncStorage.setItem(LOGIN_ID, ID.toString());
-      }
+        await AsyncStorage.setItem(LOGIN_ID, id.toString());
+        navigation.navigate("Interest");
+    }
 
-      function checkLogin(userEmail: string, userPsw: string) {
+    function checkLogin(userEmail: string, userPsw: string) {
         MainApi.GetUser(userEmail, userPsw).then(res => {
           if (res.data === null || res.data.length === 0) {
             Alert.alert("Não foi possível fazer login", "Por favor verifique os dados digitados!");

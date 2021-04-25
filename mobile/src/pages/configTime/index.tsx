@@ -12,24 +12,45 @@ import {
   ScrollView,
   Modal,
   Pressable,
-  SafeAreaView 
+  SafeAreaView
 } from 'react-native';
 import Slider from '@react-native-community/slider';
 import AsyncStorage from "@react-native-async-storage/async-storage"
 import TrackAppsUsage from "../../services/AppsTracker/TrackerModule"
 import { useNavigation } from "@react-navigation/native"
+import  MainApi  from "../../services/ApiModule"
 
 
 const configTime = () => {
 
   const [modalVisible, setModalVisible] = useState(false);
   const [modalData, setModalData] = useState(0);
-  const [modalTitle, setModalTitle] =  useState("");
+  const [modalTitle, setModalTitle] = useState("");
   const [active, setActive] = useState(false);
   const [activeString, setActiveString] = useState("");
   const ACTIVE = "ATIVO";
   const [activeIcon, setActiveIcon] = useState("check-circle");
   const [activeIconColor, setActiveIconColor] = useState("green");
+  const [username, setUsername]= useState("");
+  const [userId, setUserId]= useState("-1");
+  const LOGIN_ID = "LOGIN_ID";
+  
+  useEffect(() => {
+      async function fun() {
+          const login = await AsyncStorage.getItem(LOGIN_ID);
+          setUserId((login == null) ? '-1' : login);
+        }
+        fun();
+  }, []);
+
+  useEffect(()=>{
+      async function updateUsername() {
+          MainApi.GetUserDataByID(+userId).then(res => setUsername(res.data[0].Name));
+      }
+      if(userId != '-1'){
+          updateUsername();
+      }
+  },[userId]);
 
   useEffect(() => {
     async function fun() {
@@ -44,13 +65,13 @@ const configTime = () => {
       setActiveString("ATIVADO");
       setActiveIcon("check-circle");
       setActiveIconColor("green");
-      TrackAppsUsage.StartDailyTimeWorkerForApps(["WhatsApp", "Facebook", "Instagram", "Twitter", "TikTok"], 
-      [data[0].count.toString(), data[1].count.toString(), data[2].count.toString(), data[3].count.toString(), data[4].count.toString()],
-      (error: String) => {
-        console.log(error);
-      });
+      TrackAppsUsage.StartDailyTimeWorkerForApps(["WhatsApp", "Facebook", "Instagram", "Twitter", "TikTok"],
+        [data[0].count.toString(), data[1].count.toString(), data[2].count.toString(), data[3].count.toString(), data[4].count.toString()],
+        (error: String) => {
+          console.log(error);
+        });
     }
-    else{      
+    else {
       setActiveString("DESATIVADO");
       setActiveIcon("highlight-off");
       setActiveIconColor("red");
@@ -58,7 +79,7 @@ const configTime = () => {
     }
   }, [active]);
 
-  const saveActive = async (active:boolean) => {
+  const saveActive = async (active: boolean) => {
     if (active) {
       await AsyncStorage.setItem(ACTIVE, "ativo");
     }
@@ -70,7 +91,7 @@ const configTime = () => {
   }
 
 
-  const openSettingsModal = (title:string, settings:number) => {
+  const openSettingsModal = (title: string, settings: number) => {
     setModalTitle(title);
     setModalData(settings);
     setModalVisible(!modalVisible);
@@ -80,9 +101,9 @@ const configTime = () => {
   const KEY_INSTAGRAM = "INSTAGRAM";
   const KEY_TWITTER = "TWITTER";
   const KEY_TIKTOK = "TIKTOK";
-  
-  
-  const saveTimeForAppAndChangeModal = async (titulo:string, visible:boolean) => {
+
+
+  const saveTimeForAppAndChangeModal = async (titulo: string, visible: boolean) => {
     setModalVisible(!visible);
 
     var newData = [...data];
@@ -108,7 +129,7 @@ const configTime = () => {
     }
     setData(newData);
 
-    TrackAppsUsage.StartDailyTimeWorkerForApps(["WhatsApp", "Facebook", "Instagram", "Twitter", "TikTok"], 
+    TrackAppsUsage.StartDailyTimeWorkerForApps(["WhatsApp", "Facebook", "Instagram", "Twitter", "TikTok"],
       [data[0].count.toString(), data[1].count.toString(), data[2].count.toString(), data[3].count.toString(), data[4].count.toString()],
       (error: String) => {
         console.log(error);
@@ -122,33 +143,33 @@ const configTime = () => {
       const countInsta = await AsyncStorage.getItem(KEY_INSTAGRAM);
       const countTwt = await AsyncStorage.getItem(KEY_TWITTER);
       const countTt = await AsyncStorage.getItem(KEY_TIKTOK);
-      
+
       var newData = [...data];
-    
+
 
       newData[0].count = countWpp ? Number.parseInt(countWpp) : 30;
       newData[1].count = countFace ? Number.parseInt(countFace) : 30;
       newData[2].count = countInsta ? Number.parseInt(countInsta) : 30;
       newData[3].count = countTwt ? Number.parseInt(countTwt) : 30;
       newData[4].count = countTt ? Number.parseInt(countTt) : 30;
-      
+
 
       setData(newData);
     }
-    fun();    
+    fun();
   }, []);
 
   const [data, setData] = useState([
-    {id:1,  name: "WhatsApp",   image:"https://logospng.org/download/whatsapp/logo-whatsapp-verde-icone-ios-android-256.png",         count:0},
-    {id:2,  name: "Facebook",    image:"https://imagepng.org/wp-content/uploads/2017/09/facebook-icone-icon.png",       count:12},
-    {id:3,  name: "Instagram",       image:"https://logodownload.org/wp-content/uploads/2017/04/instagram-logo.png", count:2} ,
-    {id:4,  name: "Twitter",   image:"https://imagepng.org/wp-content/uploads/2018/08/twitter-icone-5.png",    count:23} ,
-    {id:5,  name: "TikTok",   image:"https://logodownload.org/wp-content/uploads/2019/08/tiktok-logo-0-1.png",        count:4} ,
+    { id: 1, name: "WhatsApp", image: "https://logospng.org/download/whatsapp/logo-whatsapp-verde-icone-ios-android-256.png", count: 0 },
+    { id: 2, name: "Facebook", image: "https://imagepng.org/wp-content/uploads/2017/09/facebook-icone-icon.png", count: 12 },
+    { id: 3, name: "Instagram", image: "https://logodownload.org/wp-content/uploads/2017/04/instagram-logo.png", count: 2 },
+    { id: 4, name: "Twitter", image: "https://imagepng.org/wp-content/uploads/2018/08/twitter-icone-5.png", count: 23 },
+    { id: 5, name: "TikTok", image: "https://logodownload.org/wp-content/uploads/2019/08/tiktok-logo-0-1.png", count: 4 },
   ]);
   const navigation = useNavigation()
-    return (
-        <>
-            <SafeAreaView style={styles.container}>
+  return (
+    <>
+      <SafeAreaView style={styles.container}>
         <Header
           placement="left"
           leftComponent={
@@ -157,78 +178,83 @@ const configTime = () => {
                 style={styles.returnButton}
               >
                 <Icon name='navigate-before' size={25} style={styles.buttonIcon} onPress={() => navigation.navigate("Home")} />
-                </TouchableOpacity>
-              </>
-            }
-            centerComponent={
-              <>
-              <Text style={styles.titleText}>Personalize seu tempo nas Redes</Text>
-              </>
-            }
-            containerStyle={{
-              marginTop: 5,
-              borderBottomColor: 'rgba(0, 0, 0, 0)'
-            }}
-            backgroundColor='rgba(0, 0, 0, 0)'
-        />
-        <View style={{padding:10}}>
-          <Button title={activeString} type="clear" icon={<Icon name={activeIcon} color={activeIconColor}/>} onPress={async () => {await saveActive(!active)}} />
-        </View>
-      <View style={styles.container}>
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={modalVisible}
-        onRequestClose={() => {
-          setModalVisible(!modalVisible);
-        }}
-      >
-        <View style={styles.centeredView}>
-            <View style={styles.modalView}>
-              <Text style={styles.modalText}>Defina quantas horas você gostaria de passar no {modalTitle}</Text>
-              <Text style={styles.text}>
-                {modalData <= 60  ? <Text>{modalData} Minutos por dia</Text> : <Text>1 Horas e {modalData-60} Minutos por dia</Text>}
-              </Text>
-              <Slider
-                style={{width: 300, height: 40}}
-                minimumValue={0}
-                maximumValue={120}
-                step={5}
-                value={modalData}
-                minimumTrackTintColor="red"
-                maximumTrackTintColor="#000000"
-                onValueChange={value => {if(true){setModalData(value)}}}
-              />
-              <Pressable
-                style={[styles.button, styles.buttonClose]}
-                onPress={async () => await saveTimeForAppAndChangeModal(modalTitle, modalVisible)}
-              >
-                <Text style={styles.textStyle}>Salvar</Text>
-              </Pressable>
+              </TouchableOpacity>
+            </>
+          }
+          centerComponent={
+            <>
+              {username!="" &&(<Text style={{ color: '#DB9487', fontSize: 25 }}>Olá, {username}!</Text>)}
+            </>
+          }
+          rightComponent={
+            <View style={{ flexDirection: 'row' }}>
+              <Icon name='insights' size={30} onPress={() => navigation.navigate("Statistics")} />
+              <Icon name='perm-identity' size={30} onPress={() => navigation.navigate("configTime")} />
             </View>
-          </View>
-      </Modal>
-        <Text style={styles.subtitleText}>Defina quantas horas por dia você quer passar em cada app!</Text>
-        <FlatList 
-          style={styles.contentList}
-          data={data}
-          keyExtractor= {(item) => item.id.toString()}
-          renderItem={({item}) => {
-          return (
-            <TouchableOpacity style={styles.card}  onPress={() => openSettingsModal(item.name,item.count)}>
-              <Image style={styles.image} source={{uri: item.image}}/>
-              <View style={styles.cardContent}>
-                <Text style={styles.name}>{item.name}</Text>
-                <View>
-                    {item.count <= 60  ? <Text style={styles.count}>Meta: {item.count} Min por dia</Text> : <Text style={styles.count}>Meta: 1H {item.count-60} Min por dia</Text>}
-                </View>
+          }
+          containerStyle={{ marginTop: 10 }}
+          backgroundColor='#f0f0f0'
+        />
+        <Text style={styles.titleText}>Personalize seu tempo nas Redes</Text>
+        <View style={{ padding: 10 }}>
+          <Button title={activeString} type="clear" icon={<Icon name={activeIcon} color={activeIconColor} />} onPress={async () => { await saveActive(!active) }} />
+        </View>
+        <View style={styles.container}>
+          <Modal
+            animationType="slide"
+            transparent={true}
+            visible={modalVisible}
+            onRequestClose={() => {
+              setModalVisible(!modalVisible);
+            }}
+          >
+            <View style={styles.centeredView}>
+              <View style={styles.modalView}>
+                <Text style={styles.modalText}>Defina quantas horas você gostaria de passar no {modalTitle}</Text>
+                <Text style={styles.text}>
+                  {modalData <= 60 ? <Text>{modalData} Minutos por dia</Text> : <Text>1 Horas e {modalData - 60} Minutos por dia</Text>}
+                </Text>
+                <Slider
+                  style={{ width: 300, height: 40 }}
+                  minimumValue={0}
+                  maximumValue={120}
+                  step={5}
+                  value={modalData}
+                  minimumTrackTintColor="red"
+                  maximumTrackTintColor="#000000"
+                  onValueChange={value => { if (true) { setModalData(value) } }}
+                />
+                <Pressable
+                  style={[styles.button, styles.buttonClose]}
+                  onPress={async () => await saveTimeForAppAndChangeModal(modalTitle, modalVisible)}
+                >
+                  <Text style={styles.textStyle}>Salvar</Text>
+                </Pressable>
               </View>
-            </TouchableOpacity>
-          )}}/>
-      </View>
+            </View>
+          </Modal>
+          <Text style={styles.subtitleText}>Defina quantas horas por dia você quer passar em cada app!</Text>
+          <FlatList
+            style={styles.contentList}
+            data={data}
+            keyExtractor={(item) => item.id.toString()}
+            renderItem={({ item }) => {
+              return (
+                <TouchableOpacity style={styles.card} onPress={() => openSettingsModal(item.name, item.count)}>
+                  <Image style={styles.image} source={{ uri: item.image }} />
+                  <View style={styles.cardContent}>
+                    <Text style={styles.name}>{item.name}</Text>
+                    <View>
+                      {item.count <= 60 ? <Text style={styles.count}>Meta: {item.count} Min por dia</Text> : <Text style={styles.count}>Meta: 1H {item.count - 60} Min por dia</Text>}
+                    </View>
+                  </View>
+                </TouchableOpacity>
+              )
+            }} />
+        </View>
       </SafeAreaView>
-        </>
-    )
+    </>
+  )
 }
 
 const styles = StyleSheet.create({

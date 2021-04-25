@@ -6,9 +6,11 @@ import Statistics from "./pages/Statistics"
 import Login from "./pages/Login"
 import Register from "./pages/Register"
 import Favorites from "./pages/favorites"
+import Interest from "./pages/Interest"
 
 import { NavigationContainer } from "@react-navigation/native"
 import { createStackNavigator } from "@react-navigation/stack"
+
 
 const AppStack = createStackNavigator()
 
@@ -23,6 +25,7 @@ const Routes = () => {
                 <AppStack.Screen name="configTime" component={configTime} />
                 <AppStack.Screen name="Statistics" component={Statistics} />
                 <AppStack.Screen name="Favorites" component={Favorites} />
+                <AppStack.Screen name="Interest" component={Interest} />
             </AppStack.Navigator>
         </NavigationContainer>
     )

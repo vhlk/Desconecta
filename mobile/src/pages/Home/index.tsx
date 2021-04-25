@@ -130,7 +130,7 @@ const Home = () => {
                 rightComponent={
                     <View style={{ flexDirection: 'row' }}>
                         <Icon name='star-border' size={30} color={colors.green} style={styles.headerIcon} onPress={() => navigation.navigate("Favorites")}/>
-                        <Icon name='person' size={30} color={colors.green}  style={styles.headerIcon}  onPress={() => navigation.navigate("configTime")} />
+                        <Icon name='person' size={30} color={colors.green}  style={styles.headerIcon}  onPress={() => navigation.navigate("Statistics")} />
                     </View>
                 }
                 containerStyle={{ marginTop: 25 }}

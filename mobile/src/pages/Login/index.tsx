@@ -9,10 +9,10 @@ const Login = () => {
   const [offset] = useState(new Animated.ValueXY({ x: 0, y: 80 }));
   const [email, setEmail] = useState("");
   const [psw, setPsw] = useState("");
+  const [checkingLogin, setCheckingLogin] = useState(false);
   const LOGIN_EMAIL = "LOGIN_EMAIL";
   const LOGIN_PSW = "LOGIN_PSW";
   const LOGIN_ID = "LOGIN_ID";
-  const [checkingLogin, setCheckingLogin] = useState(false);
 
   useEffect(() => {
     async function fun() {
@@ -42,13 +42,12 @@ const Login = () => {
         navigation.navigate("Home");
       }
     }).catch(err => console.log(err));
-    return false;
   }
 
-  async function saveLogin(ID: string) {
+  async function saveLogin(id: string) {
     await AsyncStorage.setItem(LOGIN_EMAIL, email);
     await AsyncStorage.setItem(LOGIN_PSW, psw);
-    await AsyncStorage.setItem(LOGIN_ID, ID.toString());
+    await AsyncStorage.setItem(LOGIN_ID, id.toString());
   }
 
   function enterLogin() {
