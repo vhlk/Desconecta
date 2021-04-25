@@ -115,7 +115,7 @@ const styles = StyleSheet.create({
   },
   titleText: {
     fontSize: 28,
-    fontWeight: 'bold',
+    fontFamily:'Montserrat-Medium',
     color: '#db9487'
   },
   containerBody: {
@@ -151,6 +151,7 @@ const styles = StyleSheet.create({
   },
   submitText: {
     color: '#fff',
+    fontFamily:'Montserrat-Medium',
     fontSize: 16,
   },
   btnRegister: {
@@ -164,6 +165,7 @@ const styles = StyleSheet.create({
   },
   registerText: {
     color: '#103334',
+    fontFamily:'Montserrat-Medium',
     textDecorationLine: 'underline'
   },
   btnReset: {

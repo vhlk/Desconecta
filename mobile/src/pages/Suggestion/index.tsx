@@ -162,7 +162,7 @@ const Suggestion = () => {
                         </ScrollView>
                         <View style={styles.duration}>
                             <Icon name='access-time' size={13} color='#FFF' style={styles.buttonIcon} />
-                            <Text style={{ color: '#FFF', padding: 5, fontSize: 13 }}>
+                            <Text style={{fontFamily:'Montserrat-Medium', color: '#FFF', padding: 5, fontSize: 13 }}>
                                 {suggestionDura}
                             </Text>
                         </View>
@@ -170,12 +170,12 @@ const Suggestion = () => {
                     {/* Alterar esses botões dependendo do status da atividade */}
                     <View style={styles.buttons}>
                         <RectButton style={styles.startButton} onPress={goToActivity}>
-                            <Text style={{ color: '#FFF', fontWeight: "700", fontSize: 17 }}>
+                            <Text style={{ fontFamily:'Montserrat-Bold', color: '#FFF', fontSize: 17 }}>
                                 COMEÇAR A ATIVIDADE
                             </Text>
                         </RectButton>
                         <TouchableOpacity onPress={handleNav}>
-                            <Text style={{ color: '#EFD1CC', textDecorationLine: 'underline', paddingTop: 10 }}>
+                            <Text style={{fontFamily:'Montserrat-Medium',  color: '#EFD1CC', textDecorationLine: 'underline', paddingTop: 10 }}>
                                 NÃO TENHO INTERESSE
                             </Text>
                         </TouchableOpacity>
@@ -226,6 +226,7 @@ const styles = StyleSheet.create({
 
     category: {
         color: '#FFF',
+        fontFamily:'Montserrat-Medium',
         fontSize: 12,
         paddingTop: 10
     },
@@ -240,12 +241,12 @@ const styles = StyleSheet.create({
     titleText: {
         color: '#FFF',
         fontSize: 20,
-        fontWeight: 'bold',
-        fontFamily: ''
+        fontFamily:'Montserrat-Bold'
     },
 
     description: {
         color: '#FFF',
+        fontFamily:'Montserrat-Medium',
         paddingVertical: 5
     },
 

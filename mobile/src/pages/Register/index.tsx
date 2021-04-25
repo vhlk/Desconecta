@@ -152,7 +152,7 @@ const Register = () => {
                     <Text style={styles.pswDoesntMatch}>{pswDoesntMatchText}</Text>
                     {!checkingRegister && (
                     <TouchableOpacity style={styles.btnRegister} onPress={enterRegister}>
-                        <Text style={styles.registerText}>Cadastar</Text>
+                        <Text style={styles.registerText}>Cadastrar</Text>
                     </TouchableOpacity>) || 
                     ( <ActivityIndicator size="large" color={'#34a0a4'} />)}
 
@@ -187,6 +187,7 @@ const styles = StyleSheet.create({
     titleText: {
         fontSize: 20,
         textAlign: 'left',
+        fontFamily:'Montserrat-Medium',
         marginLeft: -80,
         marginBottom: 40,
         color: '#db9487'
@@ -226,6 +227,7 @@ const styles = StyleSheet.create({
     },
     registerText: {
         color: '#fff',
+        fontFamily:'Montserrat-Medium',
         fontSize: 17,
     },
     pswDoesntMatch: {

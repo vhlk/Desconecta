@@ -53,7 +53,8 @@ const Card = ({ card }: { card: Activity }) => (
                 </View>
 
                 <View style={styles.seeDetails}>
-                    <Text style={{ color: colors.white, fontWeight: "700", fontSize: 16, alignContent: "center", textAlign: "center" }}>VER ATIVIDADE</Text>
+                    <Text style={{ color: colors.white, fontFamily:'Montserrat-Bold', fontSize: 16,
+                     alignContent: "center", textAlign: "center" }}>VER ATIVIDADE</Text>
                 </View>
             </View>
         </LinearGradient>
@@ -120,7 +121,7 @@ const Home = () => {
                 placement="left"
                 centerComponent={
                     <>
-                        {username!="" &&(<Text style={{ color: colors.pink, fontSize: 25 }}>Olá, {username}!</Text>)}
+                        {username!="" &&(<Text style={{ color: colors.pink, fontSize: 25, fontFamily:'Montserrat-Medium'}}>Olá, {username}!</Text>)}
                     </>
                 }
                 rightComponent={
@@ -202,7 +203,7 @@ const Home = () => {
                 ) || (
                         <>
                             <View style={{ paddingVertical: 50, backgroundColor: colors.green }}>
-                                <Text style={{ color: colors.white, fontWeight: "700", fontSize: 20, alignContent: "center", textAlign: "center" }}>
+                                <Text style={{ color: colors.white, fontFamily:'Montserrat-Medium', fontSize: 20, alignContent: "center", textAlign: "center" }}>
                                     Selecionando as melhores sugestões para você!
                                 </Text>
                             </View>
@@ -308,6 +309,7 @@ const styles = StyleSheet.create({
 
     category: {
         fontSize: 14,
+        fontFamily:'Montserrat-Medium',
         marginBottom: 10,
         color: colors.white,
         alignContent: "flex-start",
@@ -317,6 +319,7 @@ const styles = StyleSheet.create({
     title: {
         fontSize: 24,
         marginBottom: 20,
+        fontFamily:'Montserrat-Medium',
         color: colors.white,
         alignContent: "flex-start",
         marginHorizontal: 15
@@ -332,6 +335,7 @@ const styles = StyleSheet.create({
 
     time: {
         color: colors.white,
+        fontFamily:'Montserrat-Medium',
         fontSize: 16,
         fontWeight: "500",
         alignContent: "flex-start",
