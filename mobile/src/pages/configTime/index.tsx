@@ -18,6 +18,7 @@ import Slider from '@react-native-community/slider';
 import AsyncStorage from "@react-native-async-storage/async-storage"
 import TrackAppsUsage from "../../services/AppsTracker/TrackerModule"
 import { useNavigation } from "@react-navigation/native"
+import  MainApi  from "../../services/ApiModule"
 
 
 const configTime = () => {
@@ -30,6 +31,26 @@ const configTime = () => {
   const ACTIVE = "ATIVO";
   const [activeIcon, setActiveIcon] = useState("check-circle");
   const [activeIconColor, setActiveIconColor] = useState("green");
+  const [username, setUsername]= useState("");
+  const [userId, setUserId]= useState("-1");
+  const LOGIN_ID = "LOGIN_ID";
+  
+  useEffect(() => {
+      async function fun() {
+          const login = await AsyncStorage.getItem(LOGIN_ID);
+          setUserId((login == null) ? '-1' : login);
+        }
+        fun();
+  }, []);
+
+  useEffect(()=>{
+      async function updateUsername() {
+          MainApi.GetUserDataByID(+userId).then(res => setUsername(res.data[0].Name));
+      }
+      if(userId != '-1'){
+          updateUsername();
+      }
+  },[userId]);
 
   useEffect(() => {
     async function fun() {
@@ -162,7 +183,7 @@ const configTime = () => {
           }
           centerComponent={
             <>
-              <Text style={{ color: '#000', fontSize: 25 }}>Olá, Fulaninho!</Text>
+              {username!="" &&(<Text style={{ color: '#DB9487', fontSize: 25 }}>Olá, {username}!</Text>)}
             </>
           }
           rightComponent={
