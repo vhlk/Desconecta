@@ -3,9 +3,10 @@ import { View, Image, StyleSheet, Text, ActivityIndicator } from "react-native"
 import { RectButton } from "react-native-gesture-handler"
 import { Header, Icon } from "react-native-elements"
 import { useNavigation } from "@react-navigation/native"
+import Swiper from "react-native-deck-swiper";
+import LinearGradient from 'react-native-linear-gradient';
 
 import MainApi from "../../services/ApiModule"
-import Swiper from "react-native-deck-swiper";
 
 interface Activity {
     Activity_ID: number,
@@ -30,26 +31,30 @@ const colors = {
     gray: '#777777',
     black: '#202225',
     white: '#f6f7f1',
-    green: '#34a0a4'
+    green: '#34a0a4',
+    darkgreen: 'rgba(9,30,31,1)',
+    transparent: 'rgba(0,0,0,0)'
 };
 
 const Card = ({ card }: { card: Activity }) => (
     <View style={styles.card}>
         <Image source={{ uri: card.ImageLink }} style={styles.cardImage} />
-        <View style={styles.cardDetails}>
-            <Text style={[styles.category]}>{card.Category_ID}</Text>
-            <Text style={[styles.title]}>{card.Title}</Text>
+        <LinearGradient colors={[colors.transparent, 'rgba(9,30,31,0.3)', 'rgba(9,30,31,0.7)', 'rgba(9,30,31,0.9)', colors.darkgreen]} style={styles.gradient}>
 
-            <View style={styles.timeText}>
-                <Icon name='access-time' size={20} color={colors.white} />
-                <Text style={[styles.time]}>{card.Duration}</Text>
+            <View style={styles.cardDetails}>
+                <Text style={[styles.category]}>{card.Category_ID}</Text>
+                <Text style={[styles.title]}>{card.Title}</Text>
+
+                <View style={styles.timeText}>
+                    <Icon name='access-time' size={20} color={colors.white} />
+                    <Text style={[styles.time]}>{card.Duration}</Text>
+                </View>
+
+                <View style={styles.seeDetails}>
+                    <Text style={{ color: colors.white, fontWeight: "700", fontSize: 16, alignContent: "center", textAlign: "center" }}>VER ATIVIDADE</Text>
+                </View>
             </View>
-
-            <View style={styles.seeDetails}>
-                <Text style={{ color: colors.white, fontWeight: "700", fontSize: 16, alignContent: "center", textAlign: "center" }}>VER ATIVIDADE</Text>
-            </View>
-        </View>
-
+        </LinearGradient>
     </View>
 );
 
@@ -103,8 +108,8 @@ const Home = () => {
                 }
                 rightComponent={
                     <View style={{ flexDirection: 'row' }}>
-                        <Icon name='insights' size={30} color={colors.green} onPress={() => navigation.navigate("Statistics")}/>
-                        <Icon name='perm-identity' size={30} color={colors.green} onPress={() => navigation.navigate("configTime")}/>
+                        <Icon name='insights' size={30} color={colors.green} onPress={() => navigation.navigate("Statistics")} />
+                        <Icon name='perm-identity' size={30} color={colors.green} onPress={() => navigation.navigate("configTime")} />
                     </View>
                 }
                 containerStyle={{ marginTop: 25 }}
@@ -119,14 +124,16 @@ const Home = () => {
                             cardIndex={index}
                             renderCard={card => <Card card={card} />}
                             onSwiped={onSwiped}
-                            onTapCard={() => navigation.navigate("Suggestion", { Activity_ID:  activities[index].Activity_ID,
-                                                                                 Category_ID:  activities[index].Category_ID,
-                                                                                 Description:  activities[index].Description,
-                                                                                 Duration:     activities[index].Duration,
-                                                                                 ID:           activities[index].ID,
-                                                                                 ImageLink:    activities[index].ImageLink,
-                                                                                 ActivityLink: activities[index].LinkNetflix,
-                                                                                 Title:        activities[index].Title })}
+                            onTapCard={() => navigation.navigate("Suggestion", {
+                                Activity_ID: activities[index].Activity_ID,
+                                Category_ID: activities[index].Category_ID,
+                                Description: activities[index].Description,
+                                Duration: activities[index].Duration,
+                                ID: activities[index].ID,
+                                ImageLink: activities[index].ImageLink,
+                                ActivityLink: activities[index].LinkNetflix,
+                                Title: activities[index].Title
+                            })}
                             stackSize={2}
                             stackScale={7}
                             stackSeparation={10}
@@ -177,7 +184,7 @@ const Home = () => {
 
                 ) || (
                         <>
-                            <View style={{ paddingVertical: 50, backgroundColor:colors.green  }}>
+                            <View style={{ paddingVertical: 50, backgroundColor: colors.green }}>
                                 <Text style={{ color: colors.white, fontWeight: "700", fontSize: 20, alignContent: "center", textAlign: "center" }}>
                                     Selecionando as melhores sugestões para você!
                                 </Text>
@@ -274,6 +281,7 @@ const styles = StyleSheet.create({
         flexDirection: "column",
         justifyContent: "flex-end",
         alignItems: "flex-start",
+        width: '100%'
     },
 
     text: {
@@ -326,6 +334,14 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignSelf: "center",
         margin: 20
+    },
+    gradient: {
+        borderRadius: 10,
+        flexDirection: "column",
+        justifyContent: "flex-end",
+        alignItems: "flex-start",
+        width:'100%',
+        height:'70%'
     }
 
 });
