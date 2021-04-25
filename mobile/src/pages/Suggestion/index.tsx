@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, Image, StyleSheet, Text, TouchableOpacity, ImageBackground, Linking, Alert, ScrollView } from "react-native";
+import { View, Image, StyleSheet, Text, TouchableOpacity, ImageBackground, Linking, Alert, ScrollView, ActivityIndicator} from "react-native";
 import { RectButton } from "react-native-gesture-handler";
 import { Header, Icon } from "react-native-elements";
 import { useNavigation, useRoute } from "@react-navigation/native";
@@ -9,17 +9,23 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import MainApi from '../../services/ApiModule';
 
 interface Activity {
-    Activity_ID: number,
+    Activity_ID: string,
     Category_ID: string,
     Description: string,
     Duration: string,
     ID: number,
+    Image: any,
     ImageLink: string,
     ActivityLink: string,
     Title: string
 }
 
-var imgBg = require("../../assets/SilvaCantaMarisa.jpg")
+interface ActivityID {
+    Activity_ID: string,
+    Category_name: string
+}
+
+var imgBg = require("../../assets/icone_desconecta.png")
 var categ = "Oi"
 var suggestionTitle = "Não era para isso"
 var suggestionDesc = "APARECER"
@@ -40,26 +46,23 @@ async function goToActivity() {
     }
 }
 
-function setActivity(activity: Activity) {
-    imgBg = { uri: activity.ImageLink }
-    categ = activity.Category_ID
-    suggestionTitle = activity.Title
-    suggestionDesc = activity.Description
-    suggestionDura = activity.Duration
-    suggestionLink = activity.ActivityLink
-}
-
 const Suggestion = () => {
     const navigation = useNavigation()
     const route = useRoute()
-    var routeParam = route.params as Activity
+    var routeParam = route.params as ActivityID
 
-    const [isFavorite, setIsFavorite] = useState<boolean|null>(null);
+    const [isFavorite, setIsFavorite] = useState<boolean | null>(null);
     const [userId, setUserId] = useState("-1");
     const [favoriteList, setFavoriteList] = useState(null);
+    const [activity, setActivity] = useState(null);
+    const [canRenderPage, toggleRenderPage] = useState(false);
 
     useEffect(() => {
-        setActivity(routeParam);
+        imgBg = require("../../assets/icone_desconecta.png")
+        function getActivity() {
+            MainApi.GetActivity(routeParam.Activity_ID).then(res => setActivity(res.data[0]))
+        }
+        getActivity();
         async function getUserId() {
             const id = await AsyncStorage.getItem("LOGIN_ID");
             setUserId((id == null) ? '0' : id);
@@ -77,7 +80,25 @@ const Suggestion = () => {
     }, [userId]);
 
     useEffect(() => {
+        if (activity !== null) {
+            function renderPage(activity: Activity) {
+                imgBg = { uri: activity.ImageLink };
+                categ = routeParam.Category_name;
+                suggestionTitle = activity.Title;
+                suggestionDesc = activity.Description;
+                suggestionDura = activity.Duration;
+                suggestionLink = activity.ActivityLink;
+                toggleRenderPage(true);
+            }
+            // @ts-ignore: Argument of type 'null' is not assignable to parameter of type 'Activity'.
+            renderPage(activity);
+        }
+    }, [activity]);
+
+
+    useEffect(() => {
         if (favoriteList !== null) {
+            // @ts-ignore: Object is possibly 'null'.
             const found = favoriteList.find(item => item.Activities_ID == routeParam.Activity_ID);
             if (found) {
                 setIsFavorite(true);
@@ -106,7 +127,7 @@ const Suggestion = () => {
 
     return (
         <>
-            <ImageBackground source={imgBg} style={styles.imgbg}>
+            <ImageBackground source={canRenderPage ? imgBg: null} style={styles.imgbg}>
                 <Header
                     placement="left"
                     leftComponent={
@@ -125,6 +146,7 @@ const Suggestion = () => {
                     }}
                     backgroundColor='rgba(0, 0, 0, 0)'
                 />
+                { canRenderPage && (
                 <LinearGradient colors={['rgba(52,160,164,0)', colors.green, colors.green, colors.green,
                     colors.green, colors.green, colors.green, colors.green, colors.green, colors.green, colors.green]}
                     style={styles.main}>
@@ -138,7 +160,7 @@ const Suggestion = () => {
                                     {suggestionTitle}
                                 </Text>
                             </ScrollView>
-                            <Icon name={isFavorite === null? 'sync':(isFavorite?'star':'star-border')} size={30} color='#a1c9c9' style={styles.buttonIcon} onPress={toggleSwitch} />
+                            <Icon name={isFavorite === null ? 'sync' : (isFavorite ? 'star' : 'star-border')} size={30} color='#a1c9c9' style={styles.buttonIcon} onPress={toggleSwitch} />
                         </View>
                         <ScrollView style={styles.descContainer}>
                             <Text style={styles.description}>
@@ -166,6 +188,7 @@ const Suggestion = () => {
                         </TouchableOpacity>
                     </View>
                 </LinearGradient>
+                ) || (<ActivityIndicator size="large" color={colors.green} />)}
             </ImageBackground>
         </>
     )

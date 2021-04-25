@@ -10,17 +10,17 @@ import MainApi from '../../services/ApiModule';
 
 const Item = ({ item }) => (
     <View style={styles.card}>
-        {/* <ImageBackground source={{ uri: item.image }} style={styles.imgbg} imageStyle={{ borderRadius: 10 }}> */}
+        <ImageBackground source={{ uri: item.ImageLink }} style={styles.imgbg} imageStyle={{ borderRadius: 10 }}>
             <LinearGradient colors={['rgba(9,30,31,0)', 'rgba(9,30,31,0.3)', 'rgba(9,30,31,0.7)', 'rgba(9,30,31,0.9)']} style={styles.gradient}>
                 <View style={{ height: 130, marginHorizontal: 10, justifyContent: "flex-end" }}>
                     <Text style={styles.category}>{item.Name}</Text>
                     <View style={styles.title}>
                         <Text style={styles.titleText}>{item.Title}</Text>
-                        <Icon name='star' size={30} color='#FFF' />
+                        <Icon name='star' size={30} color='#F2F3EC' />
                     </View>
                 </View>
             </LinearGradient>
-        {/* </ImageBackground> */}
+        </ImageBackground>
     </View>
 );
 
@@ -31,7 +31,13 @@ const Favorites = () => {
     const [username, setUsername]= useState("");
 
     const renderItem = ({ item }) => (
-        <Item item={item} />
+        <TouchableOpacity onPress={() => {
+            navigation.navigate("Suggestion", {
+            Activity_ID: item.Activities_ID,
+            Category_ID: item.Name})
+            }}>
+            <Item item={item} />
+        </TouchableOpacity>
     );
     useEffect(() => {
         async function getUserId() {
@@ -65,7 +71,10 @@ const Favorites = () => {
                 }
                 centerComponent={
                     <>
-                        {username!="" &&(<Text style={{ color: '#DB9487', fontSize: 25 }}>Olá, {username}!</Text>)}
+                        {username!="" &&(
+                        <Text style={{ color: '#DB9487', fontSize: 25, fontFamily:'MontserratAlternates-SemiBold' }}>
+                            Olá, {username}!
+                        </Text>)}
                     </>
                 }
                 rightComponent={
@@ -75,7 +84,7 @@ const Favorites = () => {
                     </View>
                 }
                 containerStyle={{ marginTop: 25 }}
-                backgroundColor='rgba(0,0,0,0)'
+                backgroundColor='#f6f7f1'
             />
             <View style={styles.favoriteList}>
                 {favoriteList !== null && favoriteList.length > 0 &&(
@@ -108,7 +117,8 @@ const styles = StyleSheet.create({
 
     },
     category: {
-        color: '#FFF',
+        color: '#f6f7f1',
+        fontFamily: 'Raleway-Medium',
         fontSize: 12
     },
     title: {
@@ -118,10 +128,9 @@ const styles = StyleSheet.create({
         marginBottom: 2
     },
     titleText: {
-        color: '#FFF',
+        color: '#f6f7f1',
         fontSize: 20,
-        fontWeight: 'bold',
-        fontFamily: ''
+        fontFamily: 'Raleway-Bold'
     },
     gradient: {
         flex:1,

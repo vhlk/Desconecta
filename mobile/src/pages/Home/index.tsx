@@ -121,7 +121,10 @@ const Home = () => {
                 placement="left"
                 centerComponent={
                     <>
-                        {username!="" &&(<Text style={{ color: colors.pink, fontSize: 25, fontFamily:'Montserrat-Medium'}}>Olá, {username}!</Text>)}
+                    {username!="" &&(
+                    <Text style={{ color: '#DB9487', fontSize: 25, fontFamily:'MontserratAlternates-SemiBold' }}>
+                        Olá, {username}!
+                    </Text>)}
                     </>
                 }
                 rightComponent={
@@ -144,13 +147,7 @@ const Home = () => {
                             onSwiped={onSwiped}
                             onTapCard={() => navigation.navigate("Suggestion", {
                                 Activity_ID: activities[index].Activity_ID,
-                                Category_ID: activities[index].Category_ID,
-                                Description: activities[index].Description,
-                                Duration: activities[index].Duration,
-                                ID: activities[index].ID,
-                                ImageLink: activities[index].ImageLink,
-                                ActivityLink: activities[index].LinkNetflix,
-                                Title: activities[index].Title
+                                Category_ID: activities[index].Category_ID
                             })}
                             stackSize={2}
                             stackScale={7}
@@ -309,7 +306,7 @@ const styles = StyleSheet.create({
 
     category: {
         fontSize: 14,
-        fontFamily:'Montserrat-Medium',
+        fontFamily:'Raleway-Medium',
         marginBottom: 10,
         color: colors.white,
         alignContent: "flex-start",
@@ -319,7 +316,7 @@ const styles = StyleSheet.create({
     title: {
         fontSize: 24,
         marginBottom: 20,
-        fontFamily:'Montserrat-Medium',
+        fontFamily:'Raleway-Medium',
         color: colors.white,
         alignContent: "flex-start",
         marginHorizontal: 15
@@ -335,7 +332,7 @@ const styles = StyleSheet.create({
 
     time: {
         color: colors.white,
-        fontFamily:'Montserrat-Medium',
+        fontFamily:'Raleway-Medium',
         fontSize: 16,
         fontWeight: "500",
         alignContent: "flex-start",
