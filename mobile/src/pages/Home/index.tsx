@@ -177,13 +177,13 @@ const Home = () => {
 
                 ) || (
                         <>
-                            <View style={{ paddingVertical: 50, backgroundColor:colors.blue  }}>
+                            <View style={{ paddingVertical: 50, backgroundColor:colors.green  }}>
                                 <Text style={{ color: colors.white, fontWeight: "700", fontSize: 20, alignContent: "center", textAlign: "center" }}>
                                     Selecionando as melhores sugestões para você!
                                 </Text>
                             </View>
                             <View style={{ paddingVertical: 50 }}>
-                                <ActivityIndicator size="large" color={colors.blue} />
+                                <ActivityIndicator size="large" color={colors.green} />
                             </View>
                         </>
                     )}

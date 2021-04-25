@@ -1,9 +1,11 @@
-import React, { useEffect, useState } from "react"
-import { View, Image, StyleSheet, Text, TouchableOpacity, ImageBackground, Linking, Alert, ScrollView } from "react-native"
-import { RectButton } from "react-native-gesture-handler"
-import { Header, Icon } from "react-native-elements"
-import { useNavigation, useRoute } from "@react-navigation/native"
+import React, { useEffect, useState } from "react";
+import { View, Image, StyleSheet, Text, TouchableOpacity, ImageBackground, Linking, Alert, ScrollView } from "react-native";
+import { RectButton } from "react-native-gesture-handler";
+import { Header, Icon } from "react-native-elements";
+import { useNavigation, useRoute } from "@react-navigation/native";
 import LinearGradient from 'react-native-linear-gradient';
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import MainApi from '../../services/ApiModule';
 
 interface Activity {
     Activity_ID: number,
@@ -51,16 +53,66 @@ const Suggestion = () => {
     const navigation = useNavigation()
     const route = useRoute()
     var routeParam = route.params as Activity
-    setActivity(routeParam);
 
-    const [isFavorite, setIsFavorite] = useState(false);// pegar se a atividade foi favoritada
-    const toggleSwitch = () => {
-        if (isFavorite) {
-            favoriteIcon = 'star'
-        } else {
-            favoriteIcon = 'star-border'
+    var isFavorite = false;
+    const [userId, setUserId]= useState("-1");
+    const [favoriteIcon, setFavoriteIcon]= useState("sync");
+    const [favoriteList, setFavoriteList]= useState([]);
+
+    useEffect(() => {
+        setActivity(routeParam);
+        async function getUserId() {
+            const id = await AsyncStorage.getItem("LOGIN_ID");
+            setUserId((id == null) ? '0' : id);
         }
-        setIsFavorite(previousState => !previousState)
+        getUserId();
+    }, []);
+
+    useEffect(()=>{
+        async function updateFavorites() {
+            MainApi.GetAllFavoritesForUser(userId).then(res => setFavoriteList(res.data));
+        }
+        if(userId != '-1'){
+            updateFavorites();
+        }
+    },[userId]);
+
+    useEffect(()=>{
+        for(let i = 0; i < favoriteList.length;i++){
+            if (favoriteList[i].Activities_ID == routeParam.Activity_ID) {
+                isFavorite = (favoriteList[i].Activities_ID == routeParam.Activity_ID);
+                break;
+            }
+        }
+        if(userId != '-1'){
+            updateFavIcon();
+        }
+    },[favoriteList]);
+
+    useEffect(()=>{
+        if(userId!='-1'){
+            updateFavIcon();
+        }
+    },[isFavorite]);
+
+    const updateFavIcon = () => {
+        if (isFavorite) {
+            setFavoriteIcon('star')
+        } else {
+            setFavoriteIcon('star-border')
+        }
+    }
+
+    const toggleSwitch = async () => {
+        isFavorite = !isFavorite;
+        updateFavIcon();
+        if(isFavorite){
+            await MainApi.InsertFavoriteForUser(userId, routeParam.Activity_ID.toString());
+            MainApi.GetAllFavoritesForUser(userId).then(res => setFavoriteList(res.data));
+        } else{
+            await MainApi.DeleteFavoriteForUser(userId, routeParam.Activity_ID.toString());
+            MainApi.GetAllFavoritesForUser(userId).then(res => setFavoriteList(res.data));
+        }
     };
 
     function handleNav() {
@@ -89,8 +141,8 @@ const Suggestion = () => {
                     backgroundColor='rgba(0, 0, 0, 0)'
                 />
                 <LinearGradient colors={['rgba(52,160,164,0)', colors.green, colors.green, colors.green,
-                        colors.green, colors.green, colors.green, colors.green, colors.green, colors.green, colors.green]} 
-                        style={styles.main}>
+                    colors.green, colors.green, colors.green, colors.green, colors.green, colors.green, colors.green]}
+                    style={styles.main}>
                     <View style={styles.info}>
                         <Text style={styles.category}>
                             {categ}
@@ -175,7 +227,7 @@ const styles = StyleSheet.create({
     category: {
         color: '#FFF',
         fontSize: 12,
-        paddingTop:10
+        paddingTop: 10
     },
 
     title: {

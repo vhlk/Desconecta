@@ -17,19 +17,33 @@ const Register = () => {
     const [pswsMatches, setPswMatches] = useState(false);
     const LOGIN_EMAIL = "LOGIN_EMAIL";
     const LOGIN_PSW = "LOGIN_PSW";
+    const LOGIN_ID = "LOGIN_ID";
 
-    async function saveLogin() {
+    async function saveLogin(ID:string) {
         await AsyncStorage.setItem(LOGIN_EMAIL, email);
         await AsyncStorage.setItem(LOGIN_PSW, psw);
+        await AsyncStorage.setItem(LOGIN_ID, ID.toString());
       }
 
+      function checkLogin(userEmail: string, userPsw: string) {
+        MainApi.GetUser(userEmail, userPsw).then(res => {
+          if (res.data === null || res.data.length === 0) {
+            Alert.alert("Não foi possível fazer login", "Por favor verifique os dados digitados!");
+          }
+          else {
+            navigation.navigate("Home");
+            saveLogin(res.data[0].ID);
+          }
+        }).catch(err => console.log(err));
+        return false;
+    }
+
     function checkNRegister() {
-        MainApi.CheckIfEmailExists(email).then(async res => {
+        MainApi.CheckIfEmailExists(email).then(res => {
             const emailExists = res.data[0]["EmailCadastrado"];
             if (!emailExists) {
                 MainApi.InsertUser(name, email, psw);
-                await saveLogin();
-                navigation.navigate("Home");
+                checkLogin(email, psw);
             }
             else {
                 Alert.alert("Email inválido", "O email já existe!");
