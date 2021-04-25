@@ -115,7 +115,7 @@ const styles = StyleSheet.create({
   },
   titleText: {
     fontSize: 28,
-    fontFamily:'Montserrat-Medium',
+    fontFamily:'Montserrat-SemiBold',
     color: '#db9487'
   },
   containerBody: {
