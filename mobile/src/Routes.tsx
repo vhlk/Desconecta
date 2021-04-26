@@ -5,6 +5,7 @@ import configTime from "./pages/configTime"
 import Statistics from "./pages/Statistics"
 import Login from "./pages/Login"
 import Register from "./pages/Register"
+import InApp from "./pages/InApp"
 import { NavigationContainer } from "@react-navigation/native"
 import { createStackNavigator } from "@react-navigation/stack"
 
@@ -13,7 +14,8 @@ const AppStack = createStackNavigator()
 const Routes = () => {
     return (
         <NavigationContainer>
-            <AppStack.Navigator headerMode="none" initialRouteName="Login">
+            <AppStack.Navigator headerMode="none">
+                <AppStack.Screen name="InApp" component={InApp} />
                 <AppStack.Screen name="Login" component={Login} />
                 <AppStack.Screen name="Register" component={Register} />
                 <AppStack.Screen name="Home" component={Home} />
