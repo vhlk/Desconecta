@@ -194,7 +194,6 @@ const configTime = () => {
               <Icon name='person' size={30} color={'#34a0a4'} onPress={() => navigation.navigate("Statistics")} />
             </View>
           }
-          containerStyle={{ marginTop: 10 }}
           backgroundColor='#f0f0f0'
         />
         <Text style={styles.titleText}>Personalize seu tempo nas Redes</Text>

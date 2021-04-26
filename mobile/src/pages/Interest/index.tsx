@@ -135,7 +135,6 @@ const Interest = () => {
               <Text style={{ fontSize: 25, alignSelf: 'center', color: '#CE6F5D' }}>Selecione seus Interesses</Text>
             </>
           }
-          containerStyle={{ marginTop: 10 }}
           backgroundColor='white'
         />
                 

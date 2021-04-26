@@ -83,7 +83,6 @@ const Favorites = () => {
                         <Icon name='person' size={30} color={'#34a0a4'} onPress={() => navigation.navigate("Statistics")} />
                     </View>
                 }
-                containerStyle={{ marginTop: 25 }}
                 backgroundColor='#f6f7f1'
             />
             <View style={styles.favoriteList}>
@@ -107,7 +106,7 @@ const styles = StyleSheet.create({
     card: {
         elevation: 20,
         marginHorizontal: 20,
-        marginVertical: 15,
+        marginVertical: 10,
         height: 140,
         flexDirection: 'row'
     },

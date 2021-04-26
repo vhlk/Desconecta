@@ -11,7 +11,7 @@ import {
 import { View, Text, Dimensions, TouchableOpacity, StyleSheet, FlatList } from "react-native";
 import TrackerModule from "../../services/AppsTracker/TrackerModule";
 import { useNavigation } from "@react-navigation/native";
-import  MainApi  from "../../services/ApiModule"
+import MainApi from "../../services/ApiModule"
 import AsyncStorage from "@react-native-async-storage/async-storage"
 
 interface Categories {
@@ -27,12 +27,12 @@ const Item = ({ Name }) => (
 const Statistics = () => {
     const LOGIN_ID = "LOGIN_ID";
     const [variavel, setVariavel] = useState<Categories[]>([]);
-    const [username, setUsername]= useState("");
-    const [userId, setUserId]= useState("-1");
+    const [username, setUsername] = useState("");
+    const [userId, setUserId] = useState("-1");
 
     const getCategory = (id: string) => {
         MainApi.GetInterestForUser(id).then(res => setVariavel(res.data));
-      }
+    }
 
     useEffect(() => {
         setVariavel([]);
@@ -41,19 +41,19 @@ const Statistics = () => {
                 res => {
                     setUserId((res == null) ? '-1' : res);
                     getCategory((res == null) ? '-1' : res);
-            });
-          }
-          fun();
+                });
+        }
+        fun();
     }, []);
 
-    useEffect(()=>{
+    useEffect(() => {
         function updateUsername() {
             MainApi.GetUserDataByID(+userId).then(res => setUsername(res.data[0].Name));
         }
-        if(userId != '-1'){
+        if (userId != '-1') {
             updateUsername();
         }
-    },[userId]);
+    }, [userId]);
 
 
     useEffect(() => {
@@ -103,9 +103,9 @@ const Statistics = () => {
                 }
                 centerComponent={
                     <>
-                        {username!="" &&(<Text style={{ color: '#DB9487', fontSize: 25, fontFamily:'MontserratAlternates-SemiBold'}}>
+                        {username != "" && (<Text style={{ color: '#DB9487', fontSize: 25, fontFamily: 'MontserratAlternates-SemiBold' }}>
                             Olá, {username}!
-                            </Text>)}
+                        </Text>)}
                     </>
                 }
                 rightComponent={
@@ -114,11 +114,10 @@ const Statistics = () => {
                         <Icon name='person' size={30} color={'#34a0a4'} onPress={() => navigation.navigate("Statistics")} />
                     </View>
                 }
-                containerStyle={{ marginTop: 10 }}
                 backgroundColor='#f0f0f0'
             />
             <View style={styles.containerChart}>
-                <Text style={{ color: '#000', fontSize: 25, fontFamily:'Montserrat-Bold'}}>
+                <Text style={{ color: '#000', fontSize: 25, fontFamily: 'Montserrat-Bold' }}>
                     Estatística
                 </Text>
                 <BarChart
@@ -131,7 +130,7 @@ const Statistics = () => {
                         ]
                     }}
                     width={(Dimensions.get("window").width) * 0.9} // from react-native
-                    height={250}
+                    height={(Dimensions.get("window").height) * 0.3}
                     yAxisInterval={1}
                     //withHorizontalLabels={false}
                     showValuesOnTopOfBars={true}
@@ -159,40 +158,40 @@ const Statistics = () => {
                         borderRadius: 16
                     }}
                 />
-                <View style={styles.interests}>
-                    <View style={styles.yourInterests}>
-                        <Text style={{ color: '#000', fontSize: 22,  fontFamily:'Montserrat-Bold',  marginTop:2 }} >Seus Interesses</Text>
-                        <Icon name='edit' size={25} color='#000' onPress={() => navigation.navigate("Interest")}/>
-                    </View>
-                    {variavel !== null && variavel.length > 0 &&(
+            </View>
+            <View style={styles.interests}>
+                <View style={styles.yourInterests}>
+                    <Text style={{ color: '#000', fontSize: 22, fontFamily: 'Montserrat-Bold', marginTop: 2 }} >Seus Interesses</Text>
+                    <Icon name='edit' size={25} color='#000' onPress={() => navigation.navigate("Interest")} />
+                </View>
+                {variavel !== null && variavel.length > 0 && (
                     <FlatList
                         data={variavel}
                         renderItem={renderItem}
                         horizontal={true}
-                        keyExtractor={item => {return item.Category_ID}}
+                        keyExtractor={item => { return item.Category_ID }}
                     />)}
-                </View>
             </View>
-            <View style={{padding:10}}>
+            <View style={{ padding: 10 }}>
                 <TouchableOpacity
                     style={styles.button}
                     onPress={() => navigation.navigate("configTime")}
                 >
-                    <Text style={{fontFamily:'Montserrat-Regular'}}>Configure seu tempo</Text>
-                    <Icon name='edit' size={20} color='#000'/>
+                    <Text style={{ fontFamily: 'Montserrat-Regular' }}>Configure seu tempo</Text>
+                    <Icon name='edit' size={20} color='#000' />
                 </TouchableOpacity>
                 <TouchableOpacity
                     style={styles.button}
                 >
-                    <Text style={{fontFamily:'Montserrat-Regular'}}>Edite seu perfil</Text>
-                    <Icon name='edit' size={20} color='#000'/>
+                    <Text style={{ fontFamily: 'Montserrat-Regular' }}>Edite seu perfil</Text>
+                    <Icon name='edit' size={20} color='#000' />
                 </TouchableOpacity>
             </View>
-            <View style={{padding:10}}>
-            <TouchableOpacity
+            <View style={{ padding: 10 }}>
+                <TouchableOpacity
                     style={styles.buttonLogout}
                 >
-                    <Text style={{ color: 'red', fontSize: 22, fontFamily:'Montserrat-Medium'}}>Encerrar Sessão</Text>
+                    <Text style={{ color: 'red', fontSize: 22, fontFamily: 'Montserrat-Medium' }}>Encerrar Sessão</Text>
                 </TouchableOpacity>
             </View>
         </View>
@@ -200,19 +199,20 @@ const Statistics = () => {
 }
 
 const styles = StyleSheet.create({
-    container:{
-        flex:1,
-        marginTop:5,
-        backgroundColor:'#f6f7f1',
+    container: {
+        flex: 1,
+        marginTop: 5,
+        backgroundColor: '#f6f7f1',
         height: '100%'
     },
 
     containerChart: {
         flex: 1,
-        marginTop: 15,
+        marginTop: 5,
         alignItems: 'center',
         backgroundColor: "#f6f7f1",
-        height: '100%'
+        height: '100%',
+        marginBottom:155
     },
     contentList: {
         flex: 1,
@@ -231,18 +231,18 @@ const styles = StyleSheet.create({
 
     titleText: {
         fontSize: 25,
-        fontFamily:'Montserrat-Bold',
+        fontFamily: 'Montserrat-Bold',
         textAlign: "center",
         color: '#db9487'
-      },
-      returnButton: {
+    },
+    returnButton: {
         backgroundColor: "#a1c9c9",
         borderRadius: 50,
         padding: 6
     },
     item: {
-        flex:1,
-        alignSelf:"flex-start",
+        flex: 1,
+        alignSelf: "flex-start",
         backgroundColor: '#34a0a4',
         padding: 16,
         marginHorizontal: 7,
@@ -250,8 +250,8 @@ const styles = StyleSheet.create({
     },
     title: {
         fontSize: 18,
-        fontFamily:'Montserrat-Medium',
-        color:'white'
+        fontFamily: 'Montserrat-Medium',
+        color: 'white'
     },
     button: {
         alignSelf: "flex-start",
@@ -281,7 +281,7 @@ const styles = StyleSheet.create({
         alignSelf: "flex-start"
     },
     yourInterests: {
-        padding:15,
+        padding: 15,
         width: '100%',
         flexDirection: "row",
         justifyContent: "space-between",

@@ -11,7 +11,7 @@ import MainApi from "../../services/ApiModule"
 
 interface Activity {
     Activity_ID: number,
-    Category_ID: string,
+    Categories_ID: string,
     Description: string,
     Duration: string,
     ID: number,
@@ -44,7 +44,7 @@ const Card = ({ card }: { card: Activity }) => (
         <LinearGradient colors={[colors.transparent, 'rgba(9,30,31,0.3)', 'rgba(9,30,31,0.7)', 'rgba(9,30,31,0.9)', colors.darkgreen]} style={styles.gradient}>
 
             <View style={styles.cardDetails}>
-                <Text style={[styles.category]}>{card.Category_ID}</Text>
+                <Text style={[styles.category]}>{card.Categories_ID}</Text>
                 <Text style={[styles.title]}>{card.Title}</Text>
 
                 <View style={styles.timeText}>
@@ -82,7 +82,7 @@ const Home = () => {
         for (let i = 0; i < activities.length; i++) {
             const index = categories.findIndex(category => category.ID.toString() == activities[i].Category_ID);
             if (index != -1) {
-                activities[i].Category_ID = categories[index].Name;
+                activities[i].Categories_ID = categories[index].Name;
             }
         }
         return true;
@@ -133,7 +133,6 @@ const Home = () => {
                         <Icon name='person' size={30} color={colors.green}  style={styles.headerIcon}  onPress={() => navigation.navigate("Statistics")} />
                     </View>
                 }
-                containerStyle={{ marginTop: 25 }}
                 backgroundColor='#f0f0f0'
             />
             <View style={styles.container}>
@@ -147,7 +146,7 @@ const Home = () => {
                             onSwiped={onSwiped}
                             onTapCard={() => navigation.navigate("Suggestion", {
                                 Activity_ID: activities[index].Activity_ID,
-                                Category_ID: activities[index].Category_ID
+                                Category_ID: activities[index].Categories_ID
                             })}
                             stackSize={2}
                             stackScale={7}

@@ -22,7 +22,7 @@ interface Activity {
 
 interface ActivityID {
     Activity_ID: string,
-    Category_name: string
+    Category_ID: string
 }
 
 var imgBg = require("../../assets/icone_desconecta.png")
@@ -83,7 +83,7 @@ const Suggestion = () => {
         if (activity !== null) {
             function renderPage(activity: Activity) {
                 imgBg = { uri: activity.ImageLink };
-                categ = routeParam.Category_name;
+                categ = routeParam.Category_ID;
                 suggestionTitle = activity.Title;
                 suggestionDesc = activity.Description;
                 suggestionDura = activity.Duration;
@@ -141,13 +141,12 @@ const Suggestion = () => {
                         </>
                     }
                     containerStyle={{
-                        marginTop: 5,
                         borderBottomColor: 'rgba(0, 0, 0, 0)'
                     }}
                     backgroundColor='rgba(0, 0, 0, 0)'
                 />
                 { canRenderPage && (
-                <LinearGradient colors={['rgba(52,160,164,0)', colors.green, colors.green, colors.green,
+                <LinearGradient colors={['rgba(9,30,31,0)','rgba(9,30,31,0.7)', 'rgba(9,30,31,0.9)', colors.green, colors.green,
                     colors.green, colors.green, colors.green, colors.green, colors.green, colors.green, colors.green]}
                     style={styles.main}>
                     <View style={styles.info}>
@@ -210,7 +209,7 @@ const styles = StyleSheet.create({
     },
 
     info: {
-        flex: 2
+        flex: 2.5
     },
 
     returnButton: {
