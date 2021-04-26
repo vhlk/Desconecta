@@ -16,7 +16,7 @@ interface Activity {
     ID: number,
     Image: any,
     ImageLink: string,
-    ActivityLink: string,
+    LinkNetflix: string,
     Title: string
 }
 
@@ -37,13 +37,13 @@ const colors = {
 };
 
 async function goToActivity() {
-    const supported = await Linking.canOpenURL(suggestionLink);
-
-    if (supported) {
-        await Linking.openURL(suggestionLink);
-    } else {
-        Alert.alert(`Don't know how to open this URL: ${suggestionLink}`);
-    }
+    Linking.canOpenURL(suggestionLink).then(supported => {
+        if (!supported) {
+          console.log('Can\'t handle url: ' + suggestionLink);
+        } else {
+          return Linking.openURL(suggestionLink);
+        }
+      }).catch(err => console.error('An error occurred', err));
 }
 
 const Suggestion = () => {
@@ -87,7 +87,7 @@ const Suggestion = () => {
                 suggestionTitle = activity.Title;
                 suggestionDesc = activity.Description;
                 suggestionDura = activity.Duration;
-                suggestionLink = activity.ActivityLink;
+                suggestionLink = activity.LinkNetflix;
                 toggleRenderPage(true);
             }
             // @ts-ignore: Argument of type 'null' is not assignable to parameter of type 'Activity'.
