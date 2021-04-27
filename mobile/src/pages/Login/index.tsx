@@ -32,6 +32,14 @@ const Login = () => {
     Animated.spring(offset.y, { toValue: 0, speed: 8, useNativeDriver: true }).start();
   }, []);
 
+  React.useEffect(
+    () =>
+      navigation.addListener('beforeRemove', (e) => {
+        e.preventDefault();
+      }
+      ), [navigation]
+  );
+
   function checkLogin(userEmail: string, userPsw: string, firstLogin: boolean) {
     MainApi.GetUser(userEmail, userPsw).then(res => {
       if (res.data === null || res.data.length === 0) {
@@ -41,7 +49,7 @@ const Login = () => {
       else {
         setCheckingLogin(false);
         if (firstLogin){
-          saveLogin(res.data[0].ID).then(() => navigation.navigate("Home"));
+          saveLogin(res.data[0].ID).then( () => navigation.navigate("Home"));
         } else {
           navigation.navigate("Home");
         }
