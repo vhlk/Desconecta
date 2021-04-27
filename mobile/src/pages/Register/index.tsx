@@ -33,8 +33,7 @@ const Register = () => {
             Alert.alert("Não foi possível fazer login", "Por favor verifique os dados digitados!");
           }
           else {
-            saveLogin(res.data[0].ID);
-            navigation.navigate("Home");
+            saveLogin(res.data[0].ID).then(() => navigation.navigate("Home"));
           }
         }).catch(err => console.log(err));
         return false;

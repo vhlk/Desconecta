@@ -19,6 +19,7 @@ const Login = () => {
       const login = await AsyncStorage.getItem(LOGIN_EMAIL);
       const pass = await AsyncStorage.getItem(LOGIN_PSW);
       if (login !== null && pass != null) {
+        setCheckingLogin(true);
         checkLogin(login, pass);
       }
     }
@@ -38,8 +39,7 @@ const Login = () => {
       }
       else {
         setCheckingLogin(false);
-        saveLogin(res.data[0].ID);
-        navigation.navigate("Home");
+        saveLogin(res.data[0].ID).then(() => navigation.navigate("Home"));
       }
     }).catch(err => console.log(err));
   }
