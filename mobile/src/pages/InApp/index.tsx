@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react"
-import { View, Image, StyleSheet, Text, TouchableOpacity } from "react-native"
+import { View, Image, StyleSheet, Text, TouchableOpacity, ImageBackground } from "react-native"
 import { Header, Icon } from "react-native-elements"
-import { useNavigation } from "@react-navigation/native"
+import { useNavigation, useRoute } from "@react-navigation/native"
 import Axios from "axios"
 
 import Swiper from "react-native-swiper";
@@ -15,11 +15,10 @@ const colors = {
     green: '#34a0a4'
 };
 
-const Card = ({ card }: { card: any }) => (
-    <View style={styles.card}>
-        <Image source={{ uri: card.img }} style={styles.cardImage}/>
-    </View>
-);
+interface params {
+    coutry: string;
+    object: string;
+}
 
 interface card {
     id: number;
@@ -27,14 +26,16 @@ interface card {
 }
 
 const InApp = () => {
+    const route = useRoute();
+    const routeParams = route.params as params;
+    const CARDS2LOAD  = 5;
     const getRandomUntil = (x:number):number => {
         return Math.floor(Math.random()*1000000 % x);
     };
     const [totalImgs, setTotalImages] = useState(0);
     const [imgIds, setImgIds] = useState([]);
-    let maxIndex = 2;
     const onSwiped = (index: number) => {
-        if(index < maxIndex)
+        if(index < (CARDS2LOAD-1))
             load1MoreCard();
         else {
             loadNewCards();
@@ -47,32 +48,37 @@ const InApp = () => {
         await Axios.get(`https://collectionapi.metmuseum.org/public/collection/v1/objects/${id}`).then(res => {
             let newCard = [... card];
             newCard.shift();
-            newCard.push({id: id, img: res.data["primaryImage"]});
+            let imgSrc = res.data["primaryImage"];
+            newCard.push({id: id, img: imgSrc});
+            Image.prefetch(imgSrc);
             card = newCard;
         });
     }
     const loadNewCards = async () => {
-        const next3Ids = [imgIds[getRandomUntil(totalImgs)], imgIds[getRandomUntil(totalImgs)], imgIds[getRandomUntil(totalImgs)]];
-            const next3:card[] = [];
-            for (let i=0; i< 3;i++) {
-                await Axios.get(`https://collectionapi.metmuseum.org/public/collection/v1/objects/${next3Ids[i]}`).then(res => next3.push({id: next3Ids[i], img: res.data["primaryImage"]}));
-            }
-            setCard(next3);
+        const newCards = [... card];
+        setCard(newCards);
+    }
+
+    const newImage = (uri:string):JSX.Element => {
+        Image.prefetch(uri);
+        return <Image style={styles.image} source={{uri: uri}} defaultSource={require("./biurifu.png")} blurRadius={1} resizeMode={"center"}/>;
     }
     
     useEffect(() => {
-        Axios.get("https://collectionapi.metmuseum.org/public/collection/v1/search?hasImages=true&q=Flowers").then(async res =>  {
+        Axios.get(`https://collectionapi.metmuseum.org/public/collection/v1/search?hasImages=true&geoLocation=${routeParams.coutry}&q=${routeParams.object}`).then(async res =>  {
             const data = res.data;
             const ids = data["objectIDs"];
             const total = data["total"];
             setTotalImages(total);
             setImgIds(ids);
-            const next3Ids = [ids[getRandomUntil(total)], ids[getRandomUntil(total)], ids[getRandomUntil(total)]];
-            const next3:card[] = [];
-            for (let i=0; i< 3;i++) {
-                await Axios.get(`https://collectionapi.metmuseum.org/public/collection/v1/objects/${next3Ids[i]}`).then(res => next3.push({id: next3Ids[i], img: res.data["primaryImage"]}));
+            let nextIds:number[] = [];
+            for (let i = 0; i<CARDS2LOAD;i ++) nextIds.push(ids[getRandomUntil(total)]);
+            const next:card[] = [];
+            for (let i=0;i<nextIds.length;i++) {
+                await Axios.get(`https://collectionapi.metmuseum.org/public/collection/v1/objects/${nextIds[i]}`).then(res => next.push({id: nextIds[i], img: res.data["primaryImage"]}));
             }
-            setCard(next3);
+
+            setCard(next);
             
         }).catch(err => console.log(err));
     }, []);
@@ -102,8 +108,10 @@ const InApp = () => {
         />             
         {card.length !== 0 && (
             <Swiper style={styles.wrapper} showsButtons={false} showsPagination={false} onIndexChanged={onSwiped}>                    
-                { card.map((item, key)=>(                        
-                        <Image key={key} style={styles.image} source={{uri: item.img}} />
+                { card.map((item, key)=>(       
+                        <View key={key}>
+                            {newImage(item.img)}                                                       
+                        </View>
                     ))}
             </Swiper>)}
         </>
@@ -255,7 +263,7 @@ const styles = StyleSheet.create({
     },
     image: {
         width: "90%", 
-        height: "90%",
+        height: "99%",
         borderRadius: 20,
         alignContent: "center",
         alignSelf: "center",
