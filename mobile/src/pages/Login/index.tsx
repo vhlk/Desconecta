@@ -5,7 +5,7 @@ import MainApi from "../../services/ApiModule"
 import AsyncStorage from "@react-native-async-storage/async-storage"
 
 const Login = () => {
-  const navigation = useNavigation()
+  const navigation = useNavigation();
   const [offset] = useState(new Animated.ValueXY({ x: 0, y: 80 }));
   const [email, setEmail] = useState("");
   const [psw, setPsw] = useState("");
@@ -20,7 +20,8 @@ const Login = () => {
       const pass = await AsyncStorage.getItem(LOGIN_PSW);
       if (login !== null && pass != null) {
         setCheckingLogin(true);
-        checkLogin(login, pass);
+        checkLogin(login, pass, false);
+        
       }
     }
     fun();
@@ -31,7 +32,7 @@ const Login = () => {
     Animated.spring(offset.y, { toValue: 0, speed: 8, useNativeDriver: true }).start();
   }, []);
 
-  function checkLogin(userEmail: string, userPsw: string) {
+  function checkLogin(userEmail: string, userPsw: string, firstLogin: boolean) {
     MainApi.GetUser(userEmail, userPsw).then(res => {
       if (res.data === null || res.data.length === 0) {
         setCheckingLogin(false);
@@ -39,7 +40,11 @@ const Login = () => {
       }
       else {
         setCheckingLogin(false);
-        saveLogin(res.data[0].ID).then(() => navigation.navigate("Home"));
+        if (firstLogin){
+          saveLogin(res.data[0].ID).then(() => navigation.navigate("Home"));
+        } else {
+          navigation.navigate("Home");
+        }
       }
     }).catch(err => console.log(err));
   }
@@ -52,7 +57,7 @@ const Login = () => {
 
   function enterLogin() {
     setCheckingLogin(true);
-    checkLogin(email, psw);
+    checkLogin(email, psw, true);
   }
 
   return (
