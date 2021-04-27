@@ -25,6 +25,8 @@ const Item = ({ Name }) => (
     </View>
 );
 const Statistics = () => {
+    const LOGIN_EMAIL = "LOGIN_EMAIL";
+    const LOGIN_PSW = "LOGIN_PSW";
     const LOGIN_ID = "LOGIN_ID";
     const [variavel, setVariavel] = useState<Categories[]>([]);
     const [username, setUsername] = useState("");
@@ -32,6 +34,12 @@ const Statistics = () => {
 
     const getCategory = (id: string) => {
         MainApi.GetInterestForUser(id).then(res => setVariavel(res.data));
+    }
+    
+    const logout = async () => {
+        await AsyncStorage.removeItem(LOGIN_EMAIL);
+        await AsyncStorage.removeItem(LOGIN_PSW);
+        await AsyncStorage.removeItem(LOGIN_ID).then(() => navigation.navigate("Login"));
     }
 
     useEffect(() => {
@@ -190,6 +198,7 @@ const Statistics = () => {
             <View style={{ padding: 10 }}>
                 <TouchableOpacity
                     style={styles.buttonLogout}
+                    onPress={logout}
                 >
                     <Text style={{ color: 'red', fontSize: 22, fontFamily: 'Montserrat-Medium' }}>Encerrar Sessão</Text>
                 </TouchableOpacity>
