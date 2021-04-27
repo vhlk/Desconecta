@@ -16,13 +16,15 @@ const colors = {
 };
 
 interface params {
-    coutry: string;
+    country: string;
     object: string;
 }
 
 interface card {
     id: number;
     img: string;
+    title: string;
+    artist: string;
 }
 
 const InApp = () => {
@@ -48,8 +50,10 @@ const InApp = () => {
         await Axios.get(`https://collectionapi.metmuseum.org/public/collection/v1/objects/${id}`).then(res => {
             let newCard = [... card];
             newCard.shift();
-            let imgSrc = res.data["primaryImage"];
-            newCard.push({id: id, img: imgSrc});
+            const imgSrc = res.data["primaryImage"];
+            const title = res.data["title"];
+            const artist = res.data["artistDisplayName"];
+            newCard.push({id: id, img: imgSrc, title: title, artist: artist});
             Image.prefetch(imgSrc);
             card = newCard;
         });
@@ -65,7 +69,9 @@ const InApp = () => {
     }
     
     useEffect(() => {
-        Axios.get(`https://collectionapi.metmuseum.org/public/collection/v1/search?hasImages=true&geoLocation=${routeParams.coutry}&q=${routeParams.object}`).then(async res =>  {
+        const country = routeParams.country;
+        const obj = routeParams.object;
+        Axios.get("https://collectionapi.metmuseum.org/public/collection/v1/search?hasImages=true&geoLocation="+country+"&q="+obj).then(async res =>  {
             const data = res.data;
             const ids = data["objectIDs"];
             const total = data["total"];
@@ -75,7 +81,8 @@ const InApp = () => {
             for (let i = 0; i<CARDS2LOAD;i ++) nextIds.push(ids[getRandomUntil(total)]);
             const next:card[] = [];
             for (let i=0;i<nextIds.length;i++) {
-                await Axios.get(`https://collectionapi.metmuseum.org/public/collection/v1/objects/${nextIds[i]}`).then(res => next.push({id: nextIds[i], img: res.data["primaryImage"]}));
+                await Axios.get(`https://collectionapi.metmuseum.org/public/collection/v1/objects/${nextIds[i]}`)
+                    .then(res => next.push({id: nextIds[i], img: res.data["primaryImage"], title: res.data["title"], artist: res.data["artistDisplayName"]}));
             }
 
             setCard(next);
@@ -108,10 +115,16 @@ const InApp = () => {
         />             
         {card.length !== 0 && (
             <Swiper style={styles.wrapper} showsButtons={false} showsPagination={false} onIndexChanged={onSwiped}>                    
-                { card.map((item, key)=>(       
-                        <View key={key}>
-                            {newImage(item.img)}                                                       
+                { card.map((item, key)=>(     
+                    <View key={key}>
+                        <View >
+                            {newImage(item.img)}                                                     
                         </View>
+                        <View>
+                            <Text style={styles.descriptionText}>{item.title}</Text>
+                            <Text style={styles.descriptionText}>{item.artist}</Text>
+                        </View>
+                    </View>                          
                     ))}
             </Swiper>)}
         </>
@@ -126,25 +139,6 @@ const styles = StyleSheet.create({
 
     footer: {},
 
-    button: {
-        backgroundColor: '#34CB79',
-        height: 60,
-        flexDirection: 'row',
-        borderRadius: 10,
-        overflow: 'hidden',
-        alignItems: 'center',
-        marginTop: 8,
-    },
-
-    buttonText: {
-        flex: 1,
-        justifyContent: 'center',
-        textAlign: 'center',
-        color: '#FFF',
-        fontFamily: 'Roboto_500Medium',
-        fontSize: 16,
-    },
-
     container: {
         flex: 1,
         backgroundColor: "#f0f0f0",
@@ -153,89 +147,6 @@ const styles = StyleSheet.create({
 
     swiperContainer: {
         flex: 0.80
-    },
-
-    card: {
-        flex: 0.75,
-        borderRadius: 10,
-        shadowRadius: 25,
-        shadowColor: "#000",
-        shadowOpacity: 0.08,
-        shadowOffset: { width: 0, height: 0 },
-        backgroundColor: colors.black,
-        flexDirection: "column",
-        justifyContent: "flex-end",
-        alignItems: "flex-start",
-    },
-
-    cardImage: {
-        // width: 400,
-        // flex: 1,
-        ...StyleSheet.absoluteFillObject,
-        resizeMode: "cover",
-        borderRadius: 10
-    },
-
-    bottomContainer: {
-        flex: 0.45
-    },
-
-    cardDetails: {
-        flexDirection: "column",
-        justifyContent: "flex-end",
-        alignItems: "flex-start",
-    },
-
-    text: {
-        fontFamily: "Courier"
-
-    },
-
-    category: {
-        fontSize: 14, 
-        marginBottom: 10, 
-        color: colors.white, 
-        alignContent: "flex-start", 
-        marginHorizontal: 15
-    },
-
-    title: {
-        fontSize: 24, 
-        marginBottom: 20, 
-        color: colors.white, 
-        alignContent: "flex-start", 
-        marginHorizontal: 15
-    },
-
-    description: {
-        fontSize: 16, 
-        marginBottom: 30, 
-        color: colors.white, 
-        alignContent: "flex-start", 
-        marginHorizontal: 15
-    },
-
-    time: {
-        color: colors.white,
-        fontSize: 16,
-        fontWeight: "500",
-        alignContent: "flex-start",
-        marginBottom: 10,
-        marginHorizontal: 5
-    },
-
-    timeText: {
-        flexDirection: "row",
-        marginHorizontal: 15,
-        marginBottom: 10
-    }, 
-    seeDetails: {
-        flexDirection: "column",
-        alignItems: "center",
-        alignContent: "center",
-        justifyContent: 'center',
-        alignSelf: "center",
-        margin: 20
     },
     
     titleText: {
@@ -263,12 +174,13 @@ const styles = StyleSheet.create({
     },
     image: {
         width: "90%", 
-        height: "99%",
+        height: "91%",
         borderRadius: 20,
-        alignContent: "center",
-        alignSelf: "center",
-        alignItems: "center",        
-        justifyContent: "center"
+        alignSelf: "center"
+    },
+    descriptionText: {
+        textAlign: "center",
+
     }
 });
 

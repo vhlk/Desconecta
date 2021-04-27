@@ -25,6 +25,11 @@ interface ActivityID {
     Category_ID: string
 }
 
+interface InAppParams {
+    country: string;
+    object: string;
+}
+
 var imgBg = require("../../assets/icone_desconecta.png")
 var categ = "Oi"
 var suggestionTitle = "Não era para isso"
@@ -47,8 +52,8 @@ async function goToActivity() {
 }
 
 const Suggestion = () => {
-    const navigation = useNavigation()
-    const route = useRoute()
+    const navigation = useNavigation();
+    const route = useRoute();
     var routeParam = route.params as ActivityID
 
     const [isFavorite, setIsFavorite] = useState<boolean | null>(null);
@@ -56,6 +61,15 @@ const Suggestion = () => {
     const [favoriteList, setFavoriteList] = useState(null);
     const [activity, setActivity] = useState(null);
     const [canRenderPage, toggleRenderPage] = useState(false);
+
+    const checkAndGoToActivity = () => {
+        if (suggestionLink.charAt(0) === '&') {
+            const params = suggestionLink.split("&");
+            const param = {country: params[1], object: params[2]} as InAppParams;
+            navigation.navigate("InApp", param);
+        }   
+        else goToActivity();
+    } 
 
     useEffect(() => {
         imgBg = require("../../assets/icone_desconecta.png")
@@ -175,7 +189,7 @@ const Suggestion = () => {
                     </View>
                     {/* Alterar esses botões dependendo do status da atividade */}
                     <View style={styles.buttons}>
-                        <RectButton style={styles.startButton} onPress={goToActivity}>
+                        <RectButton style={styles.startButton} onPress={checkAndGoToActivity}>
                             <Text style={{ fontFamily: 'Montserrat-Bold', color: '#FFF', fontSize: 17 }}>
                                 COMEÇAR A ATIVIDADE
                             </Text>
