@@ -11,7 +11,7 @@ import MainApi from "../../services/ApiModule"
 
 interface Activity {
     Activity_ID: number,
-    Categories_ID: string,
+    Category_ID: string,
     Description: string,
     Duration: string,
     ID: number,
@@ -33,7 +33,7 @@ const colors = {
     black: '#202225',
     white: '#f6f7f1',
     green: '#34a0a4',
-    pink:'#DB9487',
+    pink: '#DB9487',
     darkgreen: 'rgba(9,30,31,1)',
     transparent: 'rgba(0,0,0,0)'
 };
@@ -44,7 +44,7 @@ const Card = ({ card }: { card: Activity }) => (
         <LinearGradient colors={[colors.transparent, 'rgba(9,30,31,0.3)', 'rgba(9,30,31,0.7)', 'rgba(9,30,31,0.9)', colors.darkgreen]} style={styles.gradient}>
 
             <View style={styles.cardDetails}>
-                <Text style={[styles.category]}>{card.Categories_ID}</Text>
+                <Text style={[styles.category]}>{card.Category_ID}</Text>
                 <Text style={[styles.title]}>{card.Title}</Text>
 
                 <View style={styles.timeText}>
@@ -53,8 +53,10 @@ const Card = ({ card }: { card: Activity }) => (
                 </View>
 
                 <View style={styles.seeDetails}>
-                    <Text style={{ color: colors.white, fontFamily:'Montserrat-Bold', fontSize: 16,
-                     alignContent: "center", textAlign: "center" }}>VER ATIVIDADE</Text>
+                    <Text style={{
+                        color: colors.white, fontFamily: 'Montserrat-Bold', fontSize: 16,
+                        alignContent: "center", textAlign: "center"
+                    }}>VER ATIVIDADE</Text>
                 </View>
             </View>
         </LinearGradient>
@@ -67,29 +69,18 @@ const Home = () => {
     const [index, setIndex] = useState(0);
     var [activities, setActivities] = useState<Activity[]>([]);
     const [categories, setCategories] = useState<Category[]>([]);
-    const [username, setUsername]= useState("");
-    const [userId, setUserId]= useState("-1");
-    var categoriesFixxed = false;
-
-    const getCategories = async () => {
-        await MainApi.GetAllCategories().then(res => setCategories(res.data))
-    }
-    const getActivities = async () => {
-        await MainApi.GetAllActivities().then(res => setActivities(res.data))
-    }
-
-    function fixCategories() {
-        for (let i = 0; i < activities.length; i++) {
-            const index = categories.findIndex(category => category.ID.toString() == activities[i].Category_ID);
-            if (index != -1) {
-                activities[i].Categories_ID = categories[index].Name;
-            }
-        }
-        return true;
-    }
+    const [username, setUsername] = useState("");
+    const [userId, setUserId] = useState("-1");
+    var [activitiesByInterest, setActivitiesByInterest] = useState<Activity[] | null>(null);
 
     useEffect(() => {
+        const getCategories = async () => {
+            await MainApi.GetAllCategories().then(res => setCategories(res.data))
+        }
         getCategories();
+        const getActivities = async () => {
+            await MainApi.GetAllActivities().then(res => setActivities(res.data))
+        }
         getActivities();
         async function getUserId() {
             const id = await AsyncStorage.getItem("LOGIN_ID");
@@ -102,13 +93,65 @@ const Home = () => {
         async function updateUsername() {
             MainApi.GetUserDataByID(+userId).then(res => setUsername(res.data[0].Name));
         }
-        if(userId != '-1')
+        if (userId !== '-1') {
             updateUsername();
-    }, [userId])
+        }
+    }, [userId]);
 
-    if (activities.length != 0 && categories.length != 0) {
-        categoriesFixxed = fixCategories()
-    }
+
+    useEffect(() => {
+        async function getInterests() {
+            MainApi.GetInterestForUser(userId).then(
+                res => {
+                    const interests = res.data;
+                    if (activities.length != 0) {
+                        function fixCategories() {
+                            for (let i = 0; i < activities.length; i++) {
+                                const index = categories.findIndex(category => category.ID.toString() == activities[i].Category_ID);
+                                if (index != -1) {
+                                    activities[i].Category_ID = categories[index].Name;
+                                }
+                            }
+                            return true;
+                        }
+                        fixCategories();
+                        function isInteresting(activity: Activity) {
+                            // @ts-ignore: Parameter 'element' implicitly has an 'any' type.
+                            const found = interests.find(element => element.Name == activity.Category_ID);
+                            if (found) {
+                                return true;
+                            } else return false;
+                        }function shuffle(array) {
+                            var currentIndex = array.length, temporaryValue, randomIndex;
+                          
+                            // While there remain elements to shuffle...
+                            while (0 !== currentIndex) {
+                          
+                              // Pick a remaining element...
+                              randomIndex = Math.floor(Math.random() * currentIndex);
+                              currentIndex -= 1;
+                          
+                              // And swap it with the current element.
+                              temporaryValue = array[currentIndex];
+                              array[currentIndex] = array[randomIndex];
+                              array[randomIndex] = temporaryValue;
+                            }
+                          
+                            return array;
+                        }
+                        let interestsAtvd = activities.filter(isInteresting);
+                        let notInterestsAtvd = activities.filter(e => !isInteresting(e));
+                        interestsAtvd = shuffle(interestsAtvd);
+                        notInterestsAtvd = shuffle(notInterestsAtvd);
+                        const newActivities = interestsAtvd.concat(notInterestsAtvd);
+                        setActivitiesByInterest(newActivities);
+                    }
+                });
+        }
+        if (userId !== '-1') {
+            getInterests();
+        }
+    }, [activities, userId]);
 
     const onSwiped = () => {
         setIndex((index + 1) % activities.length);
@@ -121,32 +164,32 @@ const Home = () => {
                 placement="left"
                 centerComponent={
                     <>
-                    {username!="" &&(
-                    <Text style={{ color: '#DB9487', fontSize: 25, fontFamily:'MontserratAlternates-SemiBold' }}>
-                        Olá, {username}!
-                    </Text>)}
+                        {username != "" && (
+                            <Text style={{ color: '#DB9487', fontSize: 25, fontFamily: 'MontserratAlternates-SemiBold' }}>
+                                Olá, {username}!
+                            </Text>)}
                     </>
                 }
                 rightComponent={
                     <View style={{ flexDirection: 'row' }}>
-                        <Icon name='star-border' size={30} color={colors.green} style={styles.headerIcon} onPress={() => navigation.navigate("Favorites")}/>
-                        <Icon name='person' size={30} color={colors.green}  style={styles.headerIcon}  onPress={() => navigation.navigate("Statistics")} />
+                        <Icon name='star-border' size={30} color={colors.green} style={styles.headerIcon} onPress={() => navigation.navigate("Favorites")} />
+                        <Icon name='person' size={30} color={colors.green} style={styles.headerIcon} onPress={() => navigation.navigate("Statistics")} />
                     </View>
                 }
                 backgroundColor='#f0f0f0'
             />
             <View style={styles.container}>
-                {categoriesFixxed && (
+                {activitiesByInterest && (
                     <View style={styles.swiperContainer}>
                         <Swiper
                             //ref="swiperRef"
-                            cards={activities}
+                            cards={activitiesByInterest}
                             cardIndex={index}
                             renderCard={card => <Card card={card} />}
                             onSwiped={onSwiped}
                             onTapCard={() => navigation.navigate("Suggestion", {
-                                Activity_ID: activities[index].Activity_ID,
-                                Category_ID: activities[index].Categories_ID
+                                Activity_ID: activitiesByInterest[index].Activity_ID,
+                                Category_ID: activitiesByInterest[index].Category_ID
                             })}
                             stackSize={2}
                             stackScale={7}
@@ -199,7 +242,7 @@ const Home = () => {
                 ) || (
                         <>
                             <View style={{ paddingVertical: 50, backgroundColor: colors.green }}>
-                                <Text style={{ color: colors.white, fontFamily:'Montserrat-Medium', fontSize: 20, alignContent: "center", textAlign: "center" }}>
+                                <Text style={{ color: colors.white, fontFamily: 'Montserrat-Medium', fontSize: 20, alignContent: "center", textAlign: "center" }}>
                                     Selecionando as melhores sugestões para você!
                                 </Text>
                             </View>
@@ -305,7 +348,7 @@ const styles = StyleSheet.create({
 
     category: {
         fontSize: 14,
-        fontFamily:'Raleway-Medium',
+        fontFamily: 'Raleway-Medium',
         marginBottom: 10,
         color: colors.white,
         alignContent: "flex-start",
@@ -315,7 +358,7 @@ const styles = StyleSheet.create({
     title: {
         fontSize: 24,
         marginBottom: 20,
-        fontFamily:'Raleway-Medium',
+        fontFamily: 'Raleway-Medium',
         color: colors.white,
         alignContent: "flex-start",
         marginHorizontal: 15
@@ -331,7 +374,7 @@ const styles = StyleSheet.create({
 
     time: {
         color: colors.white,
-        fontFamily:'Raleway-Medium',
+        fontFamily: 'Raleway-Medium',
         fontSize: 16,
         fontWeight: "500",
         alignContent: "flex-start",
@@ -357,8 +400,8 @@ const styles = StyleSheet.create({
         flexDirection: "column",
         justifyContent: "flex-end",
         alignItems: "flex-start",
-        width:'100%',
-        height:'70%'
+        width: '100%',
+        height: '70%'
     },
     headerIcon: {
         paddingHorizontal: 5
