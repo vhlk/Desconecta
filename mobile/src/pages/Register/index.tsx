@@ -1,10 +1,10 @@
-import { NavigationHelpersContext } from '@react-navigation/native';
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, TextInput, KeyboardAvoidingView, TouchableOpacity, Animated, Alert } from 'react-native';
+import { StyleSheet, Text, View, TextInput, KeyboardAvoidingView, TouchableOpacity, Animated, Alert, ActivityIndicator } from 'react-native';
 import { Header, Icon } from "react-native-elements"
 import { useNavigation , useRoute} from "@react-navigation/native"
-import MainApi from "../../services/ApiModule"
 import AsyncStorage from "@react-native-async-storage/async-storage"
+
+import MainApi from "../../services/ApiModule"
 
 const Register = () => {
     const [offset] = useState(new Animated.ValueXY({ x: 0, y: 80 }));
@@ -15,43 +15,65 @@ const Register = () => {
     const [psw, setPsw] = useState("");
     const [pswConf, setPswConf] = useState("");
     const [pswsMatches, setPswMatches] = useState(false);
+    const [checkingRegister, setCheckingRegister] = useState(false);
     const LOGIN_EMAIL = "LOGIN_EMAIL";
     const LOGIN_PSW = "LOGIN_PSW";
+    const LOGIN_ID = "LOGIN_ID";
 
-    async function saveLogin() {
+    async function saveLogin(id: string) {
         await AsyncStorage.setItem(LOGIN_EMAIL, email);
         await AsyncStorage.setItem(LOGIN_PSW, psw);
-      }
+        await AsyncStorage.setItem(LOGIN_ID, id.toString());
+        navigation.navigate("Interest");
+    }
+
+    function checkLogin(userEmail: string, userPsw: string) {
+        MainApi.GetUser(userEmail, userPsw).then(res => {
+          if (res.data === null || res.data.length === 0) {
+            Alert.alert("Não foi possível fazer login", "Por favor verifique os dados digitados!");
+          }
+          else {
+            saveLogin(res.data[0].ID).then(() => navigation.navigate("Home"));
+          }
+        }).catch(err => console.log(err));
+        return false;
+    }
 
     function checkNRegister() {
-        MainApi.CheckIfEmailExists(email).then(async res => {
+        MainApi.CheckIfEmailExists(email).then(res => {
             const emailExists = res.data[0]["EmailCadastrado"];
             if (!emailExists) {
                 MainApi.InsertUser(name, email, psw);
-                await saveLogin();
-                navigation.navigate("Home");
+                checkLogin(email, psw);
+                setCheckingRegister(false);
             }
             else {
+                setCheckingRegister(false);
                 Alert.alert("Email inválido", "O email já existe!");
             }
         });
       }
     
     function enterRegister() {
+        setCheckingRegister(true);
         if (name === "") {
             Alert.alert("Nome inválido", "O nome não pode ser vazio!");
+            setCheckingRegister(false);
             return;
         }
         else if (email === "") {
             Alert.alert("Email inválido", "O email não pode ser vazio!");
+            setCheckingRegister(false);
             return;
         }
         else if (psw === "") {
             Alert.alert("Senha inválida", "A senha não pode ser vazia!");
+            setCheckingRegister(false);
             return;
         }
         else if (!pswsMatches) {
             Alert.alert("Senha inválida", "As senhas não batem!");
+            setCheckingRegister(false);
             return;
         }
 
@@ -128,10 +150,11 @@ const Register = () => {
                     <TextInput style={styles.input} secureTextEntry={true} placeholder="Senha" onChangeText={setPsw}/>
                     <TextInput style={styles.lastInput} secureTextEntry={true} placeholder="Confirme a senha" onChangeText={setPswConf} />
                     <Text style={styles.pswDoesntMatch}>{pswDoesntMatchText}</Text>
-
+                    {!checkingRegister && (
                     <TouchableOpacity style={styles.btnRegister} onPress={enterRegister}>
-                        <Text style={styles.registerText}>Cadastar</Text>
-                    </TouchableOpacity>
+                        <Text style={styles.registerText}>Cadastrar</Text>
+                    </TouchableOpacity>) || 
+                    ( <ActivityIndicator size="large" color={'#34a0a4'} />)}
 
                 </Animated.View>
 
@@ -164,6 +187,7 @@ const styles = StyleSheet.create({
     titleText: {
         fontSize: 20,
         textAlign: 'left',
+        fontFamily:'Montserrat-Medium',
         marginLeft: -80,
         marginBottom: 40,
         color: '#db9487'
@@ -203,6 +227,7 @@ const styles = StyleSheet.create({
     },
     registerText: {
         color: '#fff',
+        fontFamily:'Montserrat-Medium',
         fontSize: 17,
     },
     pswDoesntMatch: {

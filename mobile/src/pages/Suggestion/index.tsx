@@ -1,48 +1,125 @@
-import React, { useEffect, useState } from "react"
-import { View, Image, StyleSheet, Text, TouchableOpacity, ImageBackground, Linking, Alert, ScrollView } from "react-native"
-import { RectButton } from "react-native-gesture-handler"
-import { Header, Icon } from "react-native-elements"
-import { Button } from "react-native-elements/dist/buttons/Button"
-import { BackgroundImage } from "react-native-elements/dist/config"
-import { useNavigation , useRoute} from "@react-navigation/native"
-import data from "../Home/data2";
+import React, { useEffect, useState } from "react";
+import { View, Image, StyleSheet, Text, TouchableOpacity, ImageBackground, Linking, Alert, ScrollView, ActivityIndicator} from "react-native";
+import { RectButton } from "react-native-gesture-handler";
+import { Header, Icon } from "react-native-elements";
+import { useNavigation, useRoute } from "@react-navigation/native";
+import LinearGradient from 'react-native-linear-gradient';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
-interface atvdId {
-    itemId: number
+import MainApi from '../../services/ApiModule';
+
+interface Activity {
+    Activity_ID: string,
+    Category_ID: string,
+    Description: string,
+    Duration: string,
+    ID: number,
+    Image: any,
+    ImageLink: string,
+    LinkNetflix: string,
+    Title: string
 }
 
-var imgBg = require("../../assets/SilvaCantaMarisa.jpg")
-var categ = data[1].category
-var suggestionTitle = data[1].name
-var suggestionDesc = data[1].description
-var suggestionDura = data[1].time
-var suggestionLink = "https://www.youtube.com/watch?v=w1AM9ciUyws&list=PLhBSDWTgistpHkC3tAuet7eShNI24Y7JQ"
+interface ActivityID {
+    Activity_ID: string,
+    Category_ID: string
+}
+
+var imgBg = require("../../assets/icone_desconecta.png")
+var categ = "Oi"
+var suggestionTitle = "Não era para isso"
+var suggestionDesc = "APARECER"
+var suggestionDura = ":("
+var suggestionLink = "https://youtu.be/dQw4w9WgXcQ"
+
+const colors = {
+    green: '#091E1F'
+};
 
 async function goToActivity() {
-    const supported = await Linking.canOpenURL(suggestionLink);
-    
-    if (supported) {
-      await Linking.openURL(suggestionLink);
-    } else {
-      Alert.alert(`Don't know how to open this URL: ${suggestionLink}`);
-    }
-}
-
-function setActivity(id:number){
-    console.log(data[id].name)
-    imgBg = {uri: data[id].image}
-    categ = data[id].category
-    suggestionTitle = data[id].name
-    suggestionDesc = data[id].description
-    suggestionDura = data[id].time
-    suggestionLink = data[id].link
+    Linking.canOpenURL(suggestionLink).then(supported => {
+        if (!supported) {
+          console.log('Can\'t handle url: ' + suggestionLink);
+        } else {
+          return Linking.openURL(suggestionLink);
+        }
+      }).catch(err => console.error('An error occurred', err));
 }
 
 const Suggestion = () => {
     const navigation = useNavigation()
     const route = useRoute()
-    var routeParam = route.params as atvdId
-    setActivity(routeParam.itemId);
+    var routeParam = route.params as ActivityID
+
+    const [isFavorite, setIsFavorite] = useState<boolean | null>(null);
+    const [userId, setUserId] = useState("-1");
+    const [favoriteList, setFavoriteList] = useState(null);
+    const [activity, setActivity] = useState(null);
+    const [canRenderPage, toggleRenderPage] = useState(false);
+
+    useEffect(() => {
+        imgBg = require("../../assets/icone_desconecta.png")
+        function getActivity() {
+            MainApi.GetActivity(routeParam.Activity_ID).then(res => setActivity(res.data[0]))
+        }
+        getActivity();
+        async function getUserId() {
+            const id = await AsyncStorage.getItem("LOGIN_ID");
+            setUserId((id == null) ? '0' : id);
+        }
+        getUserId();
+    }, []);
+
+    useEffect(() => {
+        async function updateFavorites() {
+            MainApi.GetAllFavoritesForUser(userId).then(res => setFavoriteList(res.data));
+        }
+        if (userId != '-1') {
+            updateFavorites();
+        }
+    }, [userId]);
+
+    useEffect(() => {
+        if (activity !== null) {
+            function renderPage(activity: Activity) {
+                imgBg = { uri: activity.ImageLink };
+                categ = routeParam.Category_ID;
+                suggestionTitle = activity.Title;
+                suggestionDesc = activity.Description;
+                suggestionDura = activity.Duration;
+                suggestionLink = activity.LinkNetflix;
+                toggleRenderPage(true);
+            }
+            // @ts-ignore: Argument of type 'null' is not assignable to parameter of type 'Activity'.
+            renderPage(activity);
+        }
+    }, [activity]);
+
+
+    useEffect(() => {
+        if (favoriteList !== null) {
+            // @ts-ignore: Object is possibly 'null'.
+            const found = favoriteList.find(item => item.Activities_ID == routeParam.Activity_ID);
+            if (found) {
+                setIsFavorite(true);
+            } else {
+                setIsFavorite(false);
+            }
+        }
+    }, [favoriteList]);
+
+    const toggleSwitch = async () => {
+        const newFavorite = !isFavorite;
+        setIsFavorite(newFavorite);
+
+        if (newFavorite) {
+            await MainApi.InsertFavoriteForUser(userId, routeParam.Activity_ID.toString());
+            MainApi.GetAllFavoritesForUser(userId).then(res => setFavoriteList(res.data));
+        } else {
+            await MainApi.DeleteFavoriteForUser(userId, routeParam.Activity_ID.toString());
+            MainApi.GetAllFavoritesForUser(userId).then(res => setFavoriteList(res.data));
+        }
+    };
 
     function handleNav() {
         navigation.navigate("Home")
@@ -50,7 +127,7 @@ const Suggestion = () => {
 
     return (
         <>
-            <ImageBackground source={imgBg} style={styles.imgbg}>
+            <ImageBackground source={canRenderPage ? imgBg: null} style={styles.imgbg}>
                 <Header
                     placement="left"
                     leftComponent={
@@ -64,21 +141,25 @@ const Suggestion = () => {
                         </>
                     }
                     containerStyle={{
-                        marginTop: 5,
                         borderBottomColor: 'rgba(0, 0, 0, 0)'
                     }}
                     backgroundColor='rgba(0, 0, 0, 0)'
                 />
-                <View style={styles.main}>
+                { canRenderPage && (
+                <LinearGradient colors={['rgba(9,30,31,0)','rgba(9,30,31,0.7)', 'rgba(9,30,31,0.9)', colors.green, colors.green,
+                    colors.green, colors.green, colors.green, colors.green, colors.green, colors.green, colors.green]}
+                    style={styles.main}>
                     <View style={styles.info}>
                         <Text style={styles.category}>
                             {categ}
                         </Text>
                         <View style={styles.title}>
-                            <Text style={styles.titleText}>
-                                {suggestionTitle}
-                            </Text>
-                            {/* <Icon name='star-border' size={30} color='#FFF' style={styles.buttonIcon} /> */}
+                            <ScrollView horizontal={true}>
+                                <Text style={styles.titleText}>
+                                    {suggestionTitle}
+                                </Text>
+                            </ScrollView>
+                            <Icon name={isFavorite === null ? 'sync' : (isFavorite ? 'star' : 'star-border')} size={30} color='#a1c9c9' style={styles.buttonIcon} onPress={toggleSwitch} />
                         </View>
                         <ScrollView style={styles.descContainer}>
                             <Text style={styles.description}>
@@ -86,25 +167,27 @@ const Suggestion = () => {
                             </Text>
                         </ScrollView>
                         <View style={styles.duration}>
-                            <Icon name='access-time' size={20} color='#FFF' style={styles.buttonIcon} />
-                            <Text style={{ color: '#FFF', padding: 5}}>
+                            <Icon name='access-time' size={13} color='#FFF' style={styles.buttonIcon} />
+                            <Text style={{ fontFamily: 'Montserrat-Medium', color: '#FFF', padding: 5, fontSize: 13 }}>
                                 {suggestionDura}
                             </Text>
                         </View>
                     </View>
+                    {/* Alterar esses botões dependendo do status da atividade */}
                     <View style={styles.buttons}>
                         <RectButton style={styles.startButton} onPress={goToActivity}>
-                            <Text style={{ color: '#FFF', fontWeight: "700", fontSize: 17}}>
+                            <Text style={{ fontFamily: 'Montserrat-Bold', color: '#FFF', fontSize: 17 }}>
                                 COMEÇAR A ATIVIDADE
                             </Text>
                         </RectButton>
                         <TouchableOpacity onPress={handleNav}>
-                            <Text style={{ color: '#FFF', textDecorationLine: 'underline', paddingTop:10 }}>
+                            <Text style={{ fontFamily: 'Montserrat-Medium', color: '#EFD1CC', textDecorationLine: 'underline', paddingTop: 10 }}>
                                 NÃO TENHO INTERESSE
                             </Text>
                         </TouchableOpacity>
                     </View>
-                </View>
+                </LinearGradient>
+                ) || (<ActivityIndicator size="large" color={colors.green} />)}
             </ImageBackground>
         </>
     )
@@ -113,8 +196,6 @@ const Suggestion = () => {
 const styles = StyleSheet.create({
     main: {
         flex: 1,
-        justifyContent: "space-between",
-        backgroundColor: '#000',
         padding: 25,
         height: '50%',
         width: '100%',
@@ -128,11 +209,12 @@ const styles = StyleSheet.create({
     },
 
     info: {
+        flex: 2.5
     },
 
     returnButton: {
         alignItems: "center",
-        backgroundColor: "#DDDDDD",
+        backgroundColor: "#a1c9c9",
         borderRadius: 50,
         padding: 6
     },
@@ -144,30 +226,35 @@ const styles = StyleSheet.create({
     },
 
     buttons: {
+        flex: 2,
         alignItems: 'center',
+        justifyContent: "flex-end"
     },
 
     category: {
         color: '#FFF',
-        fontSize: 12
+        fontFamily: 'Montserrat-Medium',
+        fontSize: 12,
+        paddingTop: 10
     },
 
     title: {
         flexDirection: "row",
         justifyContent: "space-between",
-        alignItems: "center"
+        alignItems: "center",
+        maxHeight: '27%'
     },
 
     titleText: {
         color: '#FFF',
         fontSize: 20,
-        fontWeight: 'bold',
-        fontFamily: ''
+        fontFamily: 'Montserrat-Bold'
     },
 
     description: {
         color: '#FFF',
-        paddingVertical: 10
+        fontFamily: 'Montserrat-Medium',
+        paddingVertical: 5
     },
 
     descContainer: {
@@ -180,7 +267,7 @@ const styles = StyleSheet.create({
     },
 
     startButton: {
-        backgroundColor: '#1ab2ff',
+        backgroundColor: '#34a0a4',
         height: 50,
         width: '100%',
         borderRadius: 10,
