@@ -73,7 +73,7 @@ const Statistics = () => {
 
     useEffect(() => {
         function fun() {
-            TrackerModule.GetDailyTimeForApps(["Chrome", "WhatsApp", "Facebook", "Instagram", "Twitter"],
+            TrackerModule.GetDailyTimeForApps(["WhatsApp", "Facebook", "Instagram", "Twitter"],
                 (error: String, value: Object) => {
                     if (error) {
                         console.log(error)
@@ -81,7 +81,7 @@ const Statistics = () => {
                     else {
                         var newData = [...data];
 
-                        newData[0] = Math.round(value["Google Chrome"] ? value["Google Chrome"] : 0);
+                        newData[0] = Math.round(value["Facebook"] ? value["Facebook"] : 0);
                         newData[1] = Math.round(value["Instagram"] ? value["Instagram"] : 0);
                         newData[2] = Math.round(value["Twitter"] ? value["Twitter"] : 0);
                         newData[3] = Math.round(value["WhatsApp"] ? value["WhatsApp"] : 0);
@@ -136,7 +136,7 @@ const Statistics = () => {
                 </Text>
                 <BarChart
                     data={{
-                        labels: ["Chrome", "Instagram", "Twitter", "WhatsApp"],
+                        labels: ["Facebook", "Instagram", "Twitter", "WhatsApp"],
                         datasets: [
                             {
                                 data
