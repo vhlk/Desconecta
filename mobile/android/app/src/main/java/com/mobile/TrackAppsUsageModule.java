@@ -158,11 +158,21 @@ public class TrackAppsUsageModule extends ReactContextBaseJavaModule {
         callback.invoke(null, result);
     }
 
-    @ReactMethod
     private boolean CheckForPermission() {
         AppOpsManager appOps = (AppOpsManager) mContext.getSystemService(Context.APP_OPS_SERVICE);
         int mode = appOps.checkOpNoThrow(OPSTR_GET_USAGE_STATS, android.os.Process.myUid(), mContext.getPackageName());
-        return mode == MODE_ALLOWED || mode == MODE_DEFAULT;
+        boolean allowed = mode == MODE_ALLOWED;
+        boolean dft = mode == MODE_DEFAULT;
+        return allowed || dft;
+    }
+
+    @ReactMethod
+    private void CheckForPermission(Callback callback) {
+        AppOpsManager appOps = (AppOpsManager) mContext.getSystemService(Context.APP_OPS_SERVICE);
+        int mode = appOps.checkOpNoThrow(OPSTR_GET_USAGE_STATS, android.os.Process.myUid(), mContext.getPackageName());
+        boolean allowed = mode == MODE_ALLOWED;
+        boolean dft = mode == MODE_DEFAULT;
+        callback.invoke(null, allowed || dft);
     }
 
     @ReactMethod
