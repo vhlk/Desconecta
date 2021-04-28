@@ -33,7 +33,7 @@ const colors = {
     black: '#202225',
     white: '#f6f7f1',
     green: '#34a0a4',
-    pink:'#DB9487',
+    pink: '#DB9487',
     darkgreen: 'rgba(9,30,31,1)',
     transparent: 'rgba(0,0,0,0)'
 };
@@ -53,8 +53,10 @@ const Card = ({ card }: { card: Activity }) => (
                 </View>
 
                 <View style={styles.seeDetails}>
-                    <Text style={{ color: colors.white, fontFamily:'Montserrat-Bold', fontSize: 16,
-                     alignContent: "center", textAlign: "center" }}>VER ATIVIDADE</Text>
+                    <Text style={{
+                        color: colors.white, fontFamily: 'Montserrat-Bold', fontSize: 16,
+                        alignContent: "center", textAlign: "center"
+                    }}>VER ATIVIDADE</Text>
                 </View>
             </View>
         </LinearGradient>
@@ -67,9 +69,10 @@ const Home = () => {
     const [index, setIndex] = useState(0);
     var [activities, setActivities] = useState<Activity[]>([]);
     const [categories, setCategories] = useState<Category[]>([]);
-    const [username, setUsername]= useState("");
-    const [userId, setUserId]= useState("-1");
+    const [username, setUsername] = useState("");
+    const [userId, setUserId] = useState("-1");
     var categoriesFixxed = false;
+    const navigation = useNavigation()
 
     const getCategories = async () => {
         await MainApi.GetAllCategories().then(res => setCategories(res.data))
@@ -102,7 +105,7 @@ const Home = () => {
         async function updateUsername() {
             MainApi.GetUserDataByID(+userId).then(res => setUsername(res.data[0].Name));
         }
-        if(userId != '-1')
+        if (userId != '-1')
             updateUsername();
     }, [userId])
 
@@ -113,7 +116,6 @@ const Home = () => {
     const onSwiped = () => {
         setIndex((index + 1) % activities.length);
     }
-    const navigation = useNavigation()
 
     return (
         <>
@@ -121,16 +123,16 @@ const Home = () => {
                 placement="left"
                 centerComponent={
                     <>
-                    {username!="" &&(
-                    <Text style={{ color: '#DB9487', fontSize: 25, fontFamily:'MontserratAlternates-SemiBold' }}>
-                        Olá, {username}!
-                    </Text>)}
+                        {username != "" && (
+                            <Text style={{ color: '#DB9487', fontSize: 25, fontFamily: 'MontserratAlternates-SemiBold' }}>
+                                Olá, {username}!
+                            </Text>)}
                     </>
                 }
                 rightComponent={
                     <View style={{ flexDirection: 'row' }}>
-                        <Icon name='star-border' size={30} color={colors.green} style={styles.headerIcon} onPress={() => navigation.navigate("Favorites")}/>
-                        <Icon name='person' size={30} color={colors.green}  style={styles.headerIcon}  onPress={() => navigation.navigate("Statistics")} />
+                        <Icon name='star-border' size={30} color={colors.green} style={styles.headerIcon} onPress={() => navigation.navigate("Favorites")} />
+                        <Icon name='person' size={30} color={colors.green} style={styles.headerIcon} onPress={() => navigation.navigate("Statistics")} />
                     </View>
                 }
                 backgroundColor='#f0f0f0'
@@ -199,7 +201,7 @@ const Home = () => {
                 ) || (
                         <>
                             <View style={{ paddingVertical: 50, backgroundColor: colors.green }}>
-                                <Text style={{ color: colors.white, fontFamily:'Montserrat-Medium', fontSize: 20, alignContent: "center", textAlign: "center" }}>
+                                <Text style={{ color: colors.white, fontFamily: 'Montserrat-Medium', fontSize: 20, alignContent: "center", textAlign: "center" }}>
                                     Selecionando as melhores sugestões para você!
                                 </Text>
                             </View>
@@ -305,7 +307,7 @@ const styles = StyleSheet.create({
 
     category: {
         fontSize: 14,
-        fontFamily:'Raleway-Medium',
+        fontFamily: 'Raleway-Medium',
         marginBottom: 10,
         color: colors.white,
         alignContent: "flex-start",
@@ -315,7 +317,7 @@ const styles = StyleSheet.create({
     title: {
         fontSize: 24,
         marginBottom: 20,
-        fontFamily:'Raleway-Medium',
+        fontFamily: 'Raleway-Medium',
         color: colors.white,
         alignContent: "flex-start",
         marginHorizontal: 15
@@ -331,7 +333,7 @@ const styles = StyleSheet.create({
 
     time: {
         color: colors.white,
-        fontFamily:'Raleway-Medium',
+        fontFamily: 'Raleway-Medium',
         fontSize: 16,
         fontWeight: "500",
         alignContent: "flex-start",
@@ -357,8 +359,8 @@ const styles = StyleSheet.create({
         flexDirection: "column",
         justifyContent: "flex-end",
         alignItems: "flex-start",
-        width:'100%',
-        height:'70%'
+        width: '100%',
+        height: '70%'
     },
     headerIcon: {
         paddingHorizontal: 5

@@ -122,7 +122,7 @@ const Suggestion = () => {
     };
 
     function handleNav() {
-        navigation.navigate("Home")
+        navigation.goBack();
     }
 
     return (
