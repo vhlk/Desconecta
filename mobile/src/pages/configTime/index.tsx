@@ -81,6 +81,15 @@ const configTime = () => {
 
   const saveActive = async (active: boolean) => {
     if (active) {
+      console.log(TrackAppsUsage.CheckForPermission((error: String, value: Object) => {
+        if (error) {
+          console.log(error)
+        }
+        else {
+          if (!value)
+          TrackAppsUsage.AskForPermission();
+        }
+      }))
       await AsyncStorage.setItem(ACTIVE, "ativo");
     }
     else {
@@ -201,7 +210,6 @@ const configTime = () => {
           <Button title={activeString} type="clear" icon={<Icon name={activeIcon} color={activeIconColor} />} 
             onPress={async () => { 
               await saveActive(!active);
-              TrackAppsUsage.AskForPermission();
               }} />
         </View>
         <View style={styles.container}>

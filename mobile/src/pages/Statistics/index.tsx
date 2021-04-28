@@ -19,7 +19,7 @@ interface Categories {
     Name: string,
 }
 
-const Item = ({ Name }) => (
+const Item = ({ Name }:any) => (
     <View style={styles.item}>
         <Text style={styles.title}>{Name}</Text>
     </View>
@@ -73,15 +73,15 @@ const Statistics = () => {
 
     useEffect(() => {
         function fun() {
-            TrackerModule.GetDailyTimeForApps(["Chrome", "WhatsApp", "Facebook", "Instagram", "Twitter"],
-                (error: String, value: Object) => {
+            TrackerModule.GetDailyTimeForApps(["WhatsApp", "Facebook", "Instagram", "Twitter"],
+                (error: String, value: Record<string, number>) => {
                     if (error) {
                         console.log(error)
                     }
                     else {
                         var newData = [...data];
 
-                        newData[0] = Math.round(value["Google Chrome"] ? value["Google Chrome"] : 0);
+                        newData[0] = Math.round(value["Facebook"] ? value["Facebook"] : 0);
                         newData[1] = Math.round(value["Instagram"] ? value["Instagram"] : 0);
                         newData[2] = Math.round(value["Twitter"] ? value["Twitter"] : 0);
                         newData[3] = Math.round(value["WhatsApp"] ? value["WhatsApp"] : 0);
@@ -98,8 +98,8 @@ const Statistics = () => {
         40,
         60,
     ]);
-
-    const renderItem = ({ item }) => (
+    
+    const renderItem = ({ item }:any) => (
         <Item Name={item.Name} />
     );
     return (
@@ -136,7 +136,7 @@ const Statistics = () => {
                 </Text>
                 <BarChart
                     data={{
-                        labels: ["Chrome", "Instagram", "Twitter", "WhatsApp"],
+                        labels: ["Facebook", "Instagram", "Twitter", "WhatsApp"],
                         datasets: [
                             {
                                 data
@@ -166,11 +166,11 @@ const Statistics = () => {
                             stroke: "red"
                         }
                     }}
-                    bezier
                     style={{
                         marginVertical: 8,
                         borderRadius: 16
                     }}
+                    yAxisLabel={''}
                 />
             </View>
             <View style={styles.interests}>
