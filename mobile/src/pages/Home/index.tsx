@@ -72,6 +72,8 @@ const Home = () => {
     const [username, setUsername] = useState("");
     const [userId, setUserId] = useState("-1");
     var [activitiesByInterest, setActivitiesByInterest] = useState<Activity[] | null>(null);
+    const navigation = useNavigation();
+
 
     useEffect(() => {
         const getCategories = async () => {
@@ -93,7 +95,7 @@ const Home = () => {
         async function updateUsername() {
             MainApi.GetUserDataByID(+userId).then(res => setUsername(res.data[0].Name));
         }
-        if (userId !== '-1') {
+        if (userId != '-1') {
             updateUsername();
         }
     }, [userId]);
@@ -115,6 +117,7 @@ const Home = () => {
                             return true;
                         }
                         fixCategories();
+                        shuffle(activities);
                         function isInteresting(activity: Activity) {
                             // @ts-ignore: Parameter 'element' implicitly has an 'any' type.
                             const found = interests.find(element => element.Name == activity.Category_ID);
@@ -141,8 +144,7 @@ const Home = () => {
                         }
                         let interestsAtvd = activities.filter(isInteresting);
                         let notInterestsAtvd = activities.filter(e => !isInteresting(e));
-                        interestsAtvd = shuffle(interestsAtvd);
-                        notInterestsAtvd = shuffle(notInterestsAtvd);
+                        
                         const newActivities = interestsAtvd.concat(notInterestsAtvd);
                         setActivitiesByInterest(newActivities);
                     }
@@ -156,7 +158,6 @@ const Home = () => {
     const onSwiped = () => {
         setIndex((index + 1) % activities.length);
     }
-    const navigation = useNavigation()
 
     return (
         <>

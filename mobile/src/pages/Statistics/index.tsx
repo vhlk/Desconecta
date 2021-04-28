@@ -8,7 +8,7 @@ import {
     ContributionGraph,
     StackedBarChart,
 } from "react-native-chart-kit";
-import { View, Text, Dimensions, TouchableOpacity, StyleSheet, FlatList } from "react-native";
+import { View, Text, Dimensions, TouchableOpacity, StyleSheet, FlatList, ActivityIndicator } from "react-native";
 import TrackerModule from "../../services/AppsTracker/TrackerModule";
 import { useNavigation } from "@react-navigation/native";
 import MainApi from "../../services/ApiModule"
@@ -25,13 +25,28 @@ const Item = ({ Name }) => (
     </View>
 );
 const Statistics = () => {
+    const LOGIN_EMAIL = "LOGIN_EMAIL";
+    const LOGIN_PSW = "LOGIN_PSW";
     const LOGIN_ID = "LOGIN_ID";
     const [variavel, setVariavel] = useState<Categories[]>([]);
     const [username, setUsername] = useState("");
     const [userId, setUserId] = useState("-1");
+    const [loggingout, setLoggingout] = useState(false)
+    const navigation = useNavigation();;
 
     const getCategory = (id: string) => {
         MainApi.GetInterestForUser(id).then(res => setVariavel(res.data));
+    }
+    
+    const logout = async () => {
+        setLoggingout(true);
+        await AsyncStorage.removeItem(LOGIN_EMAIL);
+        await AsyncStorage.removeItem(LOGIN_PSW);
+        await AsyncStorage.removeItem(LOGIN_ID).then(
+            () => {
+                navigation.navigate("Login");
+                setLoggingout(false);
+            });
     }
 
     useEffect(() => {
@@ -83,7 +98,6 @@ const Statistics = () => {
         40,
         60,
     ]);
-    const navigation = useNavigation();
 
     const renderItem = ({ item }) => (
         <Item Name={item.Name} />
@@ -97,7 +111,7 @@ const Statistics = () => {
                         <TouchableOpacity
                             style={styles.returnButton}
                         >
-                            <Icon name='navigate-before' size={25} style={styles.buttonIcon} onPress={() => navigation.navigate("Home")} />
+                            <Icon name='navigate-before' size={25} style={styles.buttonIcon} onPress={() => navigation.goBack()} />
                         </TouchableOpacity>
                     </>
                 }
@@ -188,11 +202,16 @@ const Statistics = () => {
                 </TouchableOpacity>
             </View>
             <View style={{ padding: 10 }}>
+                { !loggingout && (
                 <TouchableOpacity
                     style={styles.buttonLogout}
+                    onPress={logout}
                 >
                     <Text style={{ color: 'red', fontSize: 22, fontFamily: 'Montserrat-Medium' }}>Encerrar Sessão</Text>
                 </TouchableOpacity>
+                ) || (
+                    <ActivityIndicator size="large" color={'#db9487'} />
+                )}
             </View>
         </View>
     );

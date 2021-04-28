@@ -24,7 +24,6 @@ const Register = () => {
         await AsyncStorage.setItem(LOGIN_EMAIL, email);
         await AsyncStorage.setItem(LOGIN_PSW, psw);
         await AsyncStorage.setItem(LOGIN_ID, id.toString());
-        navigation.navigate("Interest");
     }
 
     function checkLogin(userEmail: string, userPsw: string) {
@@ -33,7 +32,7 @@ const Register = () => {
             Alert.alert("Não foi possível fazer login", "Por favor verifique os dados digitados!");
           }
           else {
-            saveLogin(res.data[0].ID).then(() => navigation.navigate("Home"));
+            saveLogin(res.data[0].ID).then(() => navigation.navigate("Interest"));
           }
         }).catch(err => console.log(err));
         return false;
