@@ -19,7 +19,7 @@ interface Categories {
     Name: string,
 }
 
-const Item = ({ Name }) => (
+const Item = ({ Name }:any) => (
     <View style={styles.item}>
         <Text style={styles.title}>{Name}</Text>
     </View>
@@ -74,7 +74,7 @@ const Statistics = () => {
     useEffect(() => {
         function fun() {
             TrackerModule.GetDailyTimeForApps(["WhatsApp", "Facebook", "Instagram", "Twitter"],
-                (error: String, value: Object) => {
+                (error: String, value: Record<string, number>) => {
                     if (error) {
                         console.log(error)
                     }
@@ -98,8 +98,8 @@ const Statistics = () => {
         40,
         60,
     ]);
-
-    const renderItem = ({ item }) => (
+    
+    const renderItem = ({ item }:any) => (
         <Item Name={item.Name} />
     );
     return (
@@ -166,11 +166,11 @@ const Statistics = () => {
                             stroke: "red"
                         }
                     }}
-                    bezier
                     style={{
                         marginVertical: 8,
                         borderRadius: 16
                     }}
+                    yAxisLabel={''}
                 />
             </View>
             <View style={styles.interests}>
