@@ -26,8 +26,9 @@ interface ActivityID {
 }
 
 interface InAppParams {
-    country: string;
-    object: string;
+    country: string,
+    object: string,
+    InAppTitle: string
 }
 
 var imgBg = require("../../assets/icone_desconecta.png")
@@ -65,7 +66,7 @@ const Suggestion = () => {
     const checkAndGoToActivity = () => {
         if (suggestionLink.charAt(0) === '&') {
             const params = suggestionLink.split("&");
-            const param = {country: params[1], object: params[2]} as InAppParams;
+            const param = {country: params[1], object: params[2], InAppTitle: suggestionTitle} as InAppParams;
             navigation.navigate("InApp", param);
         }   
         else goToActivity();
