@@ -8,7 +8,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import MainApi from '../../services/ApiModule';
 
-const Item = ({ item }) => (
+const Item = ({ item }:any) => (
     <View style={styles.card}>
         <ImageBackground source={{ uri: item.ImageLink }} style={styles.imgbg} imageStyle={{ borderRadius: 10 }}>
             <LinearGradient colors={['rgba(9,30,31,0)', 'rgba(9,30,31,0.3)', 'rgba(9,30,31,0.7)', 'rgba(9,30,31,0.9)']} style={styles.gradient}>
@@ -27,10 +27,10 @@ const Item = ({ item }) => (
 const Favorites = () => {
     const navigation = useNavigation();
     const [userId, setUserId]= useState("-1");
-    const [favoriteList, setFavoriteList]= useState(null);
+    const [favoriteList, setFavoriteList] = useState<Array<Object>|null>(null);
     const [username, setUsername]= useState("");
 
-    const renderItem = ({ item }) => (
+    const renderItem = ({ item }:any) => (
         <TouchableOpacity onPress={() => {
             navigation.navigate("Suggestion", {
             Activity_ID: item.Activities_ID,
@@ -89,7 +89,7 @@ const Favorites = () => {
                 {favoriteList !== null && favoriteList.length > 0 &&(
                 <FlatList
                     data={favoriteList}
-                    keyExtractor={(item) => {return item.Activities_ID}}
+                    keyExtractor={(item:any) => {return item.Activities_ID}}
                     renderItem={renderItem}
                 />)}
             </View>
