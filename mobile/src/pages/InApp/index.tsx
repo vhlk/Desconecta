@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react"
-import { View, Image, StyleSheet, Text, TouchableOpacity, ImageBackground } from "react-native"
+import { View, Image, StyleSheet, Text, TouchableOpacity, ImageBackground, PixelRatio } from "react-native"
 import { Header, Icon } from "react-native-elements"
 import { useNavigation, useRoute } from "@react-navigation/native"
 import Axios from "axios"
@@ -119,17 +119,17 @@ const InApp = () => {
                 <Swiper style={styles.wrapper} showsButtons={false} showsPagination={false} onIndexChanged={onSwiped}>
                     {card.map((item, key) => (
                         <View key={key}>
-                            <View >
+                            <View>
                                 {newImage(item.img)}
                             </View>
                             <View > 
                                 {item.title!="" && (
-                                    <Text style={styles.descriptionText}>{"Título: "+item.title}</Text>
+                                    <Text style={styles.descriptionText}><Text style={styles.descriptionTextBold}>Título: </Text>{item.title}</Text>
                                 ) || (
                                     <Text style={styles.descriptionText}>{"Título desconhecido :("}</Text>
                                 )}
                                 {item.artist!="" && (
-                                <Text style={styles.descriptionText}>{"Artista: "+item.artist}</Text>
+                                <Text style={styles.descriptionText}><Text style={styles.descriptionTextBold}>Artista: </Text>{item.artist}</Text>
                                 ) || (
                                     <Text style={styles.descriptionText}>{"Artista desconhecido :("}</Text>
                                 )}
@@ -184,7 +184,7 @@ const styles = StyleSheet.create({
     },
     image: {
         width: "90%",
-        height: "91%",
+        height: PixelRatio.getPixelSizeForLayoutSize(200),
         borderRadius: 20,
         alignSelf: "center"
     },
@@ -192,7 +192,11 @@ const styles = StyleSheet.create({
         textAlign: "center",
         fontFamily:'Montserrat-Medium',
         color: colors.green
-
+    },
+    descriptionTextBold: {
+        textAlign: "center",
+        fontFamily:'Montserrat-Bold',
+        color: colors.green
     }
 });
 
