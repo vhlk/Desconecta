@@ -11,7 +11,7 @@ import MainApi from "../../services/ApiModule"
 
 interface Activity {
     Activity_ID: number,
-    Categories_ID: string,
+    Category_ID: string,
     Description: string,
     Duration: string,
     ID: number,
@@ -44,7 +44,7 @@ const Card = ({ card }: { card: Activity }) => (
         <LinearGradient colors={[colors.transparent, 'rgba(9,30,31,0.3)', 'rgba(9,30,31,0.7)', 'rgba(9,30,31,0.9)', colors.darkgreen]} style={styles.gradient}>
 
             <View style={styles.cardDetails}>
-                <Text style={[styles.category]}>{card.Categories_ID}</Text>
+                <Text style={[styles.category]}>{card.Category_ID}</Text>
                 <Text style={[styles.title]}>{card.Title}</Text>
 
                 <View style={styles.timeText}>
@@ -71,28 +71,18 @@ const Home = () => {
     const [categories, setCategories] = useState<Category[]>([]);
     const [username, setUsername] = useState("");
     const [userId, setUserId] = useState("-1");
-    var categoriesFixxed = false;
-    const navigation = useNavigation()
+    var [activitiesByInterest, setActivitiesByInterest] = useState<Activity[] | null>(null);
+    const navigation = useNavigation();
 
-    const getCategories = async () => {
-        await MainApi.GetAllCategories().then(res => setCategories(res.data))
-    }
-    const getActivities = async () => {
-        await MainApi.GetAllActivities().then(res => setActivities(res.data))
-    }
-
-    function fixCategories() {
-        for (let i = 0; i < activities.length; i++) {
-            const index = categories.findIndex(category => category.ID.toString() == activities[i].Category_ID);
-            if (index != -1) {
-                activities[i].Categories_ID = categories[index].Name;
-            }
-        }
-        return true;
-    }
 
     useEffect(() => {
+        const getCategories = async () => {
+            await MainApi.GetAllCategories().then(res => setCategories(res.data))
+        }
         getCategories();
+        const getActivities = async () => {
+            await MainApi.GetAllActivities().then(res => setActivities(res.data))
+        }
         getActivities();
         async function getUserId() {
             const id = await AsyncStorage.getItem("LOGIN_ID");
@@ -105,13 +95,65 @@ const Home = () => {
         async function updateUsername() {
             MainApi.GetUserDataByID(+userId).then(res => setUsername(res.data[0].Name));
         }
-        if (userId != '-1')
+        if (userId != '-1') {
             updateUsername();
-    }, [userId])
+        }
+    }, [userId]);
 
-    if (activities.length != 0 && categories.length != 0) {
-        categoriesFixxed = fixCategories()
-    }
+
+    useEffect(() => {
+        async function getInterests() {
+            MainApi.GetInterestForUser(userId).then(
+                res => {
+                    const interests = res.data;
+                    if (activities.length != 0) {
+                        function fixCategories() {
+                            for (let i = 0; i < activities.length; i++) {
+                                const index = categories.findIndex(category => category.ID.toString() == activities[i].Category_ID);
+                                if (index != -1) {
+                                    activities[i].Category_ID = categories[index].Name;
+                                }
+                            }
+                            return true;
+                        }
+                        fixCategories();
+                        shuffle(activities);
+                        function isInteresting(activity: Activity) {
+                            // @ts-ignore: Parameter 'element' implicitly has an 'any' type.
+                            const found = interests.find(element => element.Name == activity.Category_ID);
+                            if (found) {
+                                return true;
+                            } else return false;
+                        }function shuffle(array) {
+                            var currentIndex = array.length, temporaryValue, randomIndex;
+                          
+                            // While there remain elements to shuffle...
+                            while (0 !== currentIndex) {
+                          
+                              // Pick a remaining element...
+                              randomIndex = Math.floor(Math.random() * currentIndex);
+                              currentIndex -= 1;
+                          
+                              // And swap it with the current element.
+                              temporaryValue = array[currentIndex];
+                              array[currentIndex] = array[randomIndex];
+                              array[randomIndex] = temporaryValue;
+                            }
+                          
+                            return array;
+                        }
+                        let interestsAtvd = activities.filter(isInteresting);
+                        let notInterestsAtvd = activities.filter(e => !isInteresting(e));
+                        
+                        const newActivities = interestsAtvd.concat(notInterestsAtvd);
+                        setActivitiesByInterest(newActivities);
+                    }
+                });
+        }
+        if (userId !== '-1') {
+            getInterests();
+        }
+    }, [activities, userId]);
 
     const onSwiped = () => {
         setIndex((index + 1) % activities.length);
@@ -138,17 +180,17 @@ const Home = () => {
                 backgroundColor='#f0f0f0'
             />
             <View style={styles.container}>
-                {categoriesFixxed && (
+                {activitiesByInterest && (
                     <View style={styles.swiperContainer}>
                         <Swiper
                             //ref="swiperRef"
-                            cards={activities}
+                            cards={activitiesByInterest}
                             cardIndex={index}
                             renderCard={card => <Card card={card} />}
                             onSwiped={onSwiped}
                             onTapCard={() => navigation.navigate("Suggestion", {
-                                Activity_ID: activities[index].Activity_ID,
-                                Category_ID: activities[index].Categories_ID
+                                Activity_ID: activitiesByInterest[index].Activity_ID,
+                                Category_ID: activitiesByInterest[index].Category_ID
                             })}
                             stackSize={2}
                             stackScale={7}
