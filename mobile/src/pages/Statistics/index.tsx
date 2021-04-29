@@ -196,6 +196,7 @@ const Statistics = () => {
                 </TouchableOpacity>
                 <TouchableOpacity
                     style={styles.button}
+                    onPress={() => navigation.navigate("EditProfile")}
                 >
                     <Text style={{ fontFamily: 'Montserrat-Regular' }}>Edite seu perfil</Text>
                     <Icon name='edit' size={20} color='#000' />
