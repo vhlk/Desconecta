@@ -24,13 +24,17 @@ const NewModuleButton = () => {
     })
   }
 
+  const b = () => {
+    TrackerModule.StartActivity(0, 0, 10);
+  }
+
   return (
     <>
         <View style={{marginTop:50}} />
         <Button
         title="Click to invoke your native module!"
         color="#841584"
-        onPress={a}
+        onPress={b}
         />
     </>
   );

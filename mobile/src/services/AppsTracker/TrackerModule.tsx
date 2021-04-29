@@ -8,6 +8,7 @@ interface TrackerInterface {
     CheckForPermission(callback: Function): void;
     AskForPermission(): void;
     StopDailyWorker(): void;
+    StartActivity(hora:number, minuto:number, segundo: number): void;
 }
 
 export default TrackAppsUsageModule as TrackerInterface;
