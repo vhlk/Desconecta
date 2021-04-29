@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, Image, StyleSheet, Text, TouchableOpacity, ImageBackground, Linking, Alert, ScrollView, ActivityIndicator} from "react-native";
+import { View, Image, StyleSheet, Text, TouchableOpacity, ImageBackground, Linking, Alert, ScrollView, ActivityIndicator } from "react-native";
 import { RectButton } from "react-native-gesture-handler";
 import { Header, Icon } from "react-native-elements";
 import { useNavigation, useRoute } from "@react-navigation/native";
@@ -7,6 +7,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import MainApi from '../../services/ApiModule';
+import TrackerModule from "../../services/AppsTracker/TrackerModule";
 
 interface Activity {
     Activity_ID: string,
@@ -45,32 +46,53 @@ const colors = {
 async function goToActivity() {
     Linking.canOpenURL(suggestionLink).then(supported => {
         if (!supported) {
-          console.log('Can\'t handle url: ' + suggestionLink);
+            console.log('Can\'t handle url: ' + suggestionLink);
         } else {
-          return Linking.openURL(suggestionLink);
+            return Linking.openURL(suggestionLink);
         }
-      }).catch(err => console.error('An error occurred', err));
+    }).catch(err => console.error('An error occurred', err));
 }
 
 const Suggestion = () => {
     const navigation = useNavigation();
     const route = useRoute();
-    var routeParam = route.params as ActivityID
+    const routeParam = route.params as ActivityID
 
     const [isFavorite, setIsFavorite] = useState<boolean | null>(null);
     const [userId, setUserId] = useState("-1");
     const [favoriteList, setFavoriteList] = useState(null);
     const [activity, setActivity] = useState(null);
     const [canRenderPage, toggleRenderPage] = useState(false);
+    const [onGoingActivity, setOnGoingActivity] = useState<string|null>(null);
+    const [onGoingEnd, setOnGoingEnd] = useState<number|null>(null);
+    const ONGOING_ID = "ONGOING_ID";
+    const ONGOING_END = "ONGOING_END";
 
     const checkAndGoToActivity = () => {
-        if (suggestionLink.charAt(0) === '&') {
-            const params = suggestionLink.split("&");
-            const param = {country: params[1], object: params[2], InAppTitle: suggestionTitle} as InAppParams;
-            navigation.navigate("InApp", param);
-        }   
-        else goToActivity();
-    } 
+        if (onGoingActivity == null || onGoingActivity == '') {
+            console.log(onGoingActivity)
+            const nowMiliSec = Date.now();
+
+            setOnGoingActivity(suggestionTitle);
+            AsyncStorage.setItem(ONGOING_ID, suggestionTitle);
+
+            const time = suggestionDura.split(':');
+            const hour = +time[0];
+            const min  = +time[1];
+            const sec  = +time[2];
+            const endTimeMili = nowMiliSec + (((hour * 60 + min) * 60) + sec) * 1000;
+            AsyncStorage.setItem(ONGOING_END, endTimeMili.toString());
+
+            TrackerModule.StartActivity(hour, min, sec);
+
+            if (suggestionLink.charAt(0) === '&') {
+                const params = suggestionLink.split("&");
+                const param = { country: params[1], object: params[2], InAppTitle: suggestionTitle } as InAppParams;
+                navigation.navigate("InApp", param);
+            }
+            else goToActivity();
+        }
+    }
 
     useEffect(() => {
         imgBg = require("../../assets/icone_desconecta.png")
@@ -83,6 +105,21 @@ const Suggestion = () => {
             setUserId((id == null) ? '0' : id);
         }
         getUserId();
+        function checkForOnGoing() {
+            AsyncStorage.getItem(ONGOING_ID).then(onGoing => {
+                setOnGoingActivity(onGoing);
+                if (onGoing) {
+                    var nowMiliSec = Date.now();
+                    AsyncStorage.getItem(ONGOING_END).then(onGoing => {
+                        setOnGoingEnd((onGoing == null) ? onGoing : +onGoing);
+                    });
+                    setInterval(() => {
+                        nowMiliSec--;
+                    }, 1000);
+                }
+            });
+        }
+        checkForOnGoing();
     }, []);
 
     useEffect(() => {
@@ -142,7 +179,7 @@ const Suggestion = () => {
 
     return (
         <>
-            <ImageBackground source={canRenderPage ? imgBg: null} style={styles.imgbg}>
+            <ImageBackground source={canRenderPage ? imgBg : null} style={styles.imgbg}>
                 <Header
                     placement="left"
                     leftComponent={
@@ -160,48 +197,47 @@ const Suggestion = () => {
                     }}
                     backgroundColor='rgba(0, 0, 0, 0)'
                 />
-                { canRenderPage && (
-                <LinearGradient colors={['rgba(9,30,31,0)','rgba(9,30,31,0.7)', 'rgba(9,30,31,0.9)', colors.green, colors.green,
-                    colors.green, colors.green, colors.green, colors.green, colors.green, colors.green, colors.green]}
-                    style={styles.main}>
-                    <View style={styles.info}>
-                        <Text style={styles.category}>
-                            {categ}
-                        </Text>
-                        <View style={styles.title}>
-                            <ScrollView horizontal={true}>
-                                <Text style={styles.titleText}>
-                                    {suggestionTitle}
+                {canRenderPage && (
+                    <LinearGradient colors={['rgba(9,30,31,0)', 'rgba(9,30,31,0.7)', 'rgba(9,30,31,0.9)', colors.green, colors.green,
+                        colors.green, colors.green, colors.green, colors.green, colors.green, colors.green, colors.green]}
+                        style={styles.main}>
+                        <View style={styles.info}>
+                            <Text style={styles.category}>
+                                {categ}
+                            </Text>
+                            <View style={styles.title}>
+                                <ScrollView horizontal={true}>
+                                    <Text style={styles.titleText}>
+                                        {suggestionTitle}
+                                    </Text>
+                                </ScrollView>
+                                <Icon name={isFavorite === null ? 'sync' : (isFavorite ? 'star' : 'star-border')} size={30} color='#a1c9c9' style={styles.buttonIcon} onPress={toggleSwitch} />
+                            </View>
+                            <ScrollView style={styles.descContainer}>
+                                <Text style={styles.description}>
+                                    {suggestionDesc}
                                 </Text>
                             </ScrollView>
-                            <Icon name={isFavorite === null ? 'sync' : (isFavorite ? 'star' : 'star-border')} size={30} color='#a1c9c9' style={styles.buttonIcon} onPress={toggleSwitch} />
+                            <View style={styles.duration}>
+                                <Icon name='access-time' size={13} color='#FFF' style={styles.buttonIcon} />
+                                <Text style={{ fontFamily: 'Montserrat-Medium', color: '#FFF', padding: 5, fontSize: 13 }}>
+                                    {suggestionDura}
+                                </Text>
+                            </View>
                         </View>
-                        <ScrollView style={styles.descContainer}>
-                            <Text style={styles.description}>
-                                {suggestionDesc}
-                            </Text>
-                        </ScrollView>
-                        <View style={styles.duration}>
-                            <Icon name='access-time' size={13} color='#FFF' style={styles.buttonIcon} />
-                            <Text style={{ fontFamily: 'Montserrat-Medium', color: '#FFF', padding: 5, fontSize: 13 }}>
-                                {suggestionDura}
-                            </Text>
+                        <View style={styles.buttons}>
+                            <RectButton style={styles.startButton} onPress={checkAndGoToActivity}>
+                                <Text style={{ fontFamily: 'Montserrat-Bold', color: '#FFF', fontSize: 17 }}>
+                                    COMEÇAR A ATIVIDADE
+                                </Text>
+                            </RectButton>
+                            <TouchableOpacity onPress={handleNav}>
+                                <Text style={{ fontFamily: 'Montserrat-Medium', color: '#EFD1CC', textDecorationLine: 'underline', paddingTop: 10 }}>
+                                    NÃO TENHO INTERESSE
+                                </Text>
+                            </TouchableOpacity>
                         </View>
-                    </View>
-                    {/* Alterar esses botões dependendo do status da atividade */}
-                    <View style={styles.buttons}>
-                        <RectButton style={styles.startButton} onPress={checkAndGoToActivity}>
-                            <Text style={{ fontFamily: 'Montserrat-Bold', color: '#FFF', fontSize: 17 }}>
-                                COMEÇAR A ATIVIDADE
-                            </Text>
-                        </RectButton>
-                        <TouchableOpacity onPress={handleNav}>
-                            <Text style={{ fontFamily: 'Montserrat-Medium', color: '#EFD1CC', textDecorationLine: 'underline', paddingTop: 10 }}>
-                                NÃO TENHO INTERESSE
-                            </Text>
-                        </TouchableOpacity>
-                    </View>
-                </LinearGradient>
+                    </LinearGradient>
                 ) || (<ActivityIndicator size="large" color={colors.green} />)}
             </ImageBackground>
         </>
