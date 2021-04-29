@@ -52,7 +52,6 @@ const EditProfile = () => {
                 
               }).catch(err => console.log(err));
             
-            console.log(newlogin);
             
           }
           fun();
