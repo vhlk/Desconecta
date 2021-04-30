@@ -7,6 +7,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import MainApi from '../../services/ApiModule';
+import TrackAppsUsageModule from "../../services/AppsTracker/TrackerModule";
 
 interface Activity {
     Activity_ID: string,
@@ -45,7 +46,7 @@ const colors = {
 async function goToActivity() {
     Linking.canOpenURL(suggestionLink).then(supported => {
         if (!supported) {
-          console.log('Can\'t handle url: ' + suggestionLink);
+          TrackAppsUsageModule.OpenUrl(suggestionLink);
         } else {
           return Linking.openURL(suggestionLink);
         }

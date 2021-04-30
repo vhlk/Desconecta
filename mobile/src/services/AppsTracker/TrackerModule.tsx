@@ -9,6 +9,7 @@ interface TrackerInterface {
     AskForPermission(): void;
     StopDailyWorker(): void;
     StartActivity(hora:number, minuto:number, segundo: number): void;
+    OpenUrl(url: string): void;
 }
 
 export default TrackAppsUsageModule as TrackerInterface;
