@@ -278,6 +278,8 @@ const styles = StyleSheet.create({
         justifyContent: "space-between",
         alignItems: "center",
         backgroundColor: "#a1c9c9",
+        borderTopWidth:0.5,
+        borderTopColor:'#f6f7f1',
         padding: 10,
         width: '100%'
     },

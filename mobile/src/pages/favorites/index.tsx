@@ -134,6 +134,7 @@ const styles = StyleSheet.create({
         marginBottom: 2
     },
     titleText: {
+        flex:0.98,
         color: '#f6f7f1',
         fontSize: 20,
         fontFamily: 'Raleway-Bold'
