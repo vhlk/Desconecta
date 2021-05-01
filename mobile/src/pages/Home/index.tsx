@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react"
-import { View, Image, StyleSheet, Text, ActivityIndicator } from "react-native"
+import { View, Image, StyleSheet, Text, ActivityIndicator, InteractionManager } from "react-native"
 import { RectButton } from "react-native-gesture-handler"
 import { Header, Icon } from "react-native-elements"
-import { useNavigation } from "@react-navigation/native"
+import { useNavigation, useFocusEffect } from "@react-navigation/native"
 import Swiper from "react-native-deck-swiper";
 import LinearGradient from 'react-native-linear-gradient';
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -98,28 +98,6 @@ const Home = () => {
     }
 
     useEffect(() => {
-        async function fun() {
-            const time = await AsyncStorage.getItem(LOCAL_ACTIVITY_END);
-            if (time !== null) {
-                const notNullTime = parseInt(time);
-                const timeNow = Date.now();
-                const diff = notNullTime - timeNow;
-                if (diff > 0) {
-                    setTimeRemaining(diff);
-                    AsyncStorage.getItem(LOCAL_ACTIVITY_ID).then(id => {
-                        if (id != null)
-                            MainApi.GetActivity(id).then(res => {
-                                const activity:Activity[] = res.data;
-                                setRunningActivity(activity);
-                            });
-                    })
-                }
-            }
-        }
-        fun();
-    }, []);
-
-    useEffect(() => {
         if (timeRemaining === -1) return;
         parseMillis2Date();
 
@@ -211,6 +189,32 @@ const Home = () => {
         setIndex((index + 1) % activities.length);
     }
 
+    useFocusEffect(React.useCallback(() => {
+        const task = InteractionManager.runAfterInteractions(() => {
+            async function fun() {
+                const time = await AsyncStorage.getItem(LOCAL_ACTIVITY_END);
+                if (time !== null) {
+                    const notNullTime = parseInt(time);
+                    const timeNow = Date.now();
+                    const diff = notNullTime - timeNow;
+                    if (diff > 0) {
+                        setTimeRemaining(diff);
+                        AsyncStorage.getItem(LOCAL_ACTIVITY_ID).then(id => {
+                            if (id != null)
+                                MainApi.GetActivity(id).then(res => {
+                                    const activity:Activity[] = res.data;
+                                    setRunningActivity(activity);
+                                });
+                        })
+                    }
+                }
+            }
+            fun();
+        });
+        
+        return () => task.cancel();
+    }, []));
+
     return (
         <>
             <Header
@@ -235,9 +239,9 @@ const Home = () => {
             {
                 timeRemaining > 0 ? (
                     <View>
-                        <Text style={styles.timerText}>Atividade em andamento</Text>
                         {runningActivity.length > 0 && (
                             <>
+                                <Text style={styles.timerText}>Atividade em andamento</Text>
                                 <View style={styles.swiperContainer}>
                                     <Swiper
                                         //ref="swiperRef"

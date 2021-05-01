@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { View, Image, StyleSheet, Text, TouchableOpacity, ImageBackground, Linking, Alert, ScrollView, ActivityIndicator} from "react-native";
+import { View, Image, StyleSheet, Text, TouchableOpacity, ImageBackground, Linking, Alert, ScrollView, ActivityIndicator, InteractionManager} from "react-native";
 import { RectButton } from "react-native-gesture-handler";
 import { Header, Icon } from "react-native-elements";
-import { useNavigation, useRoute } from "@react-navigation/native";
+import { useNavigation, useRoute, useFocusEffect, useIsFocused } from "@react-navigation/native";
 import LinearGradient from 'react-native-linear-gradient';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
@@ -87,19 +87,13 @@ const Suggestion = () => {
             const param = {country: params[1], object: params[2], InAppTitle: suggestionTitle} as InAppParams;
             navigation.navigate("InApp", param);
         }   
-        else goToActivity();
+        else  {
+            goToActivity();
+            navigation.navigate("Home");
+        }
     } 
 
     useEffect(() => {
-        AsyncStorage.getItem(LOCAL_ACTIVITY_END).then(time => {
-            if (time !== null) {
-                const notNullTime = parseInt(time);
-                const timeNow = Date.now();
-                if ((timeNow - notNullTime) < 0) {
-                    navigation.navigate("Home");
-                }
-            }});
-
         imgBg = require("../../assets/icone_desconecta.png")
         function getActivity() {
             MainApi.GetActivity(routeParam.Activity_ID).then(res => setActivity(res.data[0]))
