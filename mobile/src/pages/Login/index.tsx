@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, TextInput, KeyboardAvoidingView, TouchableOpacity, Animated, Alert, Image, ActivityIndicator } from 'react-native';
+import { Keyboard, StyleSheet, Text, View, TextInput, KeyboardAvoidingView, TouchableOpacity, Animated, Alert, ImageBackground, ActivityIndicator } from 'react-native';
 import { useNavigation, useRoute } from "@react-navigation/native"
 import MainApi from "../../services/ApiModule"
 import AsyncStorage from "@react-native-async-storage/async-storage"
@@ -13,6 +13,10 @@ const Login = () => {
   const LOGIN_EMAIL = "LOGIN_EMAIL";
   const LOGIN_PSW = "LOGIN_PSW";
   const LOGIN_ID = "LOGIN_ID";
+  const [keyboardStatus, setKeyboardStatus] = useState(false);
+  const _keyboardDidShow = () => setKeyboardStatus(true);
+  const _keyboardDidHide = () => setKeyboardStatus(false);
+
 
   useEffect(() => {
     async function fun() {
@@ -39,6 +43,18 @@ const Login = () => {
       }
       ), [navigation]
   );
+  
+    useEffect(() => {
+      Keyboard.addListener("keyboardDidShow", _keyboardDidShow);
+      Keyboard.addListener("keyboardDidHide", _keyboardDidHide);
+  
+      // cleanup function
+      return () => {
+        Keyboard.removeListener("keyboardDidShow", _keyboardDidShow);
+        Keyboard.removeListener("keyboardDidHide", _keyboardDidHide);
+      };
+    }, []);
+  
 
   function checkLogin(userEmail: string, userPsw: string, firstLogin: boolean) {
     MainApi.GetUser(userEmail, userPsw).then(res => {
@@ -72,12 +88,12 @@ const Login = () => {
     <>
       <KeyboardAvoidingView style={styles.background}>
 
-        <View style={styles.containerTitle}>
-          <Image source={require("../../assets/icone_desconecta.png")}
-            resizeMode='center' style={styles.logo} />
-          <Text style={styles.titleText}>DESCONECTA</Text>
-        </View>
-
+        <ImageBackground source={keyboardStatus ? null : require("../../assets/BgLogin.png")} style={styles.imgBg}>
+        {/* {keyboardStatus &&
+          (<View style={styles.containerTitle}>
+            <Text style={styles.titleText}>DESCONECTA</Text>
+          </View>)
+        } */}
 
         <Animated.View
           style={[styles.containerBody,
@@ -106,6 +122,8 @@ const Login = () => {
 
 
         </Animated.View>
+        
+        </ImageBackground >
       </KeyboardAvoidingView>
     </>
   );
@@ -119,11 +137,19 @@ const styles = StyleSheet.create({
     backgroundColor: '#f6f7f1',
 
   },
+  imgBg:{
+    flex:1,
+    backgroundColor:'#f6f7f1',
+    height: '100%',
+    width: '100%',
+    alignItems: 'center',
+    justifyContent:'flex-end'
+  },
   containerTitle: {
-    flex: 1,
+    flex: 0.5,
     alignItems: 'center',
     justifyContent: 'center',
-    width: '90%',
+    width: '100%'
   },
   titleText: {
     fontSize: 28,
@@ -131,7 +157,7 @@ const styles = StyleSheet.create({
     color: '#db9487'
   },
   containerBody: {
-    flex: 1,
+    flex: 0.5,
     alignItems: 'center',
     justifyContent: 'center',
     width: '90%',
@@ -156,10 +182,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   logo: {
-    flex: 0.75,
+    flex: 1,
     alignItems: 'center',
-    margin: 20,
-    marginTop: 100
   },
   submitText: {
     color: '#fff',
