@@ -132,7 +132,9 @@ const Interest = () => {
      
           centerComponent={
             <>
-              <Text style={{ fontSize: 25, alignSelf: 'center', color: '#CE6F5D' }}>Selecione seus Interesses</Text>
+                <Text style={{ fontSize: 25, fontFamily: 'Montserrat-Medium', textAlign: 'center', textAlignVertical: 'center', alignSelf: 'center', color: '#CE6F5D' }}>
+                  Selecione seus Interesses
+                </Text>
             </>
           }
           backgroundColor='white'
@@ -140,7 +142,9 @@ const Interest = () => {
                 
                 <View style={styles.containerChart}>
                 
-                    <Text>FILME</Text>
+                    <Text style={styles.categoryTitle}>
+                        FILME
+                    </Text>
                     <Switch
                         trackColor={{ false: "#767577", true: "#81b0ff" }}
                         thumbColor={isEnabled ? "#f4f3f4" : "#f4f3f4"}
@@ -150,7 +154,9 @@ const Interest = () => {
                     />
                 </View>
                 <View style={styles.containerChart}>
-                    <Text>SÉRIE</Text>
+                    <Text style={styles.categoryTitle}>
+                        SÉRIE
+                    </Text>
                     <Switch
                         trackColor={{ false: "#767577", true: "#81b0ff" }}
                         thumbColor={isEnabled ? "#f4f3f4" : "#f4f3f4"}
@@ -160,7 +166,9 @@ const Interest = () => {
                     />
                 </View>
                 <View style={styles.containerChart}>
-                    <Text>DANÇA</Text>
+                    <Text style={styles.categoryTitle}>
+                        DANÇA
+                    </Text>
                     <Switch
                         trackColor={{ false: "#767577", true: "#81b0ff" }}
                         thumbColor={isEnabled ? "#f4f3f4" : "#f4f3f4"}
@@ -170,7 +178,9 @@ const Interest = () => {
                     />
                 </View>
                 <View style={styles.containerChart}>
-                    <Text>TEATRO</Text>
+                    <Text style={styles.categoryTitle}>
+                        TEATRO
+                    </Text>
                     <Switch
                         trackColor={{ false: "#767577", true: "#81b0ff" }}
                         thumbColor={isEnabled ? "#f4f3f4" : "#f4f3f4"}
@@ -180,7 +190,9 @@ const Interest = () => {
                     />
                 </View>
                 <View style={styles.containerChart}>
-                    <Text>ARTE</Text>
+                    <Text style={styles.categoryTitle}>
+                        ARTE
+                    </Text>
                     <Switch
                         trackColor={{ false: "#767577", true: "#81b0ff" }}
                         thumbColor={isEnabled ? "#f4f3f4" : "#f4f3f4"}
@@ -210,6 +222,13 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         backgroundColor: "white",
         height: '100%'
+    },
+    categoryTitle: {
+        fontSize: 17, 
+        fontFamily: 'Montserrat-SemiBold', 
+        textAlign: 'center', 
+        alignSelf: 'center', 
+        color: '#CE6F5D' 
     },
 
     titleText: {
