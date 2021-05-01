@@ -101,7 +101,12 @@ const Home = () => {
         if (timeRemaining === -1) return;
         parseMillis2Date();
 
-        timeRemaining > 0 && setTimeout(() => setTimeRemaining(timeRemaining-1000), 1000);
+        let timer:any = null;
+        if (timeRemaining > 0) {
+            timer = setTimeout(() => setTimeRemaining(timeRemaining-1000), 1000);        
+        }
+
+        return () => clearTimeout(timer);
     }, [timeRemaining]);
 
     useEffect(() => {
@@ -154,7 +159,7 @@ const Home = () => {
                                 return true;
                             } else return false;
                         }
-                        function shuffle(array: any) {
+                        function shuffle(array) {
                             var currentIndex = array.length, temporaryValue, randomIndex;
 
                             // While there remain elements to shuffle...
