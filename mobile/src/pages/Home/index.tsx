@@ -8,6 +8,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import MainApi from "../../services/ApiModule"
+import { PixelRatio } from "react-native"
 
 interface Activity {
     Activity_ID: number,
@@ -503,11 +504,13 @@ const styles = StyleSheet.create({
         paddingHorizontal: 5
     },
     timerText: {
-        fontSize: 30,
-        textAlign: 'center'
+        fontSize: PixelRatio.getFontScale()*20,
+        backgroundColor:colors.green,
+        color: colors.white,
+        textAlign: 'center',
+        padding:2,
+        fontFamily: "Montserrat-Medium",
     }
-
-
 });
 
 export default Home
