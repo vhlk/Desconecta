@@ -38,10 +38,14 @@ var suggestionTitle = "Não era para isso"
 var suggestionDesc = "APARECER"
 var suggestionDura = ":("
 var suggestionLink = "https://youtu.be/dQw4w9WgXcQ"
+var activityId = -1;
 
 const colors = {
     green: '#091E1F'
 };
+
+const LOCAL_ACTIVITY_ID = "ACTIVITYID";
+const LOCAL_ACTIVITY_END = "ACTIVITYEND";
 
 async function goToActivity() {
     Linking.canOpenURL(suggestionLink).then(supported => {
@@ -64,7 +68,20 @@ const Suggestion = () => {
     const [activity, setActivity] = useState(null);
     const [canRenderPage, toggleRenderPage] = useState(false);
 
-    const checkAndGoToActivity = () => {
+    const checkAndGoToActivity = async () => {
+        if (activityId !== -1) {
+            await AsyncStorage.setItem(LOCAL_ACTIVITY_ID, activityId.toString());
+            
+            const hourMinSec = suggestionDura.split(":");
+            const hour = parseInt(hourMinSec[0]);
+            const min = parseInt(hourMinSec[1]);
+            const sec = parseInt(hourMinSec[2]);
+            const timeMilliSec = (hour*60*60 + min*60 + sec)*1000;
+            const timeNow = Date.now();
+            const endTime = timeNow+timeMilliSec;
+            await AsyncStorage.setItem(LOCAL_ACTIVITY_END, endTime.toString());
+        }
+
         if (suggestionLink.charAt(0) === '&') {
             const params = suggestionLink.split("&");
             const param = {country: params[1], object: params[2], InAppTitle: suggestionTitle} as InAppParams;
@@ -74,6 +91,15 @@ const Suggestion = () => {
     } 
 
     useEffect(() => {
+        AsyncStorage.getItem(LOCAL_ACTIVITY_END).then(time => {
+            if (time !== null) {
+                const notNullTime = parseInt(time);
+                const timeNow = Date.now();
+                if ((timeNow - notNullTime) < 0) {
+                    navigation.navigate("Home");
+                }
+            }});
+
         imgBg = require("../../assets/icone_desconecta.png")
         function getActivity() {
             MainApi.GetActivity(routeParam.Activity_ID).then(res => setActivity(res.data[0]))
@@ -104,6 +130,7 @@ const Suggestion = () => {
                 suggestionDesc = activity.Description;
                 suggestionDura = activity.Duration;
                 suggestionLink = activity.LinkNetflix;
+                activityId = activity.ID;
                 toggleRenderPage(true);
             }
             // @ts-ignore: Argument of type 'null' is not assignable to parameter of type 'Activity'.

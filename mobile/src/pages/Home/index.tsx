@@ -63,6 +63,9 @@ const Card = ({ card }: { card: Activity }) => (
     </View>
 );
 
+const LOCAL_ACTIVITY_ID = "ACTIVITYID";
+const LOCAL_ACTIVITY_END = "ACTIVITYEND";
+
 // const swiperRef = React.createRef();
 
 const Home = () => {
@@ -73,7 +76,55 @@ const Home = () => {
     const [userId, setUserId] = useState("-1");
     var [activitiesByInterest, setActivitiesByInterest] = useState<Activity[] | null>(null);
     const navigation = useNavigation();
+    const[timeRemaining, setTimeRemaining] = useState(-1);
+    const[runningActivity, setRunningActivity] = useState<Activity[]>([]);
+    const [parsedDate, setParsedDate] = useState("");
 
+    const RunningCard = ({ card }: { card: Activity }) => (
+        <View style={styles.card}>
+            <Image source={{ uri: card.ImageLink }} style={styles.cardImage} />
+            <LinearGradient colors={[colors.transparent, 'rgba(9,30,31,0.3)', 'rgba(9,30,31,0.7)', 'rgba(9,30,31,0.9)', colors.darkgreen]} style={styles.gradient}>
+    
+                <View style={styles.cardDetails}>
+                    <Text style={[styles.title]}>{card.Title}</Text>
+                </View>
+            </LinearGradient>
+        </View>
+    );
+
+    function parseMillis2Date() {
+        const dateUTC = new Date(timeRemaining).toUTCString();
+        setParsedDate(dateUTC.split(" ")[4]);
+    }
+
+    useEffect(() => {
+        async function fun() {
+            const time = await AsyncStorage.getItem(LOCAL_ACTIVITY_END);
+            if (time !== null) {
+                const notNullTime = parseInt(time);
+                const timeNow = Date.now();
+                const diff = notNullTime - timeNow;
+                if (diff > 0) {
+                    setTimeRemaining(diff);
+                    AsyncStorage.getItem(LOCAL_ACTIVITY_ID).then(id => {
+                        if (id != null)
+                            MainApi.GetActivity(id).then(res => {
+                                const activity:Activity[] = res.data;
+                                setRunningActivity(activity);
+                            });
+                    })
+                }
+            }
+        }
+        fun();
+    }, []);
+
+    useEffect(() => {
+        if (timeRemaining === -1) return;
+        parseMillis2Date();
+
+        timeRemaining > 0 && setTimeout(() => setTimeRemaining(timeRemaining-1000), 1000);
+    }, [timeRemaining]);
 
     useEffect(() => {
         const getCategories = async () => {
@@ -125,7 +176,7 @@ const Home = () => {
                                 return true;
                             } else return false;
                         }
-                        function shuffle(array) {
+                        function shuffle(array: any) {
                             var currentIndex = array.length, temporaryValue, randomIndex;
 
                             // While there remain elements to shuffle...
@@ -180,103 +231,133 @@ const Home = () => {
                 }
                 backgroundColor='#f0f0f0'
             />
-            <View style={styles.container}>
-                {activitiesByInterest && (
-                    <>
-                        <Text style={{flex:0.05, color: colors.green, fontSize: 20, fontFamily: 'Montserrat-Medium', textAlign:'center',textAlignVertical:"bottom" }}>
-                            Sugestões para você!
-                        </Text>
-                        <View style={styles.swiperContainer}>
-                            <Swiper
-                                //ref="swiperRef"
-                                cards={activitiesByInterest}
-                                cardIndex={index}
-                                renderCard={card => <Card card={card} />}
-                                onSwiped={onSwiped}
-                                onTapCard={() => navigation.navigate("Suggestion", {
-                                    Activity_ID: activitiesByInterest[index].Activity_ID,
-                                    Category_ID: activitiesByInterest[index].Category_ID
-                                })}
-                                stackSize={2}
-                                stackScale={7}
-                                stackSeparation={10}
-                                disableBottomSwipe
-                                disableTopSwipe
-                                animateOverlayLabelsOpacity
-                                infinite
-                                backgroundColor={"transparent"}
-                                //showSecondCard={false}
-                                overlayLabels={{
-                                    left: {
-                                        title: "DEPOIS",
-                                        style: {
-                                            label: {
-                                                backgroundColor: colors.red,
-                                                color: colors.white,
-                                                fontSize: 24
-                                            },
-                                            wrapper: {
-                                                flexDirection: "column",
-                                                alignItems: "flex-end",
-                                                justifyContent: "flex-start",
-                                                marginTop: 20,
-                                                marginLeft: -20
-                                            }
-                                        }
-                                    },
-                                    // right: {
-                                    //     title: "COMEÇAR",
-                                    //     style: {
-                                    //         label: {
-                                    //             backgroundColor: colors.blue,
-                                    //             color: colors.white,
-                                    //             fontSize: 24
-                                    //         },
-                                    //         wrapper: {
-                                    //             flexDirection: "column",
-                                    //             alignItems: "flex-start",
-                                    //             justifyContent: "flex-start",
-                                    //             marginTop: 20,
-                                    //             marginLeft: 20
-                                    //         }
-                                    //     }
-                                    // },
-                                }}
-                            />
-                        </View>
-                        <Text style={{flex:0.1, color: '#34a0a480', fontSize: 15, fontFamily: 'Montserrat-Regular', textAlign:'center',textAlignVertical:"center" }}>
-                            Deslize para descartar atividade
-                        </Text>
-                    </>
 
-                ) || (
-                        <>
-                            <View style={{ paddingVertical: 50, backgroundColor: colors.green }}>
-                                <Text style={{ color: colors.white, fontFamily: 'Montserrat-Medium', fontSize: 20, alignContent: "center", textAlign: "center" }}>
-                                    Selecionando as melhores sugestões para você!
-                                </Text>
-                            </View>
-                            <View style={{ paddingVertical: 50 }}>
-                                <ActivityIndicator size="large" color={colors.green} />
-                            </View>
-                        </>
-                    )}
-                {/* <View style={styles.bottomContainer}>
-                    <CardDetails index={index}/>
+            {
+                timeRemaining > 0 ? (
                     <View>
-                        <MaterialCommunityIcons.button
-                            name="close"
-                            size={94}
-                            backgroundColor="transparent"
-                            underlayColor="transparent"
-                            activeOpacity={0.3}
-                            color={colors.red}
-                            onPress={() => swiperRef.current.swipeLeft()}
-                        />
+                        <Text style={styles.timerText}>Atividade em andamento</Text>
+                        {runningActivity.length > 0 && (
+                            <>
+                                <View style={styles.swiperContainer}>
+                                    <Swiper
+                                        //ref="swiperRef"
+                                        cards={runningActivity}
+                                        renderCard={card => <RunningCard card={card} />}
+                                        onTapCard={() => {}}
+                                        disableBottomSwipe
+                                        disableTopSwipe
+                                        disableLeftSwipe
+                                        disableRightSwipe
+                                        animateOverlayLabelsOpacity
+                                        backgroundColor={"transparent"}
+                                        showSecondCard={false}
+                                    />
+                                </View>
+                                <Text style={styles.timerText}>Tempo restante: {parsedDate}</Text>
+                            </>
+                        )}                      
                     </View>
-                </View> */}
+                ) : 
+                (
+                    <View style={styles.container}>
+                        {activitiesByInterest && (
+                            <>
+                                <Text style={{flex:0.05, color: colors.green, fontSize: 20, fontFamily: 'Montserrat-Medium', textAlign:'center',textAlignVertical:"bottom" }}>
+                                    Sugestões para você!
+                                </Text>
+                                <View style={styles.swiperContainer}>
+                                    <Swiper
+                                        //ref="swiperRef"
+                                        cards={activitiesByInterest}
+                                        cardIndex={index}
+                                        renderCard={card => <Card card={card} />}
+                                        onSwiped={onSwiped}
+                                        onTapCard={() => navigation.navigate("Suggestion", {
+                                            Activity_ID: activitiesByInterest[index].Activity_ID,
+                                            Category_ID: activitiesByInterest[index].Category_ID
+                                        })}
+                                        stackSize={2}
+                                        stackScale={7}
+                                        stackSeparation={10}
+                                        disableBottomSwipe
+                                        disableTopSwipe
+                                        animateOverlayLabelsOpacity
+                                        infinite
+                                        backgroundColor={"transparent"}
+                                        //showSecondCard={false}
+                                        overlayLabels={{
+                                            left: {
+                                                title: "DEPOIS",
+                                                style: {
+                                                    label: {
+                                                        backgroundColor: colors.red,
+                                                        color: colors.white,
+                                                        fontSize: 24
+                                                    },
+                                                    wrapper: {
+                                                        flexDirection: "column",
+                                                        alignItems: "flex-end",
+                                                        justifyContent: "flex-start",
+                                                        marginTop: 20,
+                                                        marginLeft: -20
+                                                    }
+                                                }
+                                            },
+                                            // right: {
+                                            //     title: "COMEÇAR",
+                                            //     style: {
+                                            //         label: {
+                                            //             backgroundColor: colors.blue,
+                                            //             color: colors.white,
+                                            //             fontSize: 24
+                                            //         },
+                                            //         wrapper: {
+                                            //             flexDirection: "column",
+                                            //             alignItems: "flex-start",
+                                            //             justifyContent: "flex-start",
+                                            //             marginTop: 20,
+                                            //             marginLeft: 20
+                                            //         }
+                                            //     }
+                                            // },
+                                        }}
+                                    />
+                                </View>
+                                <Text style={{flex:0.1, color: '#34a0a480', fontSize: 15, fontFamily: 'Montserrat-Regular', textAlign:'center',textAlignVertical:"center" }}>
+                                    Deslize para descartar atividade
+                                </Text>
+                            </>
 
-            </View>
+                        ) || (
+                                <>
+                                    <View style={{ paddingVertical: 50, backgroundColor: colors.green }}>
+                                        <Text style={{ color: colors.white, fontFamily: 'Montserrat-Medium', fontSize: 20, alignContent: "center", textAlign: "center" }}>
+                                            Selecionando as melhores sugestões para você!
+                                        </Text>
+                                    </View>
+                                    <View style={{ paddingVertical: 50 }}>
+                                        <ActivityIndicator size="large" color={colors.green} />
+                                    </View>
+                                </>
+                            )}
+                        {/* <View style={styles.bottomContainer}>
+                            <CardDetails index={index}/>
+                            <View>
+                                <MaterialCommunityIcons.button
+                                    name="close"
+                                    size={94}
+                                    backgroundColor="transparent"
+                                    underlayColor="transparent"
+                                    activeOpacity={0.3}
+                                    color={colors.red}
+                                    onPress={() => swiperRef.current.swipeLeft()}
+                                />
+                            </View>
+                        </View> */}
+
+                    </View>
+                )
+            }
 
         </>
     );
@@ -395,7 +476,8 @@ const styles = StyleSheet.create({
     timeText: {
         flexDirection: "row",
         marginHorizontal: 15,
-        marginBottom: 10
+        marginBottom: 10,
+        flex: 0.1
     },
     seeDetails: {
         flexDirection: "column",
@@ -415,6 +497,10 @@ const styles = StyleSheet.create({
     },
     headerIcon: {
         paddingHorizontal: 5
+    },
+    timerText: {
+        fontSize: 30,
+        textAlign: 'center'
     }
 
 
