@@ -124,27 +124,28 @@ const Home = () => {
                             if (found) {
                                 return true;
                             } else return false;
-                        }function shuffle(array) {
+                        }
+                        function shuffle(array) {
                             var currentIndex = array.length, temporaryValue, randomIndex;
-                          
+
                             // While there remain elements to shuffle...
                             while (0 !== currentIndex) {
-                          
-                              // Pick a remaining element...
-                              randomIndex = Math.floor(Math.random() * currentIndex);
-                              currentIndex -= 1;
-                          
-                              // And swap it with the current element.
-                              temporaryValue = array[currentIndex];
-                              array[currentIndex] = array[randomIndex];
-                              array[randomIndex] = temporaryValue;
+
+                                // Pick a remaining element...
+                                randomIndex = Math.floor(Math.random() * currentIndex);
+                                currentIndex -= 1;
+
+                                // And swap it with the current element.
+                                temporaryValue = array[currentIndex];
+                                array[currentIndex] = array[randomIndex];
+                                array[randomIndex] = temporaryValue;
                             }
-                          
+
                             return array;
                         }
                         let interestsAtvd = activities.filter(isInteresting);
                         let notInterestsAtvd = activities.filter(e => !isInteresting(e));
-                        
+
                         const newActivities = interestsAtvd.concat(notInterestsAtvd);
                         setActivitiesByInterest(newActivities);
                     }
@@ -181,64 +182,72 @@ const Home = () => {
             />
             <View style={styles.container}>
                 {activitiesByInterest && (
-                    <View style={styles.swiperContainer}>
-                        <Swiper
-                            //ref="swiperRef"
-                            cards={activitiesByInterest}
-                            cardIndex={index}
-                            renderCard={card => <Card card={card} />}
-                            onSwiped={onSwiped}
-                            onTapCard={() => navigation.navigate("Suggestion", {
-                                Activity_ID: activitiesByInterest[index].Activity_ID,
-                                Category_ID: activitiesByInterest[index].Category_ID
-                            })}
-                            stackSize={2}
-                            stackScale={7}
-                            stackSeparation={10}
-                            disableBottomSwipe
-                            disableTopSwipe
-                            animateOverlayLabelsOpacity
-                            infinite
-                            backgroundColor={"transparent"}
-                            //showSecondCard={false}
-                            overlayLabels={{
-                                left: {
-                                    title: "DEPOIS",
-                                    style: {
-                                        label: {
-                                            backgroundColor: colors.red,
-                                            color: colors.white,
-                                            fontSize: 24
-                                        },
-                                        wrapper: {
-                                            flexDirection: "column",
-                                            alignItems: "flex-end",
-                                            justifyContent: "flex-start",
-                                            marginTop: 20,
-                                            marginLeft: -20
+                    <>
+                        <Text style={{flex:0.05, color: colors.green, fontSize: 20, fontFamily: 'Montserrat-Medium', textAlign:'center',textAlignVertical:"bottom" }}>
+                            Sugestões para você!
+                        </Text>
+                        <View style={styles.swiperContainer}>
+                            <Swiper
+                                //ref="swiperRef"
+                                cards={activitiesByInterest}
+                                cardIndex={index}
+                                renderCard={card => <Card card={card} />}
+                                onSwiped={onSwiped}
+                                onTapCard={() => navigation.navigate("Suggestion", {
+                                    Activity_ID: activitiesByInterest[index].Activity_ID,
+                                    Category_ID: activitiesByInterest[index].Category_ID
+                                })}
+                                stackSize={2}
+                                stackScale={7}
+                                stackSeparation={10}
+                                disableBottomSwipe
+                                disableTopSwipe
+                                animateOverlayLabelsOpacity
+                                infinite
+                                backgroundColor={"transparent"}
+                                //showSecondCard={false}
+                                overlayLabels={{
+                                    left: {
+                                        title: "DEPOIS",
+                                        style: {
+                                            label: {
+                                                backgroundColor: colors.red,
+                                                color: colors.white,
+                                                fontSize: 24
+                                            },
+                                            wrapper: {
+                                                flexDirection: "column",
+                                                alignItems: "flex-end",
+                                                justifyContent: "flex-start",
+                                                marginTop: 20,
+                                                marginLeft: -20
+                                            }
                                         }
-                                    }
-                                },
-                                right: {
-                                    title: "COMEÇAR",
-                                    style: {
-                                        label: {
-                                            backgroundColor: colors.blue,
-                                            color: colors.white,
-                                            fontSize: 24
-                                        },
-                                        wrapper: {
-                                            flexDirection: "column",
-                                            alignItems: "flex-start",
-                                            justifyContent: "flex-start",
-                                            marginTop: 20,
-                                            marginLeft: 20
-                                        }
-                                    }
-                                },
-                            }}
-                        />
-                    </View>
+                                    },
+                                    // right: {
+                                    //     title: "COMEÇAR",
+                                    //     style: {
+                                    //         label: {
+                                    //             backgroundColor: colors.blue,
+                                    //             color: colors.white,
+                                    //             fontSize: 24
+                                    //         },
+                                    //         wrapper: {
+                                    //             flexDirection: "column",
+                                    //             alignItems: "flex-start",
+                                    //             justifyContent: "flex-start",
+                                    //             marginTop: 20,
+                                    //             marginLeft: 20
+                                    //         }
+                                    //     }
+                                    // },
+                                }}
+                            />
+                        </View>
+                        <Text style={{flex:0.1, color: '#34a0a480', fontSize: 15, fontFamily: 'Montserrat-Regular', textAlign:'center',textAlignVertical:"center" }}>
+                            Deslize para descartar atividade
+                        </Text>
+                    </>
 
                 ) || (
                         <>
