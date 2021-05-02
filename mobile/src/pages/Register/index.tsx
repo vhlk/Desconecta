@@ -145,9 +145,12 @@ const Register = () => {
                     }]}>
                     <Text style={styles.titleText}>Vamos criar um conta!</Text>
                     <TextInput style={styles.input} placeholder="Nome" onChangeText={setName}/>
-                    <TextInput style={styles.input} placeholder="Email" onChangeText={setEmail}/>
-                    <TextInput style={styles.input} secureTextEntry={true} placeholder="Senha" onChangeText={setPsw}/>
-                    <TextInput style={styles.lastInput} secureTextEntry={true} placeholder="Confirme a senha" onChangeText={setPswConf} />
+                    <TextInput style={styles.input} keyboardType='email-address' placeholder="Email" autoCapitalize="none" 
+                    onChangeText={e => setEmail(e.toLowerCase().trim())}/>
+                    <TextInput style={styles.input} secureTextEntry={true} placeholder="Senha" autoCapitalize="none" 
+                    onChangeText={setPsw}/>
+                    <TextInput style={styles.lastInput} secureTextEntry={true} placeholder="Confirme a senha" autoCapitalize="none" 
+                    onChangeText={setPswConf} />
                     <Text style={styles.pswDoesntMatch}>{pswDoesntMatchText}</Text>
                     {!checkingRegister && (
                     <TouchableOpacity style={styles.btnRegister} onPress={enterRegister}>
