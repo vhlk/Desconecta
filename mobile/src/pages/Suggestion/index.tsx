@@ -8,6 +8,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import MainApi from '../../services/ApiModule';
 import TrackAppsUsageModule from "../../services/AppsTracker/TrackerModule";
+import TrackerModule from "../../services/AppsTracker/TrackerModule";
 
 interface Activity {
     Activity_ID: string,
@@ -80,6 +81,7 @@ const Suggestion = () => {
             const timeNow = Date.now();
             const endTime = timeNow+timeMilliSec;
             await AsyncStorage.setItem(LOCAL_ACTIVITY_END, endTime.toString());
+            TrackerModule.StartActivity(hour, min, sec);
         }
 
         if (suggestionLink.charAt(0) === '&') {
@@ -103,7 +105,11 @@ const Suggestion = () => {
             const id = await AsyncStorage.getItem("LOGIN_ID");
             setUserId((id == null) ? '0' : id);
         }
-        getUserId();
+        async function getLocalActivity() {
+            const id = await AsyncStorage.getItem(LOCAL_ACTIVITY_ID);
+            console.log(id)
+        }
+        getLocalActivity();
     }, []);
 
     useEffect(() => {

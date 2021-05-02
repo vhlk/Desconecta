@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react"
-import { View, Image, StyleSheet, Text, ActivityIndicator, InteractionManager, PixelRatio } from "react-native"
+import { View, Image, StyleSheet, Text, ActivityIndicator, InteractionManager, PixelRatio , SafeAreaView} from "react-native"
 import { RectButton } from "react-native-gesture-handler"
 import { Header, Icon } from "react-native-elements"
 import { useNavigation, useFocusEffect } from "@react-navigation/native"
@@ -207,7 +207,13 @@ const Home = () => {
                             if (id != null)
                                 MainApi.GetActivity(id).then(res => {
                                     const activity:Activity[] = res.data;
-                                    setRunningActivity(activity);
+                                    MainApi.GetAllCategories().then(categ => {
+                                        const categories = categ.data;
+                                        activity[0].Category_ID=
+                                            (categories.filter(e => e.ID == activity[0].Category_ID))[0].Name;
+                                        setRunningActivity(activity);
+                                    });
+
                                 });
                         })
                     }
@@ -244,14 +250,20 @@ const Home = () => {
                 timeRemaining > 0 ? (
                     <View>
                         {runningActivity != null && runningActivity.length > 0 && (
-                            <View>
+                            <SafeAreaView>
                                 <Text style={styles.timerText}>Atividade em andamento</Text>
+                                <Text style={styles.timerText}>Tempo restante: {parsedDate}</Text>
                                 <View style={styles.swiperContainer}>
                                     <Swiper
                                         //ref="swiperRef"
                                         cards={runningActivity}
                                         renderCard={card => <RunningCard card={card} />}
-                                        onTapCard={() => {}}
+                                        onTapCard={() => navigation.navigate("Suggestion", {
+                                            Activity_ID: runningActivity[0].Activity_ID,
+                                            Category_ID: runningActivity[0].Category_ID
+                                        })}
+                                        verticalSwipe = {false}
+                                        horizontalSwipe = {false}
                                         disableBottomSwipe
                                         disableTopSwipe
                                         disableLeftSwipe
@@ -261,8 +273,7 @@ const Home = () => {
                                         showSecondCard={false}
                                     />
                                 </View>
-                                <Text style={styles.timerText}>Tempo restante: {parsedDate}</Text>
-                            </View>
+                            </SafeAreaView>
                         )}                      
                     </View>
                 ) : 
@@ -287,6 +298,7 @@ const Home = () => {
                                         stackSize={2}
                                         stackScale={7}
                                         stackSeparation={10}
+                                        verticalSwipe = {false}
                                         disableBottomSwipe
                                         disableTopSwipe
                                         animateOverlayLabelsOpacity
@@ -404,12 +416,12 @@ const styles = StyleSheet.create({
     },
 
     swiperContainer: {
-        height:'87%',
+        height:'86%',
         marginBottom:'3%'
     },
 
     card: {
-        height:'75%',
+        flex:0.75,
         borderRadius: 10,
         shadowRadius: 25,
         shadowColor: "#000",
@@ -418,7 +430,7 @@ const styles = StyleSheet.create({
         backgroundColor: colors.black,
         flexDirection: "column",
         justifyContent: "flex-end",
-        alignItems: "flex-start",
+        alignItems: "flex-start"
     },
 
     cardImage: {
