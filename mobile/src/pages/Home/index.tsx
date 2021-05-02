@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react"
-import { View, Image, StyleSheet, Text, ActivityIndicator, InteractionManager } from "react-native"
+import { View, Image, StyleSheet, Text, ActivityIndicator, InteractionManager, PixelRatio } from "react-native"
 import { RectButton } from "react-native-gesture-handler"
 import { Header, Icon } from "react-native-elements"
 import { useNavigation, useFocusEffect } from "@react-navigation/native"
@@ -8,7 +8,6 @@ import LinearGradient from 'react-native-linear-gradient';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import MainApi from "../../services/ApiModule"
-import { PixelRatio } from "react-native"
 
 interface Activity {
     Activity_ID: number,
@@ -78,7 +77,7 @@ const Home = () => {
     var [activitiesByInterest, setActivitiesByInterest] = useState<Activity[] | null>(null);
     const navigation = useNavigation();
     const[timeRemaining, setTimeRemaining] = useState(-1);
-    const[runningActivity, setRunningActivity] = useState<Activity[]>([]);
+    const[runningActivity, setRunningActivity] = useState<Activity[] | null>([]);
     const [parsedDate, setParsedDate] = useState("");
 
     const RunningCard = ({ card }: { card: Activity }) => (
@@ -100,12 +99,11 @@ const Home = () => {
 
     useEffect(() => {
         if (timeRemaining === -1) return;
+        if (timeRemaining <= 0) return;
+
         parseMillis2Date();
 
-        let timer:any = null;
-        if (timeRemaining > 0) {
-            timer = setTimeout(() => setTimeRemaining(timeRemaining-1000), 1000);        
-        }
+        const timer = setTimeout(() => setTimeRemaining(timeRemaining-1000), 1000);
 
         return () => clearTimeout(timer);
     }, [timeRemaining]);
@@ -160,7 +158,7 @@ const Home = () => {
                                 return true;
                             } else return false;
                         }
-                        function shuffle(array) {
+                        function shuffle(array: any) {
                             var currentIndex = array.length, temporaryValue, randomIndex;
 
                             // While there remain elements to shuffle...
@@ -245,8 +243,8 @@ const Home = () => {
             {
                 timeRemaining > 0 ? (
                     <View>
-                        {runningActivity.length > 0 && (
-                            <>
+                        {runningActivity != null && runningActivity.length > 0 && (
+                            <View>
                                 <Text style={styles.timerText}>Atividade em andamento</Text>
                                 <View style={styles.swiperContainer}>
                                     <Swiper
@@ -264,7 +262,7 @@ const Home = () => {
                                     />
                                 </View>
                                 <Text style={styles.timerText}>Tempo restante: {parsedDate}</Text>
-                            </>
+                            </View>
                         )}                      
                     </View>
                 ) : 
@@ -486,8 +484,7 @@ const styles = StyleSheet.create({
     timeText: {
         flexDirection: "row",
         marginHorizontal: 15,
-        marginBottom: 10,
-        flex: 0.1
+        marginBottom: 10
     },
     seeDetails: {
         flexDirection: "column",
@@ -516,6 +513,8 @@ const styles = StyleSheet.create({
         padding:2,
         fontFamily: "Montserrat-Medium",
     }
+
+
 });
 
 export default Home
