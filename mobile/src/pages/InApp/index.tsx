@@ -122,7 +122,7 @@ const InApp = () => {
                             <View>
                                 {newImage(item.img)}
                             </View>
-                            <View > 
+                            <View style={{ height:'100%'}}> 
                                 {item.title!="" && (
                                     <Text style={styles.descriptionText}><Text style={styles.descriptionTextBold}>Título: </Text>{item.title}</Text>
                                 ) || (
@@ -184,9 +184,10 @@ const styles = StyleSheet.create({
     },
     image: {
         width: "90%",
-        height: PixelRatio.getPixelSizeForLayoutSize(200),
+        height: PixelRatio.getPixelSizeForLayoutSize(150),
         borderRadius: 20,
-        alignSelf: "center"
+        alignSelf: "center", 
+        marginVertical:'5%'
     },
     descriptionText: {
         textAlign: "center",
