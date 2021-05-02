@@ -102,7 +102,8 @@ const Login = () => {
               { translateY: offset.y }]
           }]}>
 
-          <TextInput style={styles.input} placeholder="Email" onChangeText={setEmail} />
+          <TextInput style={styles.input} keyboardType={'email-address'} autoCapitalize="none" placeholder="Email" 
+          onChangeText={e => setEmail(e.toLowerCase().trim())} />
           <TextInput style={styles.input} secureTextEntry={true} placeholder="Senha" onChangeText={setPsw} />
 
           {!checkingLogin && (
