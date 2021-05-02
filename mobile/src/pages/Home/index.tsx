@@ -269,8 +269,8 @@ const Home = () => {
                 (
                     <View style={styles.container}>
                         {activitiesByInterest && (
-                            <>
-                                <Text style={{flex:0.05, color: colors.green, fontSize: 20, fontFamily: 'Montserrat-Medium', textAlign:'center',textAlignVertical:"bottom" }}>
+                            <View>
+                                <Text style={{ color: colors.green, fontSize: 20, fontFamily: 'Montserrat-Medium', textAlign:'center',textAlignVertical:"bottom" }}>
                                     Sugestões para você!
                                 </Text>
                                 <View style={styles.swiperContainer}>
@@ -331,10 +331,10 @@ const Home = () => {
                                         }}
                                     />
                                 </View>
-                                <Text style={{flex:0.1, color: '#34a0a480', fontSize: 15, fontFamily: 'Montserrat-Regular', textAlign:'center',textAlignVertical:"center" }}>
+                                <Text style={{ color: '#34a0a480', fontSize: 15, fontFamily: 'Montserrat-Regular', textAlign:'center',textAlignVertical:"top" }}>
                                     Deslize para descartar atividade
                                 </Text>
-                            </>
+                            </View>
 
                         ) || (
                                 <>
@@ -401,15 +401,15 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: "#f0f0f0",
-
     },
 
     swiperContainer: {
-        flex: 0.80
+        height:'87%',
+        marginBottom:'3%'
     },
 
     card: {
-        flex: 0.75,
+        height:'75%',
         borderRadius: 10,
         shadowRadius: 25,
         shadowColor: "#000",
