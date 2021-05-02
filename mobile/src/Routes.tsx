@@ -8,6 +8,7 @@ import Register from "./pages/Register"
 import InApp from "./pages/InApp"
 import Favorites from "./pages/favorites"
 import Interest from "./pages/Interest"
+import EditProfile from "./pages/EditProfile"
 
 import { NavigationContainer } from "@react-navigation/native"
 import { createStackNavigator } from "@react-navigation/stack"
@@ -28,6 +29,7 @@ const Routes = () => {
                 <AppStack.Screen name="Statistics" component={Statistics} />
                 <AppStack.Screen name="Favorites" component={Favorites} />
                 <AppStack.Screen name="Interest" component={Interest} />
+                <AppStack.Screen name="EditProfile" component={EditProfile} />
             </AppStack.Navigator>
         </NavigationContainer>
     )

@@ -104,7 +104,7 @@ const Login = () => {
 
           <TextInput style={styles.input} keyboardType={'email-address'} autoCapitalize="none" placeholder="Email" 
           onChangeText={e => setEmail(e.toLowerCase().trim())} />
-          <TextInput style={styles.input} secureTextEntry={true} placeholder="Senha" onChangeText={setPsw} />
+          <TextInput style={styles.input} secureTextEntry={true} placeholder="Senha" autoCapitalize="none" onChangeText={setPsw} />
 
           {!checkingLogin && (
               <TouchableOpacity style={styles.btnSubmit} onPress={enterLogin}>
